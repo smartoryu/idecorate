@@ -1,0 +1,68 @@
+.footer {
+  padding: 50px 0 20px 0;
+  background-color: #f6f6f6;
+  color: #878c94;
+
+  .title {
+    text-align: left;
+    color: #575756;
+    font-size: 1.2rem;
+  }
+
+  .social-icon > {
+    padding: 0;
+    margin: 0;
+
+    a {
+      display: inline-block;
+      color: #575756;
+      font-size: 1.2rem;
+      padding: 5px;
+    }
+  }
+
+  .account-icon > {
+    a {
+      display: block;
+      color: #575756;
+      font-size: 1rem;
+      padding: 5px;
+      text-decoration: none;
+    }
+
+    .fa {
+      margin-right: 25px;
+    }
+  }
+
+  .category a {
+    text-decoration: none;
+    color: #fff;
+    display: inline-block;
+    padding: 5px 20px;
+    margin-top: 4px;
+    margin-right: 4px;
+    background-color: #575756;
+    border: solid 1px #575756;
+    border-radius: 4px;
+  }
+
+  .payment > {
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+
+    li {
+      list-style-type: none;
+
+      a {
+        text-decoration: none;
+        display: block;
+        color: #575756;
+        float: left;
+        font-size: 1.8rem;
+        padding: 10px;
+      }
+    }
+  }
+}
