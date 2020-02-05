@@ -30,43 +30,33 @@
   }
 
   &__dropdown {
-    button {
-      &:hover,
-      &:focus,
-      &:active {
-        color: #575756;
-        background-color: transparent;
-        box-shadow: transparent;
-        border: none;
-      }
+    // underscore styling
+    &::before {
+      content: "";
+      position: absolute;
+      left: 50%;
+      bottom: 4px;
+      width: 80%;
+      height: 2px;
+      background-color: #575756;
+      transform-origin: center;
+      transform: translate(-50%, 0) scaleX(0);
+      transition: transform 0.15s ease-in-out;
+    }
 
-      span {
-        position: relative;
-      }
+    &:hover::before {
+      transform: translate(-50%, 0) scaleX(1);
+    }
 
-      span::before {
-        content: "";
-        position: absolute;
-        left: 50%;
-        bottom: 0;
-        width: 100%;
-        height: 2px;
-        background-color: #575756;
-        transform-origin: center;
-        transform: translate(-50%, 0) scaleX(0);
-        transition: transform 0.15s ease-in-out;
-      }
-
-      span:hover::before {
-        transform: translate(-50%, 0) scaleX(1);
-      }
+    > span {
+      position: relative;
     }
   }
+}
 
-  .dropdown {
-    &__menu {
-      width: 100%;
-    }
+.dropdown {
+  &__menu {
+    width: 100%;
   }
 }
 

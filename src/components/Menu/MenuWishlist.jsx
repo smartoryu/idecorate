@@ -9,10 +9,10 @@ const MenuWishlist = props => {
 
   return (
     <Dropdown className="navbar__wishlist" isOpen={dropdownOpen} toggle={toggle}>
-      <DropdownToggle className="dropdown__title">
+      <DropdownToggle nav className="dropdown__title">
         <FaRegHeart />
       </DropdownToggle>
-      <DropdownMenu className="dropdown__menu">
+      <DropdownMenu right className="dropdown__menu">
         <div className="row">
           <div className="dropdown__menu__container"></div>
         </div>

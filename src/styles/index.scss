@@ -12,7 +12,9 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New", monospace;
 }
 html {
-  height: 100%;
+  position: relative;
+  min-height: 100%;
 }
 
 @import "./App.scss";
+@import "../../node_modules/react-tabs/style/react-tabs.scss";

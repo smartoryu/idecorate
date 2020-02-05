@@ -9,12 +9,12 @@ const MenuCart = props => {
 
   return (
     <Dropdown className="navbar__cart" isOpen={dropdownOpen} toggle={toggle}>
-      <DropdownToggle className="navbar__title">
+      <DropdownToggle nav className="navbar__title">
         <FiShoppingCart />
       </DropdownToggle>
-      <DropdownMenu className="navbar__menu">
+      <DropdownMenu right className="navbar__menu">
         <div className="row">
-          <div className="navbar__menu__container"></div>
+          <div className="navbar__menu__container" style={{ height: "200px" }}></div>
         </div>
       </DropdownMenu>
     </Dropdown>

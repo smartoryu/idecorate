@@ -2,6 +2,11 @@
   padding: 50px 0 20px 0;
   background-color: #f6f6f6;
   color: #878c94;
+  position: relative;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  overflow: hidden;
 
   .title {
     text-align: left;
