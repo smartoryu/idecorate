@@ -31,14 +31,34 @@ export const LoginAction = (username, password) => {
   };
 };
 
-export const RegisterAction = (name, username, email, password1, password2) => {
+export const CheckUsername = username => {
+  return async dispatch => {
+    try {
+      let { data } = await Axios.get(`${API_URL}/auth/check_username`, { params: { username } });
+      console.log(data.message);
+      switch (data.status) {
+        case "GOOD_USER":
+          return dispatch({ type: "GOOD_USER" });
+        case "WRONG_USER":
+          return dispatch({ type: "WRONG_USER", payload: data.message });
+        default:
+          break;
+      }
+    } catch (err) {
+      console.log(err);
+      dispatch({ type: "SERVER_ERROR", payload: "Server error!" });
+    }
+  };
+};
+
+export const RegisterAction = (name, username, email, password, password2) => {
   return async dispatch => {
     try {
       let newUser = await Axios.post(`${API_URL}/auth/register`, {
         name,
         username,
         email,
-        password1,
+        password,
         password2
       });
 
@@ -47,6 +67,8 @@ export const RegisterAction = (name, username, email, password1, password2) => {
           return dispatch({ type: "WRONG_FORM", payload: newUser.data.message });
         case "WRONG_USER":
           return dispatch({ type: "WRONG_USER", payload: newUser.data.message });
+        case "GOOD_USER":
+          return dispatch({ type: "GOOD_USER", payload: newUser.data.message });
         case "WRONG_PASS":
           return dispatch({ type: "WRONG_PASS", payload: newUser.data.message });
         case "REG_SUCCESS":

@@ -20,7 +20,7 @@ const Login = () => {
   const ErrorPass = useSelector(state => state.auth.errorPass);
   const WrongUser = useSelector(state => state.auth.wrongUser);
   const WrongPass = useSelector(state => state.auth.wrongPass);
-  const ModalLogin = useSelector(state => state.modal.login);
+  // const ModalLogin = useSelector(state => state.modal.login);
   const dispatch = useDispatch();
 
   const [values, setValues] = useState({
@@ -38,7 +38,7 @@ const Login = () => {
     return null;
   } else {
     return (
-      <Modal centered size="sm" isOpen={ModalLogin} toggle={closeLogin}>
+      <Modal centered size="sm" /* isOpen={ModalLogin} */ isOpen toggle={closeLogin}>
         <ModalHeader className="ml-auto border-0">
           <FaTimes onClick={closeLogin} />
         </ModalHeader>

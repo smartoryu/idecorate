@@ -1,11 +1,11 @@
 const INITIAL_STATE = {
-  login: false
+  btnLogin: false
 };
 
 export default (state = INITIAL_STATE, action) => {
   switch (action.type) {
-    case "MODAL_LOGIN":
-      return { ...state, login: action.payload };
+    case "BTN_LOGIN":
+      return { ...state, btnLogin: action.payload };
     default:
       return state;
   }

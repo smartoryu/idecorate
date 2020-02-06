@@ -1,8 +1,8 @@
 import { combineReducers } from "redux";
 import AuthReducers from "./AuthReducers";
-import ModalReducers from "./ModalReducers";
+import HandleReducers from "./HandleReducers";
 
 export default combineReducers({
   auth: AuthReducers,
-  modal: ModalReducers
+  handle: HandleReducers
 });

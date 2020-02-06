@@ -11,17 +11,18 @@ const INITIAL_STATE = {
   login: false,
   logout: false,
 
+  goodUser: false,
   errorName: false,
   errorUser: false,
   errorPass: false,
   errorEmail: false,
-  errorServer: true,
+  errorServer: false,
 
-  wrongName: "",
-  wrongUser: "",
-  wrongPass: "",
-  wrongEmail: "",
-  wrongServer: ""
+  textName: "",
+  textUser: "",
+  textPass: "",
+  textEmail: "",
+  textServer: ""
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -43,25 +44,31 @@ export default (state = INITIAL_STATE, action) => {
       return {
         ...INITIAL_STATE,
         errorServer: true,
-        wrongServer: action.payload
+        textServer: action.payload
       };
     case "SUSPENDED":
       return {
         ...INITIAL_STATE,
         errorUser: true,
-        wrongUser: action.payload
+        textUser: action.payload
+      };
+    case "GOOD_USER":
+      return {
+        ...INITIAL_STATE,
+        goodUser: true
       };
     case "WRONG_USER":
       return {
         ...INITIAL_STATE,
         errorUser: true,
-        wrongUser: action.payload
+        textUser: action.payload
       };
     case "WRONG_PASS":
       return {
         ...INITIAL_STATE,
+        goodUser: true,
         errorPass: true,
-        wrongPass: action.payload
+        textPass: action.payload
       };
     case "WRONG_FORM":
       return {
@@ -70,10 +77,10 @@ export default (state = INITIAL_STATE, action) => {
         errorUser: true,
         errorPass: true,
         errorEmail: true,
-        wrongName: action.payload,
-        wrongUser: action.payload,
-        wrongPass: action.payload,
-        wrongEmail: action.payload
+        textName: action.payload,
+        textUser: action.payload,
+        textPass: action.payload,
+        textEmail: action.payload
       };
     default:
       return state;

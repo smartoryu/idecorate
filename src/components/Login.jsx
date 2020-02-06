@@ -1,7 +1,8 @@
-/* eslint-disable jsx-a11y/anchor-has-content */
+/* eslint-disable no-unused-vars */
+// /* eslint-disable jsx-a11y/anchor-has-content */
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { useState } from "react";
-// import { useDispatch } from "react-redux";
+import React, { Fragment, useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import {
   Button,
   Card,
@@ -18,28 +19,72 @@ import {
   Nav,
   NavItem,
   NavLink,
-  // eslint-disable-next-line no-unused-vars
   Spinner,
   TabContent,
-  TabPane
+  TabPane,
+  Tooltip
 } from "reactstrap";
 import { FaEye, FaEyeSlash, FaRegEnvelope, FaAt, FaKey, FaUserAlt } from "react-icons/fa";
 import classnames from "classnames";
+import { CheckUsername, LoginAction, RegisterAction } from "../redux/actions";
 
 function Logins() {
-  // const dispatch = useDispatch();
+  const TextName = useSelector(state => state.auth.textName);
+  const TextUser = useSelector(state => state.auth.textUser);
+  const TextPass = useSelector(state => state.auth.textPass);
+  const TextEmail = useSelector(state => state.auth.textEmail);
+  const GoodUser = useSelector(state => state.auth.goodUser);
+  const ErrorName = useSelector(state => state.auth.errorName);
+  const ErrorUser = useSelector(state => state.auth.errorUser);
+  const ErrorPass = useSelector(state => state.auth.errorPass);
+  const ErrorEmail = useSelector(state => state.auth.errorEmail);
+  const dispatch = useDispatch();
 
-  // == STATE VALUES LOGIN
-  const [login, setLogin] = useState({
-    username: "",
-    password: ""
-  });
+  // == CONTROL STATE OF TABS ===============================================
+  const [activeTab, setActiveTab] = useState("2");
+  const toggleTab = tab => (activeTab !== tab ? setActiveTab(tab) : null);
+
+  // == STATE VALID =========================================================
+  // const [nameValid, setNameValid] = useState(false);
+  // const [userValid, setUserValid] = useState(false);
+  // const [emailValid, setEmailValid] = useState(false);
+  // const [passValid, setPassValid] = useState(false);
+  // const toggleNameValid = prop => setNameValid(prop);
+  // const toggleUserValid = prop => setUserValid(prop);
+  // const toggleEmailValid = prop => setEmailValid(prop);
+  // const togglePassValid = prop => setPassValid(prop);
+
+  // == CONTROL ERROR ======================================================
+
+  // ErrorName ? toggleNameValid(true) : toggleNameValid(false);
+  // ErrorUser ? toggleUserValid(true) : toggleUserValid(false);
+  // ErrorEmail ? toggleEmailValid(true) : toggleEmailValid(false);
+  // ErrorPass ? togglePassValid(true) : togglePassValid(false);
+
+  // == STATE INVALID ======================================================
+  // const [nameInvalid, setNameInvalid] = useState(false);
+  // const [userInvalid, setUserInvalid] = useState(false);
+  // const [emailInvalid, setEmailInvalid] = useState(false);
+  // const [passInvalid, setPassInvalid] = useState(false);/
+  // const toggleNameInvalid = prop => setNameInvalid(prop);
+  // const toggleUserInvalid = prop => setUserInvalid(prop);
+  // const toggleEmailInvalid = prop => setEmailInvalid(prop);
+  // const togglePassInvalid = prop => setPassInvalid(prop);
+
+  // == CONTROL ERROR ======================================================
+  // ErrorName ? toggleNameInvalid(true) : toggleNameInvalid(false);
+  // ErrorUser ? toggleUserInvalid(true) : toggleUserInvalid(false);
+  // ErrorEmail ? toggleEmailInvalid(true) : toggleEmailInvalid(false);
+  // ErrorPass ? togglePassInvalid(true) : togglePassInvalid(false);
+
+  // == STATE VALUES LOGIN ==================================================
+  const [login, setLogin] = useState({ username: "", password: "" });
   const handleLoginValues = e => {
     let { name, value } = e.target;
     setLogin({ ...login, [name]: value });
   };
 
-  // == STATE VALUES REGISTER
+  // == STATE VALUES REGISTER ===============================================
   const [register, setRegister] = useState({
     name: "",
     username: "",
@@ -52,13 +97,7 @@ function Logins() {
     setRegister({ ...register, [name]: value });
   };
 
-  // == CONTROL STATE OF TABS
-  const [activeTab, setActiveTab] = useState("1");
-  const toggleTab = tab => {
-    if (activeTab !== tab) setActiveTab(tab);
-  };
-
-  // == SHOW/HIDE PASSWORD
+  // == SHOW/HIDE PASSWORD ==================================================
   const [typePass, setTypePass] = useState("password");
   const [showPass, setShowPass] = useState(false);
   const togglePass = type => {
@@ -72,15 +111,15 @@ function Logins() {
     setShowPass2(!showPass2);
   };
 
-  // console.log("login", login);
-  // console.log("reg", register);
-
   return (
-    <Card className="card w-35 mx-auto">
+    <Card className="card w-25 mx-auto">
       <CardHeader className="text-center">
         <Nav tabs className="card-header-tabs">
           <NavItem className="w-50">
-            <NavLink className={classnames({ active: activeTab === "1" })} onClick={() => toggleTab("1")}>
+            <NavLink
+              id="login-link"
+              className={classnames({ active: activeTab === "1" })}
+              onClick={() => toggleTab("1")}>
               Login
             </NavLink>
           </NavItem>
@@ -97,22 +136,23 @@ function Logins() {
             <div className="login">
               <Form>
                 <FormGroup id="form-username">
-                  <InputGroup>
+                  <InputGroup className="d-flex">
                     <InputGroupAddon addonType="prepend">
                       <InputGroupText>
                         <FaAt color="#bababa" />
                       </InputGroupText>
                     </InputGroupAddon>
                     <Input
-                      invalid={false}
+                      // valid={GoodUser}
+                      style={{ zIndex: "10" }}
+                      invalid={ErrorUser}
                       onChange={handleLoginValues}
                       type="text"
                       name="username"
-                      id="login-username"
                       placeholder="Username"
                     />
+                    {ErrorUser ? <FormFeedback className="ml-5 float-left">{TextUser}</FormFeedback> : null}
                   </InputGroup>
-                  <FormFeedback className="form-error-message">Username error</FormFeedback>
                 </FormGroup>
 
                 <FormGroup id="form-password">
@@ -123,26 +163,26 @@ function Logins() {
                       </InputGroupText>
                     </InputGroupAddon>
                     <Input
-                      invalid={false}
+                      style={{ zIndex: "10" }}
+                      invalid={ErrorPass}
                       onChange={handleLoginValues}
                       type={typePass}
                       name="password"
-                      id="login-password"
                       placeholder="Password"
                     />
-                    <InputGroupAddon addonType="append">
+                    <InputGroupAddon className="border-0" addonType="append">
                       {showPass ? (
-                        <Button onClick={() => togglePass("password")} color="light">
+                        <Button tabIndex="-1" onClick={() => togglePass("password")} color="light">
                           <FaEye color="#8a8a8a" />
                         </Button>
                       ) : (
-                        <Button onClick={() => togglePass("text")} color="light">
+                        <Button tabIndex="-1" onClick={() => togglePass("text")} color="light">
                           <FaEyeSlash color="#bababa" />
                         </Button>
                       )}
                     </InputGroupAddon>
+                    {ErrorPass ? <FormFeedback className="form-error-message">{TextPass}</FormFeedback> : null}
                   </InputGroup>
-                  <FormFeedback className="form-error-message">Password error</FormFeedback>
                 </FormGroup>
 
                 <FormGroup check className="mb-3" style={{ fontSize: "0.75rem" }}>
@@ -152,7 +192,11 @@ function Logins() {
                 </FormGroup>
 
                 <FormGroup id="form-button">
-                  <Button color="secondary" size="md" block>
+                  <Button
+                    onClick={() => dispatch(LoginAction(login.username, login.password))}
+                    color="secondary"
+                    size="md"
+                    block>
                     Login
                     {/* <Spinner color="light" size="sm" /> */}
                   </Button>
@@ -177,7 +221,9 @@ function Logins() {
                       </InputGroupText>
                     </InputGroupAddon>
                     <Input
-                      invalid={false}
+                      style={{ zIndex: "10" }}
+                      valid={ErrorName}
+                      // invalid
                       onChange={handleRegisterValues}
                       type="text"
                       name="name"
@@ -185,7 +231,6 @@ function Logins() {
                       placeholder="Name"
                     />
                   </InputGroup>
-                  <FormFeedback className="form-error-message">Name error</FormFeedback>
                 </FormGroup>
 
                 <FormGroup id="form-username">
@@ -196,15 +241,17 @@ function Logins() {
                       </InputGroupText>
                     </InputGroupAddon>
                     <Input
-                      invalid={false}
+                      style={{ zIndex: "10" }}
+                      valid={GoodUser}
+                      invalid={ErrorUser}
                       onChange={handleRegisterValues}
                       type="text"
                       name="username"
                       id="register-username"
                       placeholder="Username"
                     />
+                    {ErrorUser ? <FormFeedback className="form-error-message">{TextUser}</FormFeedback> : null}
                   </InputGroup>
-                  <FormFeedback className="form-error-message">Username error</FormFeedback>
                 </FormGroup>
 
                 <FormGroup id="form-email">
@@ -215,7 +262,9 @@ function Logins() {
                       </InputGroupText>
                     </InputGroupAddon>
                     <Input
-                      invalid={false}
+                      style={{ zIndex: "10" }}
+                      valid={ErrorEmail}
+                      // invalid={}
                       onChange={handleRegisterValues}
                       type="email"
                       name="email"
@@ -223,7 +272,6 @@ function Logins() {
                       placeholder="Email"
                     />
                   </InputGroup>
-                  <FormFeedback className="form-error-message">Email error</FormFeedback>
                 </FormGroup>
 
                 <FormGroup id="form-password1">
@@ -234,7 +282,8 @@ function Logins() {
                       </InputGroupText>
                     </InputGroupAddon>
                     <Input
-                      invalid={false}
+                      style={{ zIndex: "10" }}
+                      invalid={ErrorPass}
                       onChange={handleRegisterValues}
                       type={typePass}
                       name="password"
@@ -243,17 +292,17 @@ function Logins() {
                     />
                     <InputGroupAddon addonType="append">
                       {showPass ? (
-                        <Button onClick={() => togglePass("password")} color="light">
+                        <Button tabIndex="-1" onClick={() => togglePass("password")} color="light">
                           <FaEye color="#8a8a8a" />
                         </Button>
                       ) : (
-                        <Button onClick={() => togglePass("text")} color="light">
+                        <Button tabIndex="-1" onClick={() => togglePass("text")} color="light">
                           <FaEyeSlash color="#bababa" />
                         </Button>
                       )}
                     </InputGroupAddon>
+                    {/* {ErrorPass ? <FormFeedback className="form-error-message">{TextPass}</FormFeedback> : null} */}
                   </InputGroup>
-                  <FormFeedback className="form-error-message">Password error</FormFeedback>
                 </FormGroup>
 
                 <FormGroup id="form-password2">
@@ -264,7 +313,8 @@ function Logins() {
                       </InputGroupText>
                     </InputGroupAddon>
                     <Input
-                      invalid={false}
+                      style={{ zIndex: "10" }}
+                      invalid={ErrorPass}
                       onChange={handleRegisterValues}
                       type={typePass2}
                       name="password2"
@@ -273,33 +323,68 @@ function Logins() {
                     />
                     <InputGroupAddon addonType="append">
                       {showPass2 ? (
-                        <Button onClick={() => togglePass2("password")} color="light">
+                        <Button tabIndex="-1" onClick={() => togglePass2("password")} color="light">
                           <FaEye color="#8a8a8a" />
                         </Button>
                       ) : (
-                        <Button onClick={() => togglePass2("text")} color="light">
+                        <Button tabIndex="-1" onClick={() => togglePass2("text")} color="light">
                           <FaEyeSlash color="#bababa" />
                         </Button>
                       )}
                     </InputGroupAddon>
+                    {ErrorPass ? <FormFeedback className="form-error-message">{TextPass}</FormFeedback> : null}
                   </InputGroup>
-                  <FormFeedback className="form-error-message">Password error</FormFeedback>
                 </FormGroup>
 
-                <FormGroup check className="mb-3" style={{ fontSize: "0.75rem" }}>
-                  <Label check>
-                    <Input type="checkbox" /> By clicking Submit, you agree to our <br />
-                    <a href="#">Terms & Conditions</a>, Visitor Agreement <br />
-                    and Privacy Policy.
-                  </Label>
-                </FormGroup>
+                {register.name && register.username && register.email && register.password && register.password2 ? (
+                  <Fragment>
+                    <FormGroup check className="mb-3" style={{ fontSize: "0.75rem" }}>
+                      <Label check>
+                        <Input type="checkbox" /> By clicking Submit, you agree to our <br />
+                        <a href="#">Terms & Conditions</a>, Visitor Agreement <br />
+                        and Privacy Policy.
+                      </Label>
+                    </FormGroup>
 
-                <FormGroup id="form-button">
-                  <Button color="secondary" size="md" block>
-                    Submit
-                    {/* <Spinner color="light" size="sm" /> */}
-                  </Button>
-                </FormGroup>
+                    <FormGroup id="form-button">
+                      <Button
+                        onClick={() =>
+                          dispatch(
+                            RegisterAction(
+                              register.name,
+                              register.username,
+                              register.email,
+                              register.password,
+                              register.password2
+                            )
+                          )
+                        }
+                        color="secondary"
+                        size="md"
+                        block>
+                        Submit
+                        {/* <Spinner color="light" size="sm" /> */}
+                      </Button>
+                    </FormGroup>
+                  </Fragment>
+                ) : register.username ? (
+                  <FormGroup id="form-button">
+                    <Button
+                      onClick={() => dispatch(CheckUsername(register.username))}
+                      color="secondary"
+                      size="md"
+                      block>
+                      Check Username
+                      {/* <Spinner color="light" size="sm" /> */}
+                    </Button>
+                  </FormGroup>
+                ) : (
+                  <FormGroup id="form-button">
+                    <Button disabled color="secondary" size="md" block>
+                      Input Username first
+                    </Button>
+                  </FormGroup>
+                )}
               </Form>
             </div>
           </TabPane>

@@ -12,7 +12,7 @@ import Menu from "./components/Menu";
 import Footer from "./components/Footer";
 import Homepage from "./pages/Homepage";
 import Logins from "./components/Login";
-import Login from "./pages/Login";
+// import Login from "./pages/Login";
 import Register from "./pages/Register";
 import User from "./pages/User";
 import Partner from "./pages/Partner";
@@ -38,13 +38,13 @@ function App() {
   return (
     <div className="wrapper">
       <Menu />
-      <Login />
       <Switch>
         <Route exact path="/" component={Homepage} />
         <Route path="/register" component={Register} />
         <Route path="/user" component={User} />
         <Route path="/partner" component={Partner} />
         <Route path="/login" component={Logins} />
+        {/* <Route path="/logins" component={Login} /> */}
       </Switch>
       <Footer />
     </div>
