@@ -1,5 +1,6 @@
 import React, { Fragment } from "react";
 import { Col, CustomInput, Form, FormGroup, Label, Input } from "reactstrap";
+import { FiPlus } from "react-icons/fi";
 
 export function AddProduct(props) {
   return (
@@ -63,11 +64,22 @@ export function AddProduct(props) {
         </FormGroup>
 
         <FormGroup row>
-          <Label for="product_image" sm={2}>
-            Image
+          <Label sm={2}>Image</Label>
+          <Label for="product_image" sm={10}>
+            <div className="add_product_icon d-flex">
+              <span className="plus_icon">
+                <FiPlus />
+              </span>
+            </div>
           </Label>
-          <Col sm={10}>
-            <CustomInput type="file" id="product_image" name="product_image" label="select an image!" />
+          <Col sm={0}>
+            <CustomInput
+              className="add_product_input"
+              type="file"
+              id="product_image"
+              name="product_image"
+              label="select an image!"
+            />
           </Col>
         </FormGroup>
       </Form>

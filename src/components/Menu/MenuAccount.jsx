@@ -10,7 +10,7 @@ const MenuAccount = props => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dispatch = useDispatch();
 
-  const openLogin = () => dispatch({ type: "MODAL_LOGIN", payload: true });
+  const openLogin = () => dispatch({ type: "MODAL_AUTH", payload: true });
 
   const handleLogout = () => {
     Swal.fire({

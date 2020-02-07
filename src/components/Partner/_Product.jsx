@@ -12,6 +12,11 @@ let img =
 export const Product = () => {
   return (
     <div id="page-content-wrapper">
+      <div className="d-flex">
+        <Link to="/partner/add_product" className="btn btn-outline-secondary btn-sm mx-auto mb-3">
+          Add Product
+        </Link>
+      </div>
       <div className="container-fluid">
         {/* <h5 className="mt-4">Product Empty</h5> */}
         {/* <div className="card-deck">

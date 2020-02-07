@@ -20,6 +20,7 @@ export const LoginAction = (username, password) => {
         case "LOGIN_SUCCESS":
           localStorage.setItem("userID", user.data.result.id);
           localStorage.setItem("token", user.data.token);
+          dispatch({ type: "MODAL_AUTH", payload: false });
           return dispatch({ type: "LOGIN_SUCCESS", payload: user.data.result });
         default:
           break;
@@ -72,6 +73,7 @@ export const RegisterAction = (name, username, email, password, password2) => {
         case "WRONG_PASS":
           return dispatch({ type: "WRONG_PASS", payload: newUser.data.message });
         case "REG_SUCCESS":
+          dispatch({ type: "MODAL_AUTH", payload: false });
           return dispatch({ type: "REG_SUCCESS" });
         default:
           break;

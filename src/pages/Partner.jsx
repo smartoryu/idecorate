@@ -41,11 +41,11 @@ function Partner({ match }) {
 
         {/* CONTENT */}
         <div className="col-md-10 partner-content">
-          <div className="d-flex">
+          {/* <div className="d-flex">
             <Link to={`${match.url}/add_product`} className="btn btn-outline-secondary btn-sm mx-auto mb-3">
               Add Product
             </Link>
-          </div>
+          </div> */}
           <div className="ml-5">
             <Route exact path={`${match.url}/`} component={Profile} />
             <Route path={`${match.url}/product`} component={Product} />

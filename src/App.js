@@ -11,8 +11,7 @@ import { API_URL } from "./support/API_URL";
 import Menu from "./components/Menu";
 import Footer from "./components/Footer";
 import Homepage from "./pages/Homepage";
-import Logins from "./components/Login";
-// import Login from "./pages/Login";
+import ModalAuth from "./components/ModalAuth";
 import Register from "./pages/Register";
 import User from "./pages/User";
 import Partner from "./pages/Partner";
@@ -38,13 +37,13 @@ function App() {
   return (
     <div className="wrapper">
       <Menu />
+      <ModalAuth />
       <Switch>
         <Route exact path="/" component={Homepage} />
         <Route path="/register" component={Register} />
         <Route path="/user" component={User} />
         <Route path="/partner" component={Partner} />
-        <Route path="/login" component={Logins} />
-        {/* <Route path="/logins" component={Login} /> */}
+        {/* <Route path="/login" component={ModalAuth} /> */}
       </Switch>
       <Footer />
     </div>

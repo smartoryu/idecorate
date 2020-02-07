@@ -353,4 +353,33 @@ section.partner-wrapper {
   border: none;
   padding: 0 5px;
 }
+
+.add_product_input {
+  width: 0.1px !important;
+  height: 0.1px !important;
+  opacity: 0 !important;
+  overflow: hidden !important;
+  position: absolute !important;
+  z-index: -1 !important;
+}
+
+.add_product_icon {
+  width: 3rem;
+  height: 3rem;
+  border: dashed 1px grey;
+  background-color: transparent;
+  color: grey;
+}
+
+.add_product_icon > .plus_icon {
+  margin: auto;
+  line-height: 0;
+}
+
+.add_product_icon:hover {
+  color: black !important;
+  border: dashed 1px #212121;
+  -webkit-box-shadow: 0 0 5px grey;
+          box-shadow: 0 0 5px grey;
+}
 /*# sourceMappingURL=App.css.map */
