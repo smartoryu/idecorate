@@ -2,7 +2,7 @@
 // /* eslint-disable jsx-a11y/anchor-has-content */
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { Fragment, useState } from "react";
-import { useSelector, useDispatch, connect } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import {
   Button,
   Card,
@@ -100,7 +100,7 @@ function ModalAuth() {
       // size="md"
       isOpen={ModalAuth}
       toggle={closeLogin}>
-      <ModalHeader className="ml-auto border-0" toggle={closeLogin} close={FaTimes}>
+      <ModalHeader className="ml-auto border-0" toggle={closeLogin}>
         <FaTimes style={{ fontSize: "1rem" }} onClick={closeLogin} />
       </ModalHeader>
       <Card className="w-100 mx-auto">

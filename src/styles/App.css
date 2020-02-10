@@ -364,9 +364,9 @@ section.partner-wrapper {
 }
 
 .add_product_icon {
-  width: 3rem;
-  height: 3rem;
+  height: 10rem;
   border: dashed 1px grey;
+  border-radius: 8px;
   background-color: transparent;
   color: grey;
 }

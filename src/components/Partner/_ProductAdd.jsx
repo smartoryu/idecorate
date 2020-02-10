@@ -1,8 +1,50 @@
-import React, { Fragment } from "react";
-import { Col, CustomInput, Form, FormGroup, Label, Input } from "reactstrap";
-import { FiPlus } from "react-icons/fi";
+/* eslint-disable no-unused-vars */
+import React, { Fragment, useState, useCallback } from "react";
+import { useDropzone } from "react-dropzone";
+import { Col, CustomInput, Form, FormGroup, Label, Input, InputGroup, InputGroupAddon } from "reactstrap";
 
-export function AddProduct(props) {
+export function AddProduct() {
+  const [addImage, setAddImage] = useState([]);
+  const [product, setProduct] = useState({});
+
+  const handleAddImage = acceptedFiles => {
+    // console.log(acceptedFiles);
+    acceptedFiles.forEach(File => {
+      setAddImage(addImage => [...addImage, { FileName: File.name, File }]);
+    });
+  };
+
+  const handleAddProduct = () => {
+    let formData = new FormData();
+    let Headers = {
+      headers: { "Content-Type": "multipart/form-data" }
+    };
+    let data = {
+      name: product.name,
+      price: product.price,
+      type: product.type,
+      about: product.about
+    };
+
+    formData.append("image", addImage.File);
+    formData.append("data", JSON.stringify(data));
+
+    console.log(formData);
+  };
+
+  const onDrop = useCallback(acceptedFiles => {
+    // console.log(acceptedFiles);
+    handleAddImage(acceptedFiles);
+  }, []);
+  const maxSize = 5242880;
+  const { isDragActive, getRootProps, getInputProps, isDragReject, acceptedFiles, rejectedFiles } = useDropzone({
+    onDrop,
+    accept: "image/png, image/jpeg",
+    minSize: 0,
+    maxSize
+  });
+  const isFileTooLarge = rejectedFiles.length > 0 && rejectedFiles[0].size > maxSize;
+
   return (
     <Fragment>
       <Form>
@@ -11,7 +53,13 @@ export function AddProduct(props) {
             Product Name
           </Label>
           <Col sm={10}>
-            <Input type="text" name="product_name" id="product_name" placeholder="input product name" />
+            <Input
+              onChange={e => setProduct({ ...product, name: e.target.value })}
+              type="text"
+              name="product_name"
+              id="product_name"
+              placeholder="input product name"
+            />
           </Col>
         </FormGroup>
 
@@ -20,7 +68,20 @@ export function AddProduct(props) {
             Price
           </Label>
           <Col sm={10}>
-            <Input type="number" name="product_price" id="product_price" placeholder="input price" />
+            <InputGroup>
+              <InputGroupAddon addonType="prepend">Rp</InputGroupAddon>
+              <Input
+                onChange={e => setProduct({ ...product, price: e.target.value })}
+                name="product_price"
+                id="product_price"
+                placeholder="input price"
+                min={0}
+                max={100}
+                type="number"
+                step="1"
+              />
+              <InputGroupAddon addonType="append">.00</InputGroupAddon>
+            </InputGroup>
           </Col>
         </FormGroup>
 
@@ -29,7 +90,11 @@ export function AddProduct(props) {
             Product type
           </Label>
           <Col sm={10}>
-            <Input type="select" name="product_type" id="product_type">
+            <Input
+              onChange={e => setProduct({ ...product, type: e.target.value })}
+              type="select"
+              name="product_type"
+              id="product_type">
               <option hidden>Select product type</option>
               <option>Chair</option>
               <option>Sofa</option>
@@ -59,21 +124,47 @@ export function AddProduct(props) {
             About Product
           </Label>
           <Col sm={10}>
-            <Input type="textarea" name="product_about" id="product_about" />
+            <Input
+              onChange={e => setProduct({ ...product, about: e.target.value })}
+              type="textarea"
+              name="product_about"
+              id="product_about"
+            />
           </Col>
         </FormGroup>
 
         <FormGroup row>
           <Label sm={2}>Image</Label>
-          <Label for="product_image" sm={10}>
-            <div className="add_product_icon d-flex">
-              <span className="plus_icon">
-                <FiPlus />
-              </span>
-            </div>
-          </Label>
-          <Col sm={0}>
+          <Col sm={10}>
+            <Label className="px-0" sm={12}>
+              <div className="add_product_icon w-100 text-center">
+                <div {...getRootProps()}>
+                  <input {...getInputProps()} className="my-auto" />
+                  {!isDragActive && "Click here or drop a file to upload!"}
+                  {isDragActive && !isDragReject && "Drop it like it's hot!"}
+                  {isDragReject && "File type not accepted, sorry!"}
+                  {isFileTooLarge && <div className="text-danger mt-2">File is too large.</div>}
+                </div>
+              </div>
+            </Label>
+            <ul className="list-group mt-3">
+              {addImage.length > 0 &&
+                addImage.map((acceptedFile, id) => (
+                  <div key={id}>
+                    <li className="list-group-item list-group-item-success mt-1">
+                      {acceptedFile.FileName}
+                      <span
+                        onClick={() => addImage.splice(id, 1)}
+                        className="float-right"
+                        style={{ cursor: "pointer" }}>
+                        x
+                      </span>
+                    </li>
+                  </div>
+                ))}
+            </ul>
             <CustomInput
+              sm={0}
               className="add_product_input"
               type="file"
               id="product_image"
@@ -89,7 +180,7 @@ export function AddProduct(props) {
           <a href="/partner/product" className="btn btn-outline-dark px-3 mr-3 ">
             Cancel
           </a>
-          <button onClick={() => console.log("saved")} className="btn btn-secondary px-4">
+          <button onClick={handleAddProduct} className="btn btn-secondary px-4">
             Save
           </button>
         </div>
