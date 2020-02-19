@@ -1,16 +1,31 @@
 /* eslint-disable no-unused-vars */
-import React, { Fragment, useState, useCallback } from "react";
+import React, { Fragment, useState, useCallback, useReducer } from "react";
 import { useDropzone } from "react-dropzone";
 import { Col, CustomInput, Form, FormGroup, Label, Input, InputGroup, InputGroupAddon } from "reactstrap";
 
 export function AddProduct() {
-  const [addImage, setAddImage] = useState([]);
+  // const [addImage, setAddImage] = useState([]);
   const [product, setProduct] = useState({});
+
+  const [addImage, dispatch] = useReducer((addImage, { type, value }) => {
+    switch (type) {
+      case "add":
+        console.log(value);
+
+        return [...addImage, value];
+      case "remove":
+        return addImage.filter((_, index) => index !== value);
+      default:
+        return addImage;
+    }
+  }, []);
 
   const handleAddImage = acceptedFiles => {
     // console.log(acceptedFiles);
     acceptedFiles.forEach(File => {
-      setAddImage(addImage => [...addImage, { FileName: File.name, File }]);
+      // console.log("File", File);
+      dispatch({ type: "add", value: { FileName: File.name, File } });
+      // setAddImage(addImage => [...addImage, { FileName: File.name, File }]);
     });
   };
 
@@ -33,7 +48,7 @@ export function AddProduct() {
   };
 
   const onDrop = useCallback(acceptedFiles => {
-    // console.log(acceptedFiles);
+    // console.log("files", acceptedFiles);
     handleAddImage(acceptedFiles);
   }, []);
   const maxSize = 5242880;
@@ -45,10 +60,12 @@ export function AddProduct() {
   });
   const isFileTooLarge = rejectedFiles.length > 0 && rejectedFiles[0].size > maxSize;
 
+  console.log("arr", addImage);
+
   return (
     <Fragment>
       <Form>
-        <FormGroup row>
+        <FormGroup id="form-name" row>
           <Label for="product_name" sm={2}>
             Product Name
           </Label>
@@ -63,7 +80,7 @@ export function AddProduct() {
           </Col>
         </FormGroup>
 
-        <FormGroup row>
+        <FormGroup id="form-price" row>
           <Label for="product_price" sm={2}>
             Price
           </Label>
@@ -85,7 +102,7 @@ export function AddProduct() {
           </Col>
         </FormGroup>
 
-        <FormGroup row>
+        <FormGroup id="form-type" row>
           <Label for="product_type" sm={2}>
             Product type
           </Label>
@@ -107,19 +124,19 @@ export function AddProduct() {
           </Col>
         </FormGroup>
 
-        <FormGroup row>
+        <FormGroup id="form-category" row>
           <Label for="product_category" sm={2}>
             Product Category
           </Label>
           <Col sm={10}>
-            <CustomInput disabled type="checkbox" id="product_category1" label="Bedroom" />
-            <CustomInput disabled type="checkbox" id="product_category2" label="Bathroom" />
-            <CustomInput disabled type="checkbox" id="product_category3" label="Dining Room" />
-            <CustomInput disabled type="checkbox" id="product_category4" label="Living Room" />
+            <CustomInput type="checkbox" id="product_category1" label="Bedroom" />
+            <CustomInput type="checkbox" id="product_category2" label="Bathroom" />
+            <CustomInput type="checkbox" id="product_category3" label="Dining Room" />
+            <CustomInput type="checkbox" id="product_category4" label="Living Room" />
           </Col>
         </FormGroup>
 
-        <FormGroup row>
+        <FormGroup id="form-about" row>
           <Label for="product_about" sm={2}>
             About Product
           </Label>
@@ -149,19 +166,22 @@ export function AddProduct() {
             </Label>
             <ul className="list-group mt-3">
               {addImage.length > 0 &&
-                addImage.map((acceptedFile, id) => (
-                  <div key={id}>
-                    <li className="list-group-item list-group-item-success mt-1">
-                      {acceptedFile.FileName}
-                      <span
-                        onClick={() => addImage.splice(id, 1)}
-                        className="float-right"
-                        style={{ cursor: "pointer" }}>
-                        x
-                      </span>
-                    </li>
-                  </div>
-                ))}
+                addImage.map((acceptedFile, id) => {
+                  return (
+                    <ul key={id}>
+                      <li className="list-group-item list-group-item-success mt-1">
+                        <img style={{ width: 100 }} src={URL.createObjectURL(acceptedFile.File)} alt="gambar" />
+                        {acceptedFile.FileName}
+                        <span
+                          onClick={() => dispatch({ type: "remove", value: id })}
+                          className="float-right"
+                          style={{ cursor: "pointer" }}>
+                          x
+                        </span>
+                      </li>
+                    </ul>
+                  );
+                })}
             </ul>
             <CustomInput
               sm={0}
