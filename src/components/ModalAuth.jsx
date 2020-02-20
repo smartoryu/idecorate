@@ -21,40 +21,53 @@ import {
   Nav,
   NavItem,
   NavLink,
-  Spinner,
   TabContent,
-  TabPane,
-  Tooltip
+  TabPane
 } from "reactstrap";
-import { FaAt, FaEye, FaEyeSlash, FaRegEnvelope, FaTimes, FaKey, FaUserAlt } from "react-icons/fa";
 import classnames from "classnames";
+import { FaAt, FaEye, FaEyeSlash, FaRegEnvelope, FaTimes, FaKey, FaUserAlt } from "react-icons/fa";
 import { CheckUsername, LoginAction, RegisterAction } from "../redux/actions";
 
-function ModalAuth() {
-  // =================================================== REDUCER ON REDUX ==
+const ModalAuth = props => {
+  /**
+   *
+   *
+   * =================================================== REDUCER ON REDUX ==
+   */
   const GoodUser = useSelector(state => state.auth.goodUser);
+
+  const ErrorUserLog = useSelector(state => state.auth.errorUserLog);
+  const ErrorPassLog = useSelector(state => state.auth.errorPassLog);
+  const TextUserLog = useSelector(state => state.auth.textUserLog);
+  const TextPassLog = useSelector(state => state.auth.textPassLog);
 
   const ErrorName = useSelector(state => state.auth.errorName);
   const ErrorUser = useSelector(state => state.auth.errorUser);
   const ErrorPass = useSelector(state => state.auth.errorPass);
   const ErrorEmail = useSelector(state => state.auth.errorEmail);
 
-  const TextName = useSelector(state => state.auth.textName);
   const TextUser = useSelector(state => state.auth.textUser);
   const TextPass = useSelector(state => state.auth.textPass);
-  const TextEmail = useSelector(state => state.auth.textEmail);
+
   const dispatch = useDispatch();
 
-  // ================================================== STATE VALUES LOGIN ==
-  const [login, setLogin] = useState({
-    username: "",
-    password: ""
-  });
-  const handleLoginValues = e => {
-    let { name, value } = e.target;
-    setLogin({ ...login, [name]: value });
-  };
+  //
+  // ======================================================= CONTROL MODAL ==
+  const ModalAuth = useSelector(state => state.auth.modalAuth);
+  const closeLogin = () => dispatch({ type: "MODAL_AUTH", payload: false });
 
+  //
+  // =============================================== CONTROL STATE OF TABS ==
+  const [activeTab, setActiveTab] = useState("1");
+  const toggleTab = tab => (activeTab !== tab ? setActiveTab(tab) : null);
+
+  //
+  // ======================================================= CONTROL LOGIN ==
+  const [login, setLogin] = useState({ username: "", password: "" });
+  const handleLoginValues = ({ target }) => setLogin({ ...login, [target.name]: target.value });
+  const loginKeyPress = ({ key }) => key === "Enter" && dispatch(LoginAction(login.username, login.password));
+
+  //
   // ============================================== STATE VALUES REGISTER ==
   const [register, setRegister] = useState({
     name: "",
@@ -63,10 +76,8 @@ function ModalAuth() {
     password: "",
     password2: ""
   });
-  const handleRegisterValues = event => {
-    let { name, value } = event.target;
-    setRegister({ ...register, [name]: value });
-  };
+  const handleRegisterValues = ({ target }) => setRegister({ ...register, [target.name]: target.value });
+  const registerKeyPress = ({ key }) => key === "Enter" && dispatch(RegisterAction(register));
 
   // ================================================== SHOW/HIDE PASSWORD ==
   const [typePass, setTypePass] = useState("password");
@@ -82,35 +93,21 @@ function ModalAuth() {
     setShowPass2(!showPass2);
   };
 
-  // =============================================== CONTROL STATE OF TABS ==
-  const [activeTab, setActiveTab] = useState("1");
-  const toggleTab = tab => (activeTab !== tab ? setActiveTab(tab) : null);
-
-  // ======================================================= CONTROL MODAL ==
-  const ModalAuth = useSelector(state => state.handle.modalAuth);
-  const closeLogin = () => dispatch({ type: "MODAL_AUTH", payload: false });
-
-  // const btnClose =
-
   return (
     <Modal
+      autoFocus={false}
       fade={false}
       style={{ backgroundColor: "transparent", width: "300px" }}
       centered
-      // size="md"
+      // isOpen
       isOpen={ModalAuth}
       toggle={closeLogin}>
-      <ModalHeader className="ml-auto border-0" toggle={closeLogin}>
-        <FaTimes style={{ fontSize: "1rem" }} onClick={closeLogin} />
-      </ModalHeader>
+      <ModalHeader className="ml-auto border-0" toggle={closeLogin} />
       <Card className="w-100 mx-auto">
         <CardHeader className="text-center">
-          <Nav tabs className="card-header-tabs">
+          <Nav tabs className="card-header-tabs" style={{ cursor: "pointer" }}>
             <NavItem className="w-50">
-              <NavLink
-                id="login-link"
-                className={classnames({ active: activeTab === "1" })}
-                onClick={() => toggleTab("1")}>
+              <NavLink className={classnames({ active: activeTab === "1" })} onClick={() => toggleTab("1")}>
                 Login
               </NavLink>
             </NavItem>
@@ -123,7 +120,13 @@ function ModalAuth() {
         </CardHeader>
         <CardBody>
           <TabContent activeTab={activeTab}>
+            {/**
+             * ============================================================================== TAB CONTENT ===
+             */}
             <TabPane tabId="1">
+              {/**
+               * ========================================================================== LOGIN CONTROL ===
+               */}
               <div className="login">
                 <Form>
                   <FormGroup id="form-username">
@@ -134,14 +137,16 @@ function ModalAuth() {
                         </InputGroupText>
                       </InputGroupAddon>
                       <Input
+                        autoFocus={true}
                         style={{ zIndex: "10" }}
-                        invalid={ErrorUser}
+                        invalid={ErrorUserLog}
                         onChange={handleLoginValues}
+                        onKeyPress={loginKeyPress}
                         type="text"
                         name="username"
                         placeholder="Username"
                       />
-                      {ErrorUser ? <FormFeedback className="ml-5 float-left">{TextUser}</FormFeedback> : null}
+                      {ErrorUserLog ? <FormFeedback className="ml-5 float-left">{TextUserLog}</FormFeedback> : null}
                     </InputGroup>
                   </FormGroup>
 
@@ -154,8 +159,9 @@ function ModalAuth() {
                       </InputGroupAddon>
                       <Input
                         style={{ zIndex: "10" }}
-                        invalid={ErrorPass}
+                        invalid={ErrorPassLog}
                         onChange={handleLoginValues}
+                        onKeyPress={loginKeyPress}
                         type={typePass}
                         name="password"
                         placeholder="Password"
@@ -171,11 +177,11 @@ function ModalAuth() {
                           </Button>
                         )}
                       </InputGroupAddon>
-                      {ErrorPass ? <FormFeedback className="form-error-message">{TextPass}</FormFeedback> : null}
+                      {ErrorPassLog ? <FormFeedback className="ml-5 float-left">{TextPassLog}</FormFeedback> : null}
                     </InputGroup>
                   </FormGroup>
 
-                  <FormGroup check className="mb-3" style={{ fontSize: "0.75rem" }}>
+                  <FormGroup id="form-checkbox" check className="mb-3" style={{ fontSize: "0.75rem" }}>
                     <Label check>
                       <Input type="checkbox" /> Remember me
                     </Label>
@@ -199,7 +205,9 @@ function ModalAuth() {
                 </Form>
               </div>
             </TabPane>
-
+            {/**
+             * ========================================================================= REGISTER CONTROL ===
+             */}
             <TabPane tabId="2">
               <div className="register">
                 <Form>
@@ -213,8 +221,8 @@ function ModalAuth() {
                       <Input
                         style={{ zIndex: "10" }}
                         valid={ErrorName}
-                        // invalid
                         onChange={handleRegisterValues}
+                        onKeyPress={registerKeyPress}
                         type="text"
                         name="name"
                         id="register-name"
@@ -235,6 +243,7 @@ function ModalAuth() {
                         valid={GoodUser}
                         invalid={ErrorUser}
                         onChange={handleRegisterValues}
+                        onKeyPress={registerKeyPress}
                         type="text"
                         name="username"
                         id="register-username"
@@ -254,8 +263,8 @@ function ModalAuth() {
                       <Input
                         style={{ zIndex: "10" }}
                         valid={ErrorEmail}
-                        // invalid={}
                         onChange={handleRegisterValues}
+                        onKeyPress={registerKeyPress}
                         type="email"
                         name="email"
                         id="register-email"
@@ -275,6 +284,7 @@ function ModalAuth() {
                         style={{ zIndex: "10" }}
                         invalid={ErrorPass}
                         onChange={handleRegisterValues}
+                        onKeyPress={registerKeyPress}
                         type={typePass}
                         name="password"
                         id="register-password1"
@@ -291,7 +301,6 @@ function ModalAuth() {
                           </Button>
                         )}
                       </InputGroupAddon>
-                      {/* {ErrorPass ? <FormFeedback className="form-error-message">{TextPass}</FormFeedback> : null} */}
                     </InputGroup>
                   </FormGroup>
 
@@ -306,6 +315,7 @@ function ModalAuth() {
                         style={{ zIndex: "10" }}
                         invalid={ErrorPass}
                         onChange={handleRegisterValues}
+                        onKeyPress={registerKeyPress}
                         type={typePass2}
                         name="password2"
                         id="register-password2"
@@ -326,7 +336,7 @@ function ModalAuth() {
                     </InputGroup>
                   </FormGroup>
 
-                  {register.name && register.username && register.email && register.password && register.password2 ? (
+                  {register ? (
                     <Fragment>
                       <FormGroup check className="mb-3" style={{ fontSize: "0.75rem" }}>
                         <Label check>
@@ -340,23 +350,8 @@ function ModalAuth() {
                       </FormGroup>
 
                       <FormGroup id="form-button">
-                        <Button
-                          onClick={() =>
-                            dispatch(
-                              RegisterAction(
-                                register.name,
-                                register.username,
-                                register.email,
-                                register.password,
-                                register.password2
-                              )
-                            )
-                          }
-                          color="secondary"
-                          size="md"
-                          block>
+                        <Button onClick={() => dispatch(RegisterAction(register))} color="secondary" size="md" block>
                           Submit
-                          {/* <Spinner color="light" size="sm" /> */}
                         </Button>
                       </FormGroup>
                     </Fragment>
@@ -368,12 +363,11 @@ function ModalAuth() {
                         size="md"
                         block>
                         Check Username
-                        {/* <Spinner color="light" size="sm" /> */}
                       </Button>
                     </FormGroup>
                   ) : (
                     <FormGroup id="form-button">
-                      <Button disabled color="secondary" size="md" block>
+                      <Button disabled color="secondary" size="md" block style={{ cursor: "not-allowed" }}>
                         Input Username first
                       </Button>
                     </FormGroup>
@@ -386,16 +380,6 @@ function ModalAuth() {
       </Card>
     </Modal>
   );
-}
+};
 
 export default ModalAuth;
-
-// const ErrorName = state => state.auth.errorName
-
-// const MapStateToProps = state => {
-//   ErrorName: state.auth.errorName
-// }
-
-// () => this.LoginAction(login.username, login.password))
-
-// export default connect({ErrorName}, {LoginAction}) (ModalAuth)

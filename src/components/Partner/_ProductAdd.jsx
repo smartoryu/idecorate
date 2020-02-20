@@ -1,17 +1,38 @@
 /* eslint-disable no-unused-vars */
 import React, { Fragment, useState, useCallback, useReducer } from "react";
-import { useDropzone } from "react-dropzone";
-import { Col, CustomInput, Form, FormGroup, Label, Input, InputGroup, InputGroupAddon } from "reactstrap";
+// import { useDropzone } from "react-dropzone";
+import {
+  Col,
+  CustomInput,
+  Form,
+  FormGroup,
+  Label,
+  Input,
+  InputGroup,
+  InputGroupAddon,
+  Card,
+  CardImg,
+  CardBody,
+  CardText,
+  CardFooter,
+  Button,
+  Tooltip
+} from "reactstrap";
+import { MdAdd } from "react-icons/md";
+import Dropzone from "react-dropzone-uploader";
+
+import "react-dropzone-uploader/dist/styles.css";
+import { API_URL } from "../../support/API_URL";
 
 export function AddProduct() {
   // const [addImage, setAddImage] = useState([]);
   const [product, setProduct] = useState({});
+  const [tooltipOpen, setTooltipOpen] = useState(false);
+  const toggleTooltip = () => setTooltipOpen(!tooltipOpen);
 
   const [addImage, dispatch] = useReducer((addImage, { type, value }) => {
     switch (type) {
       case "add":
-        console.log(value);
-
         return [...addImage, value];
       case "remove":
         return addImage.filter((_, index) => index !== value);
@@ -22,10 +43,9 @@ export function AddProduct() {
 
   const handleAddImage = acceptedFiles => {
     // console.log(acceptedFiles);
+
     acceptedFiles.forEach(File => {
-      // console.log("File", File);
       dispatch({ type: "add", value: { FileName: File.name, File } });
-      // setAddImage(addImage => [...addImage, { FileName: File.name, File }]);
     });
   };
 
@@ -43,24 +63,10 @@ export function AddProduct() {
 
     formData.append("image", addImage.File);
     formData.append("data", JSON.stringify(data));
-
     console.log(formData);
   };
 
-  const onDrop = useCallback(acceptedFiles => {
-    // console.log("files", acceptedFiles);
-    handleAddImage(acceptedFiles);
-  }, []);
-  const maxSize = 5242880;
-  const { isDragActive, getRootProps, getInputProps, isDragReject, acceptedFiles, rejectedFiles } = useDropzone({
-    onDrop,
-    accept: "image/png, image/jpeg",
-    minSize: 0,
-    maxSize
-  });
-  const isFileTooLarge = rejectedFiles.length > 0 && rejectedFiles[0].size > maxSize;
-
-  console.log("arr", addImage);
+  console.log(addImage);
 
   return (
     <Fragment>
@@ -150,13 +156,95 @@ export function AddProduct() {
           </Col>
         </FormGroup>
 
-        <FormGroup row>
+        <FormGroup id="form-image" row>
+          <Label sm={2}>Image</Label>
+          <Col className="d-flex" sm={10}>
+            <Input
+              onChange={({ target }) => handleAddImage(Array.from(target.files))}
+              id="product_image"
+              className="add_product_input"
+              // multiple
+              max={4}
+              accept="image/png, image/jpeg"
+              type="file"
+            />
+            {/* <Label sm={12}>{AddImageDropzone()}</Label> */}
+
+            {addImage.length > 0 &&
+              addImage.map((image, id) => {
+                return (
+                  <Label sm={2} key={id} id={"img-" + id}>
+                    <div className="add_product_preview">
+                      <img
+                        onClick={() => dispatch({ type: "remove", value: id })}
+                        src={URL.createObjectURL(image.File)}
+                        className="plus_icon overflow-hidden"
+                        alt=""
+                      />
+                    </div>
+                    <div className="remove_icon text-center">
+                      <Tooltip placement="bottom" isOpen={tooltipOpen} target={"img-" + id} toggle={toggleTooltip}>
+                        Click to remove!
+                      </Tooltip>
+                    </div>
+                  </Label>
+
+                  // <Label sm={3} key={id}>
+                  //   <Card className="add_product_card">
+                  //     <span
+                  //       onClick={() => dispatch({ type: "remove", value: id })}
+                  //       className="float-right"
+                  //       style={{ cursor: "pointer" }}>
+                  //       x
+                  //     </span>
+                  //     <CardImg top width="100%" src={URL.createObjectURL(image.File)} alt="product" />
+                  //     <CardBody>
+                  //       <CardText onClick={() => dispatch({ type: "remove", value: id })} style={{ cursor: "pointer" }}>
+                  //         {image.FileName}
+                  //       </CardText>
+                  //       <Button className="float-right" onClick={() => dispatch({ type: "remove", value: id })}>
+                  //         x
+                  //       </Button>
+                  //     </CardBody>
+                  //   </Card>
+                  // </Label>
+
+                  // <Label sm={3} key={id}>
+                  //   <div className="add_product_icon">
+                  //     <img src={URL.createObjectURL(image.File)} className="plus_icon" alt="" />
+                  //   </div>
+                  // </Label>
+                );
+              })}
+            {/* <Label for="product_image" sm={2}>
+              <div className="add_product_icon">
+                <img
+                  onClick={() => dispatch({ type: "remove", value: id })}
+                  height="100%"
+                  src="https://lh3.googleusercontent.com/proxy/_Aa-XCNpidMCVNDGlG442IMU-Bc-OopXJWolFOSwJVZ8woNXdm7-xOOcb4192Al6U_ctNs-ldE7dT_K95OC3moKr2vIeNjZqx4ZQPRaSjKmFH_97tlrL"
+                  className="plus_icon overflow-hidden"
+                  alt=""
+                />
+              </div>
+            </Label> */}
+            {addImage.length < 4 && (
+              <Label for="product_image" sm={2}>
+                <div className="add_product_icon">
+                  <MdAdd height="100%" className="plus_icon" />
+                </div>
+              </Label>
+            )}
+          </Col>
+        </FormGroup>
+      </Form>
+
+      {/* <FormGroup id="form-images" row>
           <Label sm={2}>Image</Label>
           <Col sm={10}>
-            <Label className="px-0" sm={12}>
-              <div className="add_product_icon w-100 text-center">
-                <div {...getRootProps()}>
-                  <input {...getInputProps()} className="my-auto" />
+            <Label className="px-0 d-flex" sm={12}>
+              <div className="add_product_icon d-flex">
+                <div {...getRootProps()} className="m-auto">
+                  <input {...getInputProps()} />
                   {!isDragActive && "Click here or drop a file to upload!"}
                   {isDragActive && !isDragReject && "Drop it like it's hot!"}
                   {isDragReject && "File type not accepted, sorry!"}
@@ -164,25 +252,26 @@ export function AddProduct() {
                 </div>
               </div>
             </Label>
-            <ul className="list-group mt-3">
+
+            <div className="mt-3 d-flex">
               {addImage.length > 0 &&
                 addImage.map((acceptedFile, id) => {
                   return (
-                    <ul key={id}>
-                      <li className="list-group-item list-group-item-success mt-1">
-                        <img style={{ width: 100 }} src={URL.createObjectURL(acceptedFile.File)} alt="gambar" />
-                        {acceptedFile.FileName}
-                        <span
-                          onClick={() => dispatch({ type: "remove", value: id })}
-                          className="float-right"
-                          style={{ cursor: "pointer" }}>
-                          x
-                        </span>
-                      </li>
-                    </ul>
+                    <Card className="add_product_card">
+                      <span
+                        onClick={() => dispatch({ type: "remove", value: id })}
+                        className="float-right"
+                        style={{ cursor: "pointer" }}>
+                        x
+                      </span>
+                      <CardImg top width="100%" src={URL.createObjectURL(acceptedFile.File)} alt="product" />
+                      <CardBody>
+                        <CardText>{acceptedFile.FileName}</CardText>
+                      </CardBody>
+                    </Card>
                   );
                 })}
-            </ul>
+            </div>
             <CustomInput
               sm={0}
               className="add_product_input"
@@ -192,8 +281,7 @@ export function AddProduct() {
               label="select an image!"
             />
           </Col>
-        </FormGroup>
-      </Form>
+        </FormGroup> */}
 
       <div className="form-group d-flex">
         <div className="mx-auto">
@@ -208,3 +296,68 @@ export function AddProduct() {
     </Fragment>
   );
 }
+
+// const AddImageDropzone = () => {
+//   const Layout = ({ input, previews, submitButton, dropzoneProps, files, extra: { maxFiles } }) => {
+//     return (
+//       <div>
+//         {/* <div {...dropzoneProps}>{files.length < maxFiles && input}</div> */}
+//         <div {...dropzoneProps}>
+//           {/* {input} */}
+//           {previews}
+//           {files.length < maxFiles && input}
+//           {/* {files.length > 0 && submitButton} */}
+//         </div>
+//       </div>
+//     );
+//   };
+
+//   const getUploadParams = ({ meta }) => {
+//     const url = API_URL;
+//     return { url, meta: { fileUrl: `${URL.createObjectURL(meta.name)}` } };
+//   };
+
+//   const handleChangeStatus = ({ meta, remove }, status) => {
+//     console.log(status, meta);
+//     if (status === "header_received") remove();
+//   };
+
+//   const handleSubmit = (files, allFiles) => {
+//     console.log(files.map(File => File.meta));
+//     allFiles.forEach(File => dispatch({ type: "add", value: { FileName: File.name, File } }));
+//     // allFiles.forEach(f => f.remove())
+//   };
+
+//   console.log(addImage);
+
+//   return (
+//     <Dropzone
+//       // getUploadParams={getUploadParams}
+//       onChangeStatus={handleChangeStatus}
+//       addClassNames={{ dropzone: "add_product_icon" }}
+//       classNames={{ preview: "add_product_preview" }}
+//       onSubmit={handleSubmit}
+//       maxFiles={4}
+//       accept="image/png, image/jpeg"
+//       inputContent={(files, extra) => (extra.reject ? "Image files only" : "Drag Files")}
+//       styles={{
+//         dropzoneReject: { borderColor: "red", backgroundColor: "#DAA" },
+//         inputLabel: (files, extra) => (extra.reject ? { color: "red" } : {})
+//       }}
+//     />
+
+//     // <Dropzone
+//     //   getUploadParams={getUploadParams}
+//     //   onChangeStatus={handleChangeStatus}
+//     //   classNames={{ inputLabel: "add_product_input", dropzone: "add_product_icon", preview: "add_product_preview" }}
+//     //   LayoutComponent={Layout}
+//     //   onSubmit={handleSubmit}
+//     //   accept="image/png, image/jpeg"
+//     //   inputContent={(files, extra) => (extra.reject ? "Image files only" : "Drag Files")}
+//     //   styles={{
+//     //     dropzoneReject: { borderColor: "red", backgroundColor: "#DAA" },
+//     //     inputLabel: (files, extra) => (extra.reject ? { color: "red" } : {})
+//     //   }}
+//     // />
+//   );
+// };

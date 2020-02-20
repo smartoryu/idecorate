@@ -47,7 +47,7 @@ function Partner({ match }) {
             </Link>
           </div> */}
           <div className="ml-5">
-            <Route exact path={`${match.url}/`} component={Profile} />
+            <Route path={`${match.url}/`} component={Profile} exact />
             <Route path={`${match.url}/product`} component={Product} />
             <Route path={`${match.url}/add_product`} component={AddProduct} />
             <Route path={`${match.url}/review`} component={Review} />

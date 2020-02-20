@@ -12,15 +12,14 @@ const MenuDropdown = props => {
       onMouseEnter={() => setDropdownOpen(true)}
       onFocus={() => setDropdownOpen(true)}
       onMouseLeave={() => setDropdownOpen(false)}
-      isOpen={dropdownOpen}
       // toggle={toggle}
-    >
+      isOpen={dropdownOpen}>
       <DropdownToggle>
         <span>Categories</span>
       </DropdownToggle>
       {/* <button className="btn btn-secondary dropdown__title">
       </button> */}
-      <DropdownMenu right className="dropdown__menu">
+      <DropdownMenu right={false} className="dropdown__menu m-0">
         <div className="row">
           <div className="dropdown__menu__container"></div>
         </div>

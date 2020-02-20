@@ -3,35 +3,27 @@
 import React, { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { Switch, Route } from "react-router-dom";
-import Axios from "axios";
+import { toast } from "react-toastify";
 
 import "./styles/App.css";
-import { API_URL } from "./support/API_URL";
+import "react-toastify/dist/ReactToastify.css";
+import "react-dropzone-uploader/dist/styles.css";
 
-import Menu from "./components/Menu";
+import Menu from "./components/Menu/Menu";
 import Footer from "./components/Footer";
 import Homepage from "./pages/Homepage";
 import ModalAuth from "./components/ModalAuth";
-import Register from "./pages/Register";
 import User from "./pages/User";
 import Partner from "./pages/Partner";
+import { ReLoginAction } from "./redux/actions";
 
 function App() {
   const dispatch = useDispatch();
 
+  toast.configure();
+
   useEffect(() => {
-    const id = localStorage.getItem("userID");
-    const fetchuser = async () => {
-      try {
-        if (id) {
-          const { data } = await Axios.get(`${API_URL}/auth/login/${id}`);
-          dispatch({ type: "LOGIN_SUCCESS", payload: data.result });
-        }
-      } catch (err) {
-        console.log(err);
-      }
-    };
-    fetchuser();
+    dispatch(ReLoginAction(localStorage.getItem("userID")));
   }, [dispatch]);
 
   return (
@@ -40,10 +32,8 @@ function App() {
       <ModalAuth />
       <Switch>
         <Route exact path="/" component={Homepage} />
-        <Route path="/register" component={Register} />
         <Route path="/user" component={User} />
         <Route path="/partner" component={Partner} />
-        {/* <Route path="/login" component={ModalAuth} /> */}
       </Switch>
       <Footer />
     </div>

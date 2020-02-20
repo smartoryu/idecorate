@@ -381,10 +381,43 @@ section.partner-wrapper {
   z-index: -1 !important;
 }
 
-.add_product_icon {
-  width: 3rem;
-  height: 3rem;
+.add_product_thumbnail {
+  height: 6rem;
+  width: 6rem;
+  margin: 0 6px;
   border: dashed 1px grey;
+  border-radius: 10px;
+  background-color: transparent;
+  color: grey;
+}
+
+.add_product_thumbnail > .plus_icon {
+  margin: auto;
+  line-height: 0;
+}
+
+.add_product_thumbnail:hover {
+  color: black !important;
+  border: dashed 1px #212121;
+  -webkit-box-shadow: 0 0 5px grey;
+          box-shadow: 0 0 5px grey;
+}
+
+.add_product_card {
+  width: 25%;
+  margin: 0 2px;
+  font-size: 0.75rem;
+}
+
+.add_product_preview {
+  padding: 0;
+}
+
+.add_product_icon {
+  height: 75px;
+  width: 100%;
+  border: dashed 1px grey;
+  border-radius: 5px;
   background-color: transparent;
   color: grey;
 }

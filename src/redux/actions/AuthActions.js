@@ -12,9 +12,9 @@ export const LoginAction = (username, password) => {
         case "WRONG_FORM":
           return dispatch({ type: "WRONG_FORM", payload: user.data.message });
         case "WRONG_USER":
-          return dispatch({ type: "WRONG_USER", payload: user.data.message });
+          return dispatch({ type: "WRONG_USERLOG", payload: user.data.message });
         case "WRONG_PASS":
-          return dispatch({ type: "WRONG_PASS", payload: user.data.message });
+          return dispatch({ type: "WRONG_PASSLOG", payload: user.data.message });
         case "LOGOUT_SUCCESS":
           return dispatch({ type: "LOGOUT_SUCCESS" });
         case "LOGIN_SUCCESS":
@@ -24,6 +24,20 @@ export const LoginAction = (username, password) => {
           return dispatch({ type: "LOGIN_SUCCESS", payload: user.data.result });
         default:
           break;
+      }
+    } catch (err) {
+      console.log(err);
+      dispatch({ type: "SERVER_ERROR", payload: "Server error!" });
+    }
+  };
+};
+
+export const ReLoginAction = id => {
+  return async dispatch => {
+    try {
+      if (id) {
+        const { data } = await Axios.get(`${API_URL}/auth/login/${id}`);
+        dispatch({ type: "LOGIN_SUCCESS", payload: data.result });
       }
     } catch (err) {
       console.log(err);
@@ -52,7 +66,7 @@ export const CheckUsername = username => {
   };
 };
 
-export const RegisterAction = (name, username, email, password, password2) => {
+export const RegisterAction = ({ name, username, email, password, password2 }) => {
   return async dispatch => {
     try {
       let newUser = await Axios.post(`${API_URL}/auth/register`, {
