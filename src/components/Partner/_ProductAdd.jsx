@@ -46,43 +46,35 @@ export function AddProduct() {
 
   const handleAddImage = acceptedFiles => {
     acceptedFiles.forEach(File => {
-      setImage({ type: "add", value: { FileName: File.name, File } });
+      setImage({ type: "add", value: File });
     });
   };
 
-  const handleAddProduct = () => {
-    let formData = new FormData();
-    let Headers = {
+  const handleAddProduct = async () => {
+    let formdata = new FormData();
+    let options = {
       headers: { "Content-Type": "multipart/form-data" }
     };
-    let data = {
+
+    let newProduct = {
       name: product.name,
       price: product.price,
       type: product.type,
       about: product.about
     };
 
-    formData.append("image", addImage.File);
-    formData.append("data", JSON.stringify(data));
-    console.log(formData);
+    addImage.forEach(image => formdata.append("image", image));
+    formdata.append("data", JSON.stringify(newProduct));
 
-    if (data.name) {
-      try {
-        let { data } = Axios.post(`${API_URL}/product/add`, formData, Headers);
-
-        if (data.redirect) {
-          dispatch({ type: "ADD_PRODUCT_SUCCESS" });
-        }
-      } catch (err) {
-        console.log(err);
-        dispatch({ type: "SERVER_ERROR", payload: "Server error!" });
-      }
-    } else {
-      dispatch({ type: "EMPTY_PRODUCT_NAME", payload: "Enter product name" });
+    try {
+      let { data } = await Axios.post(`${API_URL}/product/add`, formdata, options);
+      if (data.redirect) dispatch({ type: "ADD_PRODUCT_SUCCESS" });
+    } catch (err) {
+      console.log(err);
     }
   };
 
-  console.log(addImage);
+  // console.log(addImage);
 
   if (isRedirect) {
     return <Redirect to="/partner/product" />;
@@ -98,7 +90,7 @@ export function AddProduct() {
           <Col sm={10}>
             <Input
               onChange={e => setProduct({ ...product, name: e.target.value })}
-              invalid={ErrorName}
+              invalid={Boolean(ErrorName)}
               type="text"
               name="product_name"
               id="product_name"
@@ -204,7 +196,7 @@ export function AddProduct() {
                       <img
                         key={"img" + id}
                         onClick={() => setImage({ type: "remove", value: id })}
-                        src={URL.createObjectURL(image.File)}
+                        src={URL.createObjectURL(image)}
                         className="plus_icon overflow-hidden"
                         alt=""
                       />

@@ -1,15 +1,45 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 // eslint-disable-next-line no-unused-vars
 import React, { useState /* useEffect */ } from "react";
-import { Navbar, Nav, NavbarBrand, NavItem, NavLink, DropdownItem } from "reactstrap";
+import {
+  Navbar,
+  Nav,
+  NavbarBrand,
+  NavItem,
+  NavLink,
+  Dropdown,
+  DropdownItem,
+  DropdownMenu,
+  DropdownToggle
+} from "reactstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 
 import { FaPhone, FaEnvelope, FaGithub } from "react-icons/fa";
 
-import MenuDropdown from "./MenuDropdown";
+import { DropdownHeader } from "./DropdownHeader";
 
-import { DropdownHeader } from "../DropdownHeader";
+const MenuDropdown = props => {
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+
+  return (
+    <Dropdown
+      className="navbar__dropdown my-auto"
+      onMouseEnter={() => setDropdownOpen(true)}
+      onFocus={() => setDropdownOpen(true)}
+      onMouseLeave={() => setDropdownOpen(false)}
+      isOpen={dropdownOpen}>
+      <DropdownToggle>
+        <span>Categories</span>
+      </DropdownToggle>
+      <DropdownMenu right={false} className="dropdown__menu m-0">
+        <div className="row">
+          <div className="dropdown__menu__container"></div>
+        </div>
+      </DropdownMenu>
+    </Dropdown>
+  );
+};
 
 const Menu = () => {
   const dispatch = useDispatch();

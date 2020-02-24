@@ -1,4 +1,5 @@
-import React, { Fragment } from "react";
+import React, { Fragment, useEffect } from "react";
+import { useDispatch } from "react-redux";
 import { Link, Route } from "react-router-dom";
 
 import { Product } from "../components/Partner/_Product";
@@ -7,6 +8,12 @@ import { Profile } from "../components/Partner/_Profile";
 import { Review } from "../components/Partner/_Review";
 
 function Partner({ match }) {
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch({ type: "RESET_PRODUCT" });
+  });
+
   const PartnerSideMenu = () => {
     return (
       <Fragment>
@@ -22,7 +29,7 @@ function Partner({ match }) {
           </ul>
         </div>
         <div className="card mt-3">
-          <div className="card-header">Partner</div>
+          <div className="card-header">Store</div>
           <ul className="list-group list-group-flush">
             <Link to={`${match.url}`} className="list-group-item list-group-item-action border-0">
               Profile

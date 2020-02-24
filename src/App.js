@@ -7,9 +7,8 @@ import { toast } from "react-toastify";
 
 import "./styles/App.css";
 import "react-toastify/dist/ReactToastify.css";
-import "react-dropzone-uploader/dist/styles.css";
 
-import Menu from "./components/Menu/Menu";
+import Menu from "./components/Menu";
 import Footer from "./components/Footer";
 import Homepage from "./pages/Homepage";
 import ModalAuth from "./components/ModalAuth";
