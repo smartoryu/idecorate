@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { useEffect } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import {
   Card,
   CardBody,
@@ -15,11 +15,33 @@ import {
   FormGroup
 } from "reactstrap";
 import { FaCamera } from "react-icons/fa";
+import { toast } from "react-toastify";
 import { useSelector, useDispatch } from "react-redux";
 import Axios from "axios";
 
 import { API_URL } from "../../support/API_URL";
 import { STORE_GET, ON_EDIT_STORE, EDIT_STORE_VALUE, RESET_STORE_VALUE } from "../../support/types";
+
+/**
+ * ========================= RENDER PROFILE =========================
+ */
+const RowData = ({ edit, name, content, func, title }) => {
+  return (
+    <tr>
+      <th style={{ minWidth: "5%", padding: "15px 0" }} scope="row">
+        {title}
+      </th>
+      <td style={{ minWidth: "5%", padding: "15px 0" }}>:</td>
+      {edit ? (
+        <td style={{ width: "80%", textAlign: "left", padding: "12px 0" }}>
+          <input type="text" name={name} onChange={func} defaultValue={content} />
+        </td>
+      ) : (
+        <td style={{ width: "80%", textAlign: "left", padding: "15px 0" }}>{content}</td>
+      )}
+    </tr>
+  );
+};
 
 export const Profile = () => {
   /**
@@ -31,34 +53,34 @@ export const Profile = () => {
       onEdit: partner.onEdit,
       userId: partner.id,
 
+      storeid: partner.storeid,
       storename: partner.storename,
+      storelink: partner.storelink,
       phone: partner.phone,
       email: partner.email,
-      // photo: partner.photo,
-      photo: "http://localhost:2400/products/images/PRODUCT1582534869639.png",
+      photo: partner.photo,
       address: partner.address,
       city: partner.city,
-      province: partner.province,
-
-      newStorename: partner.newStorename,
-      newPhone: partner.newPhone,
-      newEmail: partner.newEmail,
-      newPhoto: partner.newPhoto,
-      newAddress: partner.newAddress,
-      newCity: partner.newCity,
-      newProvince: partner.newProvince
+      province: partner.province
     };
   });
 
   /**
-   * =============================== MISC ===============================
-   * desctructuring from State (redux's reducer)
-   * and add new variable for new (soon to be) uploaded photo profile
+   * ========================== EDIT DATA STATE =========================
+   * Add new state for edit data
+   * and create new variable for new (soon to be) uploaded photo profile
    */
-  const { userId, storename, phone, email, photo, address, city, province, onEdit } = State;
-  const { newStorename, newPhone, newEmail, newPhoto, newAddress, newCity, newProvince } = State;
+  const [edit, setEdit] = useState({
+    storename: "",
+    phone: "",
+    email: "",
+    photo: undefined,
+    address: "",
+    city: "",
+    province: ""
+  });
   let newPhotoURL = "";
-  if (newPhoto) newPhotoURL = URL.createObjectURL(newPhoto);
+  if (edit.photo) newPhotoURL = URL.createObjectURL(edit.photo);
 
   /**
    * ========================= USE EFFECT =========================
@@ -66,72 +88,106 @@ export const Profile = () => {
   useEffect(() => {
     const fetchStore = async () => {
       try {
-        let { data } = await Axios.get(`${API_URL}/partner?userid=${userId}`);
+        let { data } = await Axios.get(`${API_URL}/partner?userid=${State.userId}`);
         dispatch({ type: STORE_GET, payload: data.result });
       } catch (err) {
         console.log(err);
       }
     };
     fetchStore();
-  }, [userId, dispatch]);
+  }, [State.userId, dispatch]);
+
+  console.log(State);
+  /**
+   * =============================== MISC ===============================
+   * desctructuring from State (redux's reducer)
+   */
+  const { userId, storeid, storename, storelink, phone, email, photo, address, city, province, onEdit } = State;
 
   /**
-   * ==================== HANDLE INPUT ONCHANGE ===================
+   * ===================== HANDLE INPUT VALUE EDIT ====================
    * capture change of value on each input for edit data and save it to reducer state
+   * and send it to backend with axios
    */
-  const handleEditValues = ({ target }) =>
-    dispatch({ type: EDIT_STORE_VALUE, payload: { [target.name]: target.files[0] } });
+  const handleEditInput = ({ target }) => setEdit({ ...edit, [target.name]: target.value });
+  const handleEditPhoto = ({ target }) => setEdit({ ...edit, photo: target.files[0] });
 
-  /**
-   * ========================= RENDER PROFILE =========================
-   */
-  const RowData = ({ content, editName, title }) => {
-    if (onEdit) {
-      return (
-        <tr>
-          <th style={{ minWidth: "5%", padding: "15px 0" }} scope="row">
-            {title}
-          </th>
-          <td style={{ minWidth: "5%", padding: "15px 0" }}>:</td>
-          <td style={{ width: "80%", textAlign: "left", padding: "12px 0" }}>
-            <input
-              style={{ lineHeight: "2px" }}
-              type="text"
-              name={editName}
-              defaultValue={content}
-              onChange={({ target }) => handleEditValues({ target })}
-            />
-          </td>
-        </tr>
-      );
-    } else {
-      return (
-        <tr>
-          <th style={{ minWidth: "5%", padding: "15px 0" }} scope="row">
-            {title}
-          </th>
-          <td style={{ minWidth: "5%", padding: "15px 0" }}>:</td>
-          <td style={{ width: "80%", textAlign: "left", padding: "15px 0" }}>{content}</td>
-        </tr>
-      );
+  const onEditClick = () => {
+    setEdit({ ...edit, storename, storelink, phone, email, address, city, province });
+    dispatch({ type: ON_EDIT_STORE });
+  };
+
+  const onCancelClick = () => {
+    toast.error("Edit canceled!", {
+      position: "bottom-left",
+      autoClose: 800,
+      hideProgressBar: true,
+      closeOnClick: false,
+      closeButton: false,
+      draggable: false,
+      onOpen: () => {
+        dispatch({ type: RESET_STORE_VALUE });
+      }
+    });
+  };
+
+  const onSaveClick = async () => {
+    let formData = new FormData();
+    let options = { headers: { "Content-Type": "multipart/form-data" } };
+    let newData = {
+      storename: edit.storename,
+      phone: edit.phone,
+      email: edit.email,
+      address: edit.address,
+      city: edit.city,
+      province: edit.province
+    };
+
+    formData.append("photo", edit.photo);
+    formData.append("data", JSON.stringify(newData));
+
+    try {
+      let { data } = await Axios.put(`${API_URL}/partner/edit/${storeid}`, formData, options);
+
+      toast.info("Profile updated!", {
+        position: "bottom-left",
+        autoClose: 800,
+        hideProgressBar: true,
+        closeOnClick: false,
+        closeButton: false,
+        draggable: false,
+        onOpen: () => {
+          dispatch({ type: ON_EDIT_STORE });
+          dispatch({ type: EDIT_STORE_VALUE, payload: data.result[0] });
+        }
+      });
+    } catch (err) {
+      console.log(err);
     }
   };
 
-  // console.log(newPhoto);
   /**
-   *
    * ============================== RETURN ==============================
-   *
    */
   return (
     <div id="page-content-wrapper">
       <div className="container-fluid">
         <Card>
           <FormGroup row>
+            {/**
+             * ================================================== profile photo
+             */}
             <Col sm={4}>
               <CardBody style={{ paddingBottom: 0 }}>
                 <Card className={onEdit ? "store-profile-edit" : "store-profile"}>
-                  <CardImg src={newPhotoURL || photo} alt="profile photo" />
+                  <CardImg
+                    src={
+                      newPhotoURL ||
+                      `http://localhost:2400${photo}` ||
+                      "http://localhost:2400/products/images/PRODUCT1582534869639.png"
+                    }
+                    alt="profile photo"
+                  />
                   <label htmlFor="store-photo">
                     <div>
                       <span>
@@ -143,25 +199,29 @@ export const Profile = () => {
                   <input
                     id="store-photo"
                     type="file"
-                    name="newPhoto"
+                    name="photo"
                     accept="image/png, image/jpeg"
-                    onChange={({ target }) => handleEditValues({ target })}
+                    onChange={({ target }) => handleEditPhoto({ target })}
                   />
                 </Card>
                 {onEdit && !newPhotoURL && <small className="text-secondary">*hover to edit photo</small>}
-                {newPhotoURL && <small className="text-success">*new photo ready to save</small>}
+                {onEdit && newPhotoURL && <small className="text-success">*new photo ready to save</small>}
               </CardBody>
             </Col>
+            {/**
+             * ================================================== render table
+             */}
             <Col sm={8}>
               <CardBody style={{ paddingBottom: 0 }}>
                 <Table borderless>
                   <tbody>
-                    <RowData editName="newStorename" title="Name" content={storename} />
-                    <RowData editName="newEmail" title="Email" content={email} />
-                    <RowData editName="newPhone" title="Phone" content={phone} />
-                    <RowData editName="newAddress" title="Address" content={address} />
-                    <RowData editName="newCity" title="City" content={city} />
-                    <RowData editName="newProvince" title="Province" content={province} />
+                    <RowData edit={onEdit} func={handleEditInput} name="storename" title="Name" content={storename} />
+                    <RowData edit={onEdit} func={handleEditInput} name="storelink" title="Link" content={storelink} />
+                    <RowData edit={onEdit} func={handleEditInput} name="email" title="Email" content={email} />
+                    <RowData edit={onEdit} func={handleEditInput} name="phone" title="Phone" content={phone} />
+                    <RowData edit={onEdit} func={handleEditInput} name="address" title="Address" content={address} />
+                    <RowData edit={onEdit} func={handleEditInput} name="city" title="City" content={city} />
+                    <RowData edit={onEdit} func={handleEditInput} name="province" title="Province" content={province} />
                   </tbody>
                 </Table>
               </CardBody>
@@ -170,22 +230,15 @@ export const Profile = () => {
           <CardFooter className="d-flex">
             {onEdit ? (
               <>
-                <button
-                  onClick={() => dispatch({ type: RESET_STORE_VALUE })}
-                  className="btn btn-sm btn-outline-primary ml-auto">
+                <button onClick={onSaveClick} className="btn btn-sm btn-outline-primary ml-auto">
                   Save
                 </button>
-                <button
-                  onClick={() => dispatch({ type: ON_EDIT_STORE })}
-                  className="btn btn-sm btn-outline-danger ml-3">
+                <button onClick={onCancelClick} className="btn btn-sm btn-outline-danger ml-3">
                   Cancel
                 </button>
               </>
             ) : (
-              <button
-                onClick={() => dispatch({ type: ON_EDIT_STORE })}
-                className="btn btn-sm btn-outline-dark ml-auto"
-                style={{ width: "100px" }}>
+              <button onClick={onEditClick} className="btn btn-sm btn-outline-dark ml-auto" style={{ width: "100px" }}>
                 Edit
               </button>
             )}

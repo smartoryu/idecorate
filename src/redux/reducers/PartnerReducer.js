@@ -18,20 +18,13 @@ const INITIAL_STATE = {
 
   storeid: 0,
   storename: "",
+  storelink: "",
   phone: "",
   email: "",
   photo: "",
   address: "",
   city: "",
   province: "",
-
-  newStorename: "",
-  newPhone: "",
-  newEmail: "",
-  newPhoto: "",
-  newAddress: "",
-  newCity: "",
-  newProvince: "",
 
   login: false,
   logout: false,
@@ -53,16 +46,7 @@ export default (state = INITIAL_STATE, { type, payload }) => {
     case EDIT_STORE_VALUE:
       return { ...state, ...payload };
     case RESET_STORE_VALUE:
-      return {
-        ...state,
-        newStorename: "",
-        newPhone: "",
-        newEmail: "",
-        newPhoto: "",
-        newAddress: "",
-        newCity: "",
-        newProvince: ""
-      };
+      return { ...state, onEdit: !state.onEdit };
 
     // ======================================== LOGOUT
     case LOGOUT:
