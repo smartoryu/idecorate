@@ -26,6 +26,7 @@ import { STORE_GET, ON_EDIT_STORE, EDIT_STORE_VALUE, RESET_STORE_VALUE } from ".
  * ========================= RENDER PROFILE =========================
  */
 const RowData = ({ edit, name, content, func, title }) => {
+  const host = "http://localhost:2400/";
   return (
     <tr>
       <th style={{ minWidth: "5%", padding: "15px 0" }} scope="row">
@@ -33,9 +34,18 @@ const RowData = ({ edit, name, content, func, title }) => {
       </th>
       <td style={{ minWidth: "5%", padding: "15px 0" }}>:</td>
       {edit ? (
-        <td style={{ width: "80%", textAlign: "left", padding: "12px 0" }}>
-          <input type="text" name={name} onChange={func} defaultValue={content} />
-        </td>
+        name === "storelink" ? (
+          <td style={{ width: "80%", textAlign: "left", padding: "12px 0" }}>
+            {host}&nbsp;
+            <input type="text" name={name} onChange={func} defaultValue={content} />
+          </td>
+        ) : (
+          <td style={{ width: "80%", textAlign: "left", padding: "12px 0" }}>
+            <input type="text" name={name} onChange={func} defaultValue={content} />
+          </td>
+        )
+      ) : name === "storelink" ? (
+        <td style={{ width: "80%", textAlign: "left", padding: "15px 0" }}>{host + content}</td>
       ) : (
         <td style={{ width: "80%", textAlign: "left", padding: "15px 0" }}>{content}</td>
       )}
