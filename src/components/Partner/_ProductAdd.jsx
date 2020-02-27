@@ -1,18 +1,7 @@
 /* eslint-disable no-unused-vars */
 import React, { Fragment, useState, useReducer } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import {
-  Col,
-  CustomInput,
-  Form,
-  FormFeedback,
-  FormGroup,
-  Label,
-  Input,
-  InputGroup,
-  InputGroupAddon,
-  Tooltip
-} from "reactstrap";
+import { Col, CustomInput, Form, FormFeedback, FormGroup, Label, Input, InputGroup, InputGroupAddon, Tooltip } from "reactstrap";
 import { MdAdd } from "react-icons/md";
 import { Redirect } from "react-router-dom";
 import Axios from "axios";
@@ -23,8 +12,13 @@ export function AddProduct() {
    * ============================================= REDUX REDUCER =====
    */
   const dispatch = useDispatch();
-  const isRedirect = useSelector(state => state.product.redirect);
-  const ErrorName = useSelector(state => state.product.errorName);
+  const State = useSelector(({ product }) => {
+    return {
+      isRedirect: product.redirect,
+      errorName: product.errorName
+    };
+  });
+  const { isRedirect, errorName } = State;
 
   /**
    * ===================================================== STATE =====
@@ -74,8 +68,6 @@ export function AddProduct() {
     }
   };
 
-  // console.log(addImage);
-
   if (isRedirect) {
     return <Redirect to="/partner/product" />;
   }
@@ -90,13 +82,13 @@ export function AddProduct() {
           <Col sm={10}>
             <Input
               onChange={e => setProduct({ ...product, name: e.target.value })}
-              invalid={Boolean(ErrorName)}
+              invalid={Boolean(errorName)}
               type="text"
               name="product_name"
               id="product_name"
               placeholder="input product name"
             />
-            {ErrorName ? <FormFeedback className="float-left">{ErrorName}</FormFeedback> : null}
+            {errorName ? <FormFeedback className="float-left">{errorName}</FormFeedback> : null}
           </Col>
         </FormGroup>
 
