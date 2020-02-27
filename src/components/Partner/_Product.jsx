@@ -1,62 +1,254 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { useState, useEffect } from "react";
+import React, { Fragment, useState, useEffect } from "react";
 import { Link, Route } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+import numeral from "numeral";
 import Axios from "axios";
-import { API_URL } from "../../support/API_URL";
 
-let img =
-  "data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%22239%22%20height%3D%22180%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20239%20180%22%20preserveAspectRatio%3D%22none%22%3E%3Cdefs%3E%3Cstyle%20type%3D%22text%2Fcss%22%3E%23holder_1700a058f9b%20text%20%7B%20fill%3Argba(255%2C255%2C255%2C.75)%3Bfont-weight%3Anormal%3Bfont-family%3AHelvetica%2C%20monospace%3Bfont-size%3A12pt%20%7D%20%3C%2Fstyle%3E%3C%2Fdefs%3E%3Cg%20id%3D%22holder_1700a058f9b%22%3E%3Crect%20width%3D%22239%22%20height%3D%22180%22%20fill%3D%22%23777%22%3E%3C%2Frect%3E%3Cg%3E%3Ctext%20x%3D%2288.75%22%20y%3D%2295.1%22%3E239x180%3C%2Ftext%3E%3C%2Fg%3E%3C%2Fg%3E%3C%2Fsvg%3E";
+import { API_URL } from "../../support/API_URL";
+import { STORE_GET, MODAL_PRODUCT, INSERT_PRODUCT } from "../../support/types";
+
+import { Modal, ModalHeader, ModalBody, Label, Tooltip } from "reactstrap";
+import { FaRegImages, FaRegEdit, FaRegTrashAlt } from "react-icons/fa";
 
 export const Product = () => {
-  // useEffect(() => {
-  //   const fetchProduct = async () => {
-  //     try {
-  //       const { data } = await Axios.get(`${API_URL}/product`);
-  //     } catch (err) {
-  //       console.log(err);
-  //     }
-  //   };
-  //   fetchProduct();
-  // }, []);
+  /**
+   * ========================= REDUX REDUCER =========================
+   * Get the value from redux's reducer and desctructured it
+   */
+  const dispatch = useDispatch();
+  const State = useSelector(({ partner, product }) => {
+    return {
+      UserId: partner.id,
+      StoreId: partner.storeid,
+
+      ProductId: product.productid,
+      ModalImage: product.modal
+    };
+  });
+  const { ModalImage, StoreId, ProductId } = State;
+
+  /**
+   * ========================= USE STATE =========================
+   */
+  const Path = "http://localhost:2400";
+  const [dataProduct, setDataProduct] = useState([]);
+  const [productImage, setProductImage] = useState([]);
+  const [tooltipOpen, setTooltipOpen] = useState({});
+
+  const toggleTooltip = (id, x) => setTooltipOpen({ ...tooltipOpen, id, x });
+
+  /**
+   * ===================== GET ALL DATA PRODUCTS ===================
+   * This useEffect trigger Axios to get all products from the same store
+   * and set the result to dataProduct's state
+   */
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const { data } = await Axios.get(`${API_URL}/product/get_products/${StoreId}`);
+        setDataProduct(data.result);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+    fetchProducts();
+  }, [StoreId]);
+
+  /**
+   * ================= GET SINGLE PRODUCT'S IMAGES ==================
+   * Function handleImage set productid sent from onClick to productid on redux's reducer
+   *
+   * Then, useEffect trigger Axios to get specific product based on productid
+   * and set the result to productImage's state
+   */
+  const handleImage = productid => dispatch({ type: MODAL_PRODUCT, payload: productid });
+  useEffect(() => {
+    const fetchProduct = async () => {
+      if (ProductId > 0) {
+        try {
+          const { data } = await Axios.get(`${API_URL}/product/get_images/${ProductId}`);
+          setProductImage(data.result);
+        } catch (err) {
+          console.log(err);
+        }
+      }
+    };
+    fetchProduct();
+  }, [ProductId]);
 
   return (
-    <div id="page-content-wrapper">
-      <div className="d-flex">
-        <Link to="/partner/add_product" className="btn btn-outline-secondary btn-sm mx-auto mb-3">
-          Add Product
-        </Link>
+    <>
+      {/**
+       * =========================== MODAL COMPONENTS ============================
+       * well, this is for rendering product's image(s) through modal
+       */}
+      <Modal autoFocus={false} size={productImage.length ? "lg" : ""} fade={false} centered isOpen={ModalImage}>
+        <ModalHeader
+          close={
+            <button className="close" onClick={() => dispatch({ type: MODAL_PRODUCT })}>
+              &times;
+            </button>
+          }>
+          {productImage.length ? "Product Images" : ""}
+        </ModalHeader>
+        <ModalBody className="d-flex">
+          <div className="mx-auto">
+            {productImage.length ? (
+              productImage.map((val, id) => {
+                return (
+                  <Fragment key={`product-img${id}`}>
+                    <Label className="image_product_preview">
+                      <div className="image_thumbnail" key={"divimg" + id}>
+                        <img src={`${Path + val.image}`} alt="img" />
+                      </div>
+                      <div className="image-button">
+                        <span
+                          className="edit"
+                          onMouseEnter={() => toggleTooltip(id, "editimg")}
+                          onMouseLeave={() => toggleTooltip(-1)}
+                          id={"editimg-" + id}>
+                          <FaRegEdit />
+                        </span>
+                        <span
+                          className="delete"
+                          onMouseEnter={() => toggleTooltip(id, "delimg")}
+                          onMouseLeave={() => toggleTooltip(-1)}
+                          id={"delimg-" + id}>
+                          <FaRegTrashAlt />
+                        </span>
+                      </div>
+                    </Label>
+
+                    {productImage.length && id >= 0 ? (
+                      <Fragment key={`tooltip-img${id}`}>
+                        <Tooltip
+                          placement="bottom"
+                          fade={false}
+                          isOpen={id === tooltipOpen.id && tooltipOpen.x === "editimg"}
+                          target={"editimg-" + id}>
+                          click to edit!
+                        </Tooltip>
+                        <Tooltip
+                          key={"delimg-" + id}
+                          placement="bottom"
+                          fade={false}
+                          isOpen={id === tooltipOpen.id && tooltipOpen.x === "delimg"}
+                          target={"delimg-" + id}>
+                          click to remove!
+                        </Tooltip>
+                      </Fragment>
+                    ) : null}
+                  </Fragment>
+                );
+              })
+            ) : (
+              <p>No Product Images available</p>
+            )}
+          </div>
+        </ModalBody>
+      </Modal>
+
+      {/**
+       * ===================== === R = E = N = D = E = R === =====================
+       */}
+      <div id="page-content-wrapper">
+        <div className="d-flex">
+          <Link to="/partner/add_product" className="btn btn-outline-secondary btn-sm mx-auto mb-3">
+            Add Product
+          </Link>
+        </div>
+        <div className="container-fluid w-100 pr-0">
+          <table className="table table-hover">
+            <thead>
+              <tr className="text-center">
+                <th scope="col">#</th>
+                <th scope="col">Image</th>
+                <th scope="col">Name</th>
+                <th scope="col">Stock</th>
+                <th scope="col">Price</th>
+                <th scope="col">About</th>
+                <th scope="col">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {dataProduct.length ? (
+                dataProduct.map((val, id) => {
+                  return (
+                    <Fragment key={`product${val.productid}`}>
+                      <tr className="text-center">
+                        <td>{val.productid + 1}</td>
+                        <td>
+                          <button
+                            onClick={() => handleImage(val.productid)}
+                            onMouseEnter={() => toggleTooltip(id, "imgprod")}
+                            onMouseLeave={() => toggleTooltip(-1)}
+                            className="btn btn-sm btn-secondary"
+                            id={`imgprod-${id}`}>
+                            <FaRegImages />
+                          </button>
+                        </td>
+
+                        <td>{val.name}</td>
+                        <td>stok</td>
+                        <td>Rp {numeral(val.price).format("0,0.00")}</td>
+                        <td style={{ maxWidth: "200px" }}>{val.about}</td>
+                        <td>
+                          <button
+                            onMouseEnter={() => toggleTooltip(id, "editprod")}
+                            onMouseLeave={() => toggleTooltip(-1)}
+                            className="btn btn-sm btn-warning mr-1"
+                            id={`editprod-${id}`}>
+                            <FaRegEdit />
+                          </button>
+                          <button
+                            onMouseEnter={() => toggleTooltip(id, "delprod")}
+                            onMouseLeave={() => toggleTooltip(-1)}
+                            className="btn btn-sm btn-primary ml-1"
+                            id={`delprod-${id}`}>
+                            <FaRegTrashAlt />
+                          </button>
+                        </td>
+                      </tr>
+
+                      {id >= 0 ? (
+                        <Fragment key={`tootltip-product${id}`}>
+                          <Tooltip
+                            placement="bottom"
+                            fade={false}
+                            isOpen={id === tooltipOpen.id && tooltipOpen.x === "imgprod"}
+                            target={`imgprod-${id}`}>
+                            click to open images!
+                          </Tooltip>
+                          <Tooltip
+                            placement="bottom"
+                            fade={false}
+                            isOpen={id === tooltipOpen.id && tooltipOpen.x === "editprod"}
+                            target={`editprod-${id}`}>
+                            click to edit!
+                          </Tooltip>
+                          <Tooltip
+                            placement="bottom"
+                            fade={false}
+                            isOpen={id === tooltipOpen.id && tooltipOpen.x === "delprod"}
+                            target={`delprod-${id}`}>
+                            click to remove!
+                          </Tooltip>
+                        </Fragment>
+                      ) : null}
+                    </Fragment>
+                  );
+                })
+              ) : (
+                <tr className="text-center">
+                  <td colSpan="6">Product not available</td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
       </div>
-      <div className="container-fluid">
-        <table className="table table-hover">
-          <thead>
-            <tr className="text-center">
-              <th scope="col">#</th>
-              <th scope="col">Image</th>
-              <th scope="col">Name</th>
-              <th scope="col">Price</th>
-              <th scope="col">About</th>
-              <th scope="col">Details</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr className="text-center">
-              <td>0</td>
-              <td>
-                <button className="btn btn-sm btn-outline-dark">click to open!</button>
-              </td>
-              <td>Dummy Data</td>
-              <td>Rp 297.000</td>
-              <td style={{ maxWidth: "200px" }}>
-                Lorem ipsum dolor sit amet consectetur, adipisicing elit. Quisquam iste laboriosam aut in ab. Vel?
-              </td>
-              <td>
-                <button className="btn btn-sm btn-outline-dark">click to open!</button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
+    </>
   );
 };
