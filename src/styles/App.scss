@@ -34,7 +34,7 @@ div.homepage {
 section.partner-wrapper {
   // min-height: calc(100vh - 110.891px);
   min-height: 100vh;
-  width: 90vw;
+  width: 100%;
   margin: 5em 5em;
   display: block;
   align-items: baseline;
@@ -51,51 +51,6 @@ section.partner-wrapper {
     border: none;
     padding: 0 5px;
   }
-}
-
-.add_product_input {
-  width: 0.1px !important;
-  height: 0.1px !important;
-  opacity: 0 !important;
-  overflow: hidden !important;
-  position: absolute !important;
-  z-index: -1 !important;
-}
-
-.add_product_thumbnail {
-  height: 6rem;
-  width: 6rem;
-  margin: 0 6px;
-  border: dashed 1px grey;
-  border-radius: 10px;
-  background-color: transparent;
-  color: grey;
-
-  > .plus_icon {
-    margin: auto;
-    line-height: 0;
-  }
-
-  &:hover {
-    color: black !important;
-    border: dashed 1px #212121;
-    box-shadow: 0 0 5px grey;
-  }
-}
-
-.add_product_card {
-  width: 25%;
-  margin: 0 2px;
-  font-size: 0.75rem;
-}
-
-.remove_icon {
-  width: 75px;
-  display: none;
-  text-align: center;
-  margin: 0;
-  font-size: 0.75rem;
-  z-index: -4;
 }
 
 .add_product_preview {
@@ -154,6 +109,90 @@ section.partner-wrapper {
     box-shadow: 0.5px 0.5px 3px #919090;
     cursor: pointer;
   }
+}
+
+.add_product_input {
+  width: 0.1px !important;
+  height: 0.1px !important;
+  opacity: 0 !important;
+  overflow: hidden !important;
+  position: absolute !important;
+  z-index: -1 !important;
+}
+
+.add_product_thumbnail {
+  height: 6rem;
+  width: 6rem;
+  margin: 0 6px;
+  border: dashed 1px grey;
+  border-radius: 10px;
+  background-color: transparent;
+  color: grey;
+
+  > .plus_icon {
+    margin: auto;
+    line-height: 0;
+  }
+
+  &:hover {
+    color: black !important;
+    border: dashed 1px #212121;
+    box-shadow: 0 0 5px grey;
+  }
+}
+
+.add_product_card {
+  width: 25%;
+  margin: 0 2px;
+  font-size: 0.75rem;
+}
+
+.image_product_preview {
+  // display: inline-block;
+  margin: 0 15px;
+
+  div.image_thumbnail {
+    display: flex;
+    height: 150px;
+    width: 150px;
+    padding: 0;
+    margin: 0;
+    justify-items: center;
+    // border: dashed 1px grey;
+    border-radius: 5px;
+    background-color: transparent;
+    color: grey;
+
+    > img {
+      width: 100%;
+    }
+  }
+
+  div.image-button {
+    display: flex;
+    margin-top: 5px;
+    height: fit-content;
+    font-size: 20px;
+    color: grey;
+
+    > span:nth-child(1) {
+      margin-left: auto;
+      margin-right: 15px;
+    }
+    > span:nth-child(2) {
+      margin-left: 15px;
+      margin-right: auto;
+    }
+  }
+}
+
+.remove_icon {
+  width: 75px;
+  display: none;
+  text-align: center;
+  margin: 0;
+  font-size: 0.75rem;
+  z-index: -4;
 }
 
 .store-profile {
