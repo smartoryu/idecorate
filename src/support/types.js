@@ -5,6 +5,7 @@ export const STORE_GET = "STORE_GET";
 export const EDIT_STORE_VALUE = "EDIT_STORE_VALUE";
 export const RESET_STORE_VALUE = "RESET_STORE_VALUE";
 export const ON_EDIT_STORE = "ON_EDIT_STORE";
+export const SUSPENDED = "SUSPENDED";
 export const LOGOUT = "LOGOUT";
 export const LOGOUT_SUCCESS = "LOGOUT_SUCCESS";
 
@@ -24,6 +25,8 @@ export const WRONG_FORM = "WRONG_FORM";
 //
 // ============================== PRODUCT
 export const ADD_PRODUCT_SUCCESS = "ADD_PRODUCT_SUCCESS";
+export const INSERT_PRODUCT = "INSERT_PRODUCT";
 export const EMPTY_PRODUCT_NAME = "EMPTY_PRODUCT_NAME";
 export const EMPTY_PRODUCT_PRICE = "EMPTY_PRODUCT_PRICE";
 export const RESET_PRODUCT = "RESET_PRODUCT";
+export const MODAL_PRODUCT = "MODAL_PRODUCT";
