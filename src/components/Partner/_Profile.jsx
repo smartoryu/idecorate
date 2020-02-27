@@ -20,7 +20,7 @@ import { useSelector, useDispatch } from "react-redux";
 import Axios from "axios";
 
 import { API_URL } from "../../support/API_URL";
-import { STORE_GET, ON_EDIT_STORE, EDIT_STORE_VALUE, RESET_STORE_VALUE } from "../../support/types";
+import { ON_EDIT_STORE, EDIT_STORE_VALUE, RESET_STORE_VALUE } from "../../support/types";
 
 /**
  * ========================= RENDER PROFILE =========================
@@ -28,11 +28,11 @@ import { STORE_GET, ON_EDIT_STORE, EDIT_STORE_VALUE, RESET_STORE_VALUE } from ".
 const RowData = ({ edit, name, content, func, title }) => {
   const host = "http://localhost:2400/";
   return (
-    <tr>
+    <tr key={title}>
       <th style={{ minWidth: "5%", padding: "15px 0" }} scope="row">
         {title}
       </th>
-      <td style={{ minWidth: "5%", padding: "15px 0" }}>:</td>
+      <td style={{ width: "5%", padding: "15px 0" }}>:</td>
       {edit ? (
         name === "storelink" ? (
           <td style={{ width: "80%", textAlign: "left", padding: "12px 0" }}>
@@ -53,9 +53,13 @@ const RowData = ({ edit, name, content, func, title }) => {
   );
 };
 
+/**
+ * ============================================================================================
+ */
 export const Profile = () => {
   /**
    * ========================= REDUX REDUCER =========================
+   * desctructuring from State (redux's reducer)
    */
   const dispatch = useDispatch();
   const State = useSelector(({ partner }) => {
@@ -74,45 +78,16 @@ export const Profile = () => {
       province: partner.province
     };
   });
+  const { userId, storeid, storename, storelink, phone, email, photo, address, city, province, onEdit } = State;
 
   /**
    * ========================== EDIT DATA STATE =========================
    * Add new state for edit data
    * and create new variable for new (soon to be) uploaded photo profile
    */
-  const [edit, setEdit] = useState({
-    storename: "",
-    phone: "",
-    email: "",
-    photo: undefined,
-    address: "",
-    city: "",
-    province: ""
-  });
+  const [edit, setEdit] = useState({});
   let newPhotoURL = "";
   if (edit.photo) newPhotoURL = URL.createObjectURL(edit.photo);
-
-  /**
-   * ========================= USE EFFECT =========================
-   */
-  useEffect(() => {
-    const fetchStore = async () => {
-      try {
-        let { data } = await Axios.get(`${API_URL}/partner?userid=${State.userId}`);
-        dispatch({ type: STORE_GET, payload: data.result });
-      } catch (err) {
-        console.log(err);
-      }
-    };
-    fetchStore();
-  }, [State.userId, dispatch]);
-
-  console.log(State);
-  /**
-   * =============================== MISC ===============================
-   * desctructuring from State (redux's reducer)
-   */
-  const { userId, storeid, storename, storelink, phone, email, photo, address, city, province, onEdit } = State;
 
   /**
    * ===================== HANDLE INPUT VALUE EDIT ====================
@@ -190,14 +165,7 @@ export const Profile = () => {
             <Col sm={4}>
               <CardBody style={{ paddingBottom: 0 }}>
                 <Card className={onEdit ? "store-profile-edit" : "store-profile"}>
-                  <CardImg
-                    src={
-                      newPhotoURL ||
-                      `http://localhost:2400${photo}` ||
-                      "http://localhost:2400/products/images/PRODUCT1582534869639.png"
-                    }
-                    alt="profile photo"
-                  />
+                  <CardImg src={newPhotoURL || `http://localhost:2400${photo}`} alt="profile photo" />
                   <label htmlFor="store-photo">
                     <div>
                       <span>
