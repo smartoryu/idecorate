@@ -24,6 +24,7 @@ export const WRONG_FORM = "WRONG_FORM";
 
 //
 // ============================== PRODUCT
+export const GET_PRODUCT = "GET_PRODUCT";
 export const ADD_PRODUCT_SUCCESS = "ADD_PRODUCT_SUCCESS";
 export const INSERT_PRODUCT = "INSERT_PRODUCT";
 export const EMPTY_PRODUCT_NAME = "EMPTY_PRODUCT_NAME";

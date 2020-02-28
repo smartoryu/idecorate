@@ -1,24 +1,32 @@
 /* eslint-disable no-unused-vars */
-import React, { Fragment, useState, useReducer } from "react";
+import React, { Fragment, useState, useReducer, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Col, CustomInput, Form, FormFeedback, FormGroup, Label, Input, InputGroup, InputGroupAddon, Tooltip } from "reactstrap";
 import { MdAdd } from "react-icons/md";
 import { Redirect } from "react-router-dom";
 import Axios from "axios";
 import { API_URL } from "../../support/API_URL";
+import { STORE_GET, ADD_PRODUCT_SUCCESS, RESET_PRODUCT } from "../../support/types";
 
 export function AddProduct() {
   /**
    * ============================================= REDUX REDUCER =====
    */
   const dispatch = useDispatch();
-  const State = useSelector(({ product }) => {
+  const State = useSelector(({ partner, product }) => {
     return {
+      StoreId: partner.storeid,
+
       isRedirect: product.redirect,
       errorName: product.errorName
     };
   });
-  const { isRedirect, errorName } = State;
+  const { StoreId, isRedirect, errorName } = State;
+
+  useEffect(() => {
+    dispatch({ type: RESET_PRODUCT });
+    dispatch({ type: STORE_GET, payload: { storeid: StoreId } });
+  }, [StoreId, dispatch]);
 
   /**
    * ===================================================== STATE =====
@@ -38,21 +46,20 @@ export function AddProduct() {
     }
   }, []);
 
-  const handleAddImage = acceptedFiles => {
-    acceptedFiles.forEach(File => {
+  const handleAddImage = images => {
+    images.forEach(File => {
       setImage({ type: "add", value: File });
     });
   };
 
   const handleAddProduct = async () => {
     let formdata = new FormData();
-    let options = {
-      headers: { "Content-Type": "multipart/form-data" }
-    };
+    let options = { headers: { "Content-Type": "multipart/form-data" } };
 
     let newProduct = {
       name: product.name,
       price: product.price,
+      stock: product.stock,
       type: product.type,
       about: product.about
     };
@@ -61,17 +68,19 @@ export function AddProduct() {
     formdata.append("data", JSON.stringify(newProduct));
 
     try {
-      let { data } = await Axios.post(`${API_URL}/product/add`, formdata, options);
-      if (data.redirect) dispatch({ type: "ADD_PRODUCT_SUCCESS" });
+      let { data } = await Axios.post(`${API_URL}/product/add/${StoreId}`, formdata, options);
+      if (data.redirect) dispatch({ type: ADD_PRODUCT_SUCCESS });
     } catch (err) {
       console.log(err);
     }
   };
 
+  // console.log(isRedirect);
+  // console.log(StoreId);
+
   if (isRedirect) {
     return <Redirect to="/partner/product" />;
   }
-
   return (
     <Fragment>
       <Form>
@@ -111,6 +120,24 @@ export function AddProduct() {
               />
               <InputGroupAddon addonType="append">.00</InputGroupAddon>
             </InputGroup>
+          </Col>
+        </FormGroup>
+
+        <FormGroup id="form-stock" row>
+          <Label for="product_stock" sm={2}>
+            Stock
+          </Label>
+          <Col sm={10}>
+            <Input
+              onChange={e => setProduct({ ...product, stock: e.target.value })}
+              name="product_stock"
+              id="product_stock"
+              placeholder="input total stock"
+              min={0}
+              max={100}
+              type="number"
+              step="1"
+            />
           </Col>
         </FormGroup>
 
@@ -171,6 +198,7 @@ export function AddProduct() {
               className="add_product_input"
               multiple
               max={4}
+              tabIndex="-1"
               accept="image/png, image/jpeg"
               type="file"
             />
@@ -178,15 +206,12 @@ export function AddProduct() {
             {addImage.length > 0 &&
               addImage.map((image, id) =>
                 id <= 3 ? (
-                  <Label
-                    sm={2}
-                    key={"label" + id}
-                    id={"image-" + id}
-                    onMouseEnter={() => toggleTooltip(id)}
-                    onMouseLeave={() => toggleTooltip(-1)}>
+                  <Label sm={2} key={"label" + id} id={"image-" + id}>
                     <div key={"div" + id} className="add_product_preview">
                       <img
                         key={"img" + id}
+                        onMouseEnter={() => toggleTooltip(id)}
+                        onMouseLeave={() => toggleTooltip(-1)}
                         onClick={() => setImage({ type: "remove", value: id })}
                         src={URL.createObjectURL(image)}
                         className="plus_icon overflow-hidden"
@@ -194,21 +219,21 @@ export function AddProduct() {
                       />
                     </div>
 
-                    {id < 0 ? (
+                    {addImage.length && id >= 0 ? (
                       <Tooltip
                         key={"tooltip" + id}
                         placement="bottom"
                         isOpen={id === tooltipOpen}
                         target={"image-" + id}
                         toggle={() => toggleTooltip(id)}>
-                        {image.FileName} <br />
-                        {`image-${id}`} <br />
+                        {image.name} <br />
                         <b>Click to remove!</b>
                       </Tooltip>
                     ) : null}
                   </Label>
                 ) : null
               )}
+
             {addImage.length < 4 && (
               <Label for="product_image" sm={2}>
                 <div className="add_product_icon">

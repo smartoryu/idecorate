@@ -4,13 +4,17 @@ import {
   EMPTY_PRODUCT_PRICE,
   RESET_PRODUCT,
   MODAL_PRODUCT,
-  INSERT_PRODUCT
+  INSERT_PRODUCT,
+  GET_PRODUCT
 } from "../../support/types";
 
 const INITIAL_STATE = {
+  dataProduct: [],
+
   productid: 0,
   name: "",
   price: 0,
+  stock: 0,
   type: "",
   about: "",
 
@@ -29,8 +33,11 @@ const INITIAL_STATE = {
 
 export default (state = INITIAL_STATE, action) => {
   switch (action.type) {
+    case GET_PRODUCT:
+      return { ...INITIAL_STATE, ...action.payload };
+
     case ADD_PRODUCT_SUCCESS:
-      return { ...INITIAL_STATE, redirect: true };
+      return { ...INITIAL_STATE, ...action.payload, redirect: true };
 
     case INSERT_PRODUCT:
       return { ...state, ...action.payload };
