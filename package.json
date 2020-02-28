@@ -25,7 +25,8 @@
     "reactstrap": "^8.2.0",
     "redux": "^4.0.5",
     "redux-thunk": "^2.3.0",
-    "slick-carousel": "^1.8.1"
+    "slick-carousel": "^1.8.1",
+    "sweetalert2": "^9.8.2"
   },
   "scripts": {
     "start": "react-scripts start",
