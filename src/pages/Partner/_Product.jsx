@@ -113,11 +113,14 @@ export const Product = () => {
        */}
       <Modal autoFocus={false} size={!productImage.length ? "sm" : "lg"} fade={false} centered isOpen={ModalImage}>
         <ModalHeader
+          // toggle={() => dispatch({ type: MODAL_PRODUCT })}
           close={
             <button className="close" onClick={() => dispatch({ type: MODAL_PRODUCT })}>
               &times;
             </button>
-          }>
+          }
+          //
+        >
           {productImage.length ? "Product Images" : null}
         </ModalHeader>
         <ModalBody className="d-flex">

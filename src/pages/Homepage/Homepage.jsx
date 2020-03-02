@@ -1,9 +1,9 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React from "react";
 
-import { Slideshow } from "../components/Homepage/Slideshow";
-import { HomeSlider } from "../components/Homepage/HomeSlider";
-import { ProductTab } from "../components/Homepage/ProductTab";
+import { Slideshow } from "./_Slideshow";
+import { HomeSlider } from "./_HomeSlider";
+import { ProductTab } from "./_ProductTab";
 
 const Homepage = () => {
   return (
@@ -29,8 +29,8 @@ const Homepage = () => {
         {/* ANCHOR SIDE MENU - PRODUCT */}
         <div className="col-md-2">
           <p>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Eius tempore illo vitae excepturi quo minus,
-            pariatur sint aut repellat nisi!
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Eius tempore illo vitae excepturi quo minus, pariatur sint
+            aut repellat nisi!
           </p>
         </div>
         {/* ANCHOR CONTENT - PRODUCT */}

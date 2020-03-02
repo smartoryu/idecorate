@@ -8,13 +8,15 @@ import { toast } from "react-toastify";
 import "./styles/App.css";
 import "react-toastify/dist/ReactToastify.css";
 
+import { ReLoginAction } from "./redux/actions";
+
 import Menu from "./components/Menu";
 import Footer from "./components/Footer";
-import Homepage from "./pages/Homepage";
 import ModalAuth from "./components/ModalAuth";
-import User from "./pages/User";
-import Partner from "./pages/Partner";
-import { ReLoginAction } from "./redux/actions";
+
+import Homepage from "./pages/Homepage/Homepage";
+import User from "./pages/User/User";
+import Partner from "./pages/Partner/Partner";
 
 function App() {
   const dispatch = useDispatch();
@@ -22,7 +24,7 @@ function App() {
   toast.configure();
 
   useEffect(() => {
-    dispatch(ReLoginAction(localStorage.getItem("userID")));
+    dispatch(ReLoginAction(localStorage.getItem("token")));
   }, [dispatch]);
 
   return (

@@ -1,26 +1,19 @@
 import React, { Fragment, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, Route } from "react-router-dom";
-
-import { Product } from "../components/Partner/_Product";
-import { AddProduct } from "../components/Partner/_ProductAdd";
-import { Profile } from "../components/Partner/_Profile";
-import { Review } from "../components/Partner/_Review";
 import Axios from "axios";
-import { API_URL } from "../support/API_URL";
-import { STORE_GET, RESET_PRODUCT } from "../support/types";
+
+import { Product } from "./_Product";
+import { AddProduct } from "./_ProductAdd";
+import { Profile } from "./_Profile";
+import { Review } from "./_Review";
+
+import { API_URL } from "../../support/API_URL";
+import { STORE_GET, RESET_PRODUCT } from "../../support/types";
 
 function Partner({ match }) {
   const dispatch = useDispatch();
   const userId = useSelector(state => state.partner.id);
-
-  // useEffect(() => dispatch({ type: RESET_PRODUCT }));
-
-  // useEffect(() => {
-  // dispatch({ type: RESET_PRODUCT });
-  // dispatch({ type: STORE_GET, payload: { id: userId } });
-  // }, [dispatch, userId]);
-  // });
 
   useEffect(() => {
     const fetchStore = async () => {

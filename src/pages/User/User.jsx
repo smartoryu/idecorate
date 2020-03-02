@@ -2,12 +2,12 @@
 import React from "react";
 import { Link, Route } from "react-router-dom";
 
-import { Cart } from "../components/User/_Cart";
-import { Chat } from "../components/User/_Chat";
-import { Review } from "../components/User/_Review";
-import { Details } from "../components/User/_Details";
-import { Settings } from "../components/User/_Settings";
-import { Wishlist } from "../components/User/_Wishlist";
+import { Cart } from "./_Cart";
+import { Chat } from "./_Chat";
+import { Review } from "./_Review";
+import { Details } from "./_Details";
+import { Settings } from "./_Settings";
+import { Wishlist } from "./_Wishlist";
 
 function User({ match }) {
   const UserSideMenu = () => {
