@@ -56,7 +56,7 @@ const RowData = ({ edit, name, content, func, title }) => {
 /**
  * ============================================================================================
  */
-export const Profile = () => {
+export const Store = () => {
   /**
    * ========================= REDUX REDUCER =========================
    * desctructuring from State (redux's reducer)
