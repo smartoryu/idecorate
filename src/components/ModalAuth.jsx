@@ -51,35 +51,44 @@ const ModalAuth = props => {
 
   const dispatch = useDispatch();
 
-  //
-  // ======================================================= CONTROL MODAL ==
-  const ModalAuth = useSelector(state => state.auth.modalAuth);
-  const closeLogin = () => dispatch({ type: "MODAL_AUTH", payload: false });
-
-  //
-  // =============================================== CONTROL STATE OF TABS ==
-  const [activeTab, setActiveTab] = useState("1");
-  const toggleTab = tab => (activeTab !== tab ? setActiveTab(tab) : null);
-
-  //
-  // ======================================================= CONTROL LOGIN ==
+  /**
+   * ======================================================= CONTROL LOGIN ====
+   * - All values from input is stored in login object
+   * - The input is controlled with onChange's function (handleLoginValues)
+   * - There are two ways of form submitance:
+   *   1. Through button login onClick triggering dispatch(LoginAction)
+   *   2. With pressing "Enter" keyboard triggering dispatch(LoginAction)
+   */
   const [login, setLogin] = useState({ username: "", password: "" });
   const handleLoginValues = ({ target }) => setLogin({ ...login, [target.name]: target.value });
   const loginKeyPress = ({ key }) => key === "Enter" && dispatch(LoginAction(login.username, login.password));
 
-  //
-  // ============================================== STATE VALUES REGISTER ==
-  const [register, setRegister] = useState({
-    name: "",
-    username: "",
-    email: "",
-    password: "",
-    password2: ""
-  });
+  /**
+   * ==================================================== CONTROL REGISTER ====
+   * - All values from input is stored in register object
+   * - The input is controlled with onChange's function (handleRegisterValues)
+   * - There are two ways of form submitance:
+   *   1. Through button register onClick triggering dispatch(RegisterAction)
+   *   2. With pressing "Enter" keyboard triggering dispatch(RegisterAction)
+   */
+  const [register, setRegister] = useState({ name: "", username: "", email: "", password: "", password2: "" });
   const handleRegisterValues = ({ target }) => setRegister({ ...register, [target.name]: target.value });
   const registerKeyPress = ({ key }) => key === "Enter" && dispatch(RegisterAction(register));
 
-  // ================================================== SHOW/HIDE PASSWORD ==
+  /**
+   * ================================================== SHOW/HIDE PASSWORD ====
+   * This section is responsible for showing/hiding the password text on login or register form
+   * - typePassLog, typePass, and typePass2 is to set default type of input which is "password"
+   *   so, the input form's type is refering to this state.
+   * - showPassLog, showPass, and showPass2 is to change the "eye" logo to indicate whether password is shown or not
+   * - the type parameter which sent to toggle is a string "text" to replace the "password" input type
+   */
+  const [typePassLog, setTypePassLog] = useState("password");
+  const [showPassLog, setShowPassLog] = useState(false);
+  const togglePassLog = type => {
+    setTypePassLog(type);
+    setShowPassLog(!showPassLog);
+  };
   const [typePass, setTypePass] = useState("password");
   const [showPass, setShowPass] = useState(false);
   const togglePass = type => {
@@ -93,15 +102,29 @@ const ModalAuth = props => {
     setShowPass2(!showPass2);
   };
 
+  /**
+   * ======================================================= CONTROL MODAL ====
+   * - This section is controlling the whole component
+   *   because the Login-Register component wrapped in <Modal> component
+   * - The <Modal> isOpen property is watching a boolean in redux's reducer
+   */
+  const ModalAuth = useSelector(state => state.auth.modalAuth);
+  const closeLogin = () => dispatch({ type: "MODAL_AUTH", payload: false });
+
+  /**
+   * =============================================== CONTROL STATE OF TABS ====
+   * - This section is controlling the component
+   *   which component is rendered, Login or Register
+   */
+  const [activeTab, setActiveTab] = useState("1");
+  const toggleTab = tab => (activeTab !== tab ? setActiveTab(tab) : null);
+
+  /**
+   * ====================================================== RENDER SECTION ====
+   */
+  console.log(login);
   return (
-    <Modal
-      autoFocus={false}
-      fade={false}
-      style={{ backgroundColor: "transparent", width: "300px" }}
-      centered
-      // isOpen
-      isOpen={ModalAuth}
-      toggle={closeLogin}>
+    <Modal autoFocus={false} fade={false} style={{ width: "300px" }} centered isOpen={ModalAuth} toggle={closeLogin}>
       <ModalHeader className="ml-auto border-0" toggle={closeLogin} />
       <Card className="w-100 mx-auto">
         <CardHeader className="text-center">
@@ -129,6 +152,9 @@ const ModalAuth = props => {
                */}
               <div className="login">
                 <Form>
+                  {/**
+                   * THIS IS USERNAME INPUT'S SECTION
+                   */}
                   <FormGroup id="form-username">
                     <InputGroup className="d-flex">
                       <InputGroupAddon addonType="prepend">
@@ -139,14 +165,14 @@ const ModalAuth = props => {
                       <Input
                         autoFocus={true}
                         style={{ zIndex: "10" }}
-                        invalid={ErrorUserLog}
+                        invalid={Boolean(ErrorUserLog)}
                         onChange={handleLoginValues}
                         onKeyPress={loginKeyPress}
                         type="text"
                         name="username"
                         placeholder="Username"
                       />
-                      {ErrorUserLog ? <FormFeedback className="ml-5 float-left">{TextUserLog}</FormFeedback> : null}
+                      {Boolean(ErrorUserLog) && <FormFeedback className="ml-5 float-left">{ErrorUserLog}</FormFeedback>}
                     </InputGroup>
                   </FormGroup>
 
@@ -162,17 +188,17 @@ const ModalAuth = props => {
                         invalid={ErrorPassLog}
                         onChange={handleLoginValues}
                         onKeyPress={loginKeyPress}
-                        type={typePass}
+                        type={typePassLog}
                         name="password"
                         placeholder="Password"
                       />
                       <InputGroupAddon className="border-0" addonType="append">
-                        {showPass ? (
-                          <Button tabIndex="-1" onClick={() => togglePass("password")} color="light">
+                        {showPassLog ? (
+                          <Button tabIndex="-1" onClick={() => togglePassLog("password")} color="light">
                             <FaEye color="#8a8a8a" />
                           </Button>
                         ) : (
-                          <Button tabIndex="-1" onClick={() => togglePass("text")} color="light">
+                          <Button tabIndex="-1" onClick={() => togglePassLog("text")} color="light">
                             <FaEyeSlash color="#bababa" />
                           </Button>
                         )}
@@ -205,10 +231,10 @@ const ModalAuth = props => {
                 </Form>
               </div>
             </TabPane>
-            {/**
-             * ========================================================================= REGISTER CONTROL ===
-             */}
             <TabPane tabId="2">
+              {/**
+               * ========================================================================= REGISTER CONTROL ===
+               */}
               <div className="register">
                 <Form>
                   <FormGroup id="form-name">
@@ -357,11 +383,7 @@ const ModalAuth = props => {
                     </Fragment>
                   ) : register.username ? (
                     <FormGroup id="form-button">
-                      <Button
-                        onClick={() => dispatch(CheckUsername(register.username))}
-                        color="secondary"
-                        size="md"
-                        block>
+                      <Button onClick={() => dispatch(CheckUsername(register.username))} color="secondary" size="md" block>
                         Check Username
                       </Button>
                     </FormGroup>

@@ -32,7 +32,7 @@ export const LoginAction = (username, password) => {
         case LOGOUT_SUCCESS:
           return dispatch({ type: LOGOUT_SUCCESS });
         case LOGIN_SUCCESS:
-          localStorage.setItem("userID", user.data.result.id);
+          // localStorage.setItem("userID", user.data.result.id);
           localStorage.setItem("token", user.data.token);
           dispatch({ type: MODAL_AUTH, payload: false });
           return dispatch({ type: LOGIN_SUCCESS, payload: user.data.result });
@@ -46,11 +46,15 @@ export const LoginAction = (username, password) => {
   };
 };
 
-export const ReLoginAction = id => {
+export const ReLoginAction = token => {
   return async dispatch => {
     try {
-      if (id) {
-        const { data } = await Axios.get(`${API_URL}/auth/login/${id}`);
+      if (token) {
+        let options = {
+          headers: { Authorization: `Bearer ${token}` }
+        };
+
+        const { data } = await Axios.get(`${API_URL}/auth/keeplogin`, options);
         dispatch({ type: LOGIN_SUCCESS, payload: data.result });
       }
     } catch (err) {
