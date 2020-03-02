@@ -1,21 +1,23 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { Fragment, useState, useEffect, useReducer } from "react";
-import { Link, Route } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import numeral from "numeral";
 import Axios from "axios";
 
+import { Spinner } from "../../components/Spinner";
 import { API_URL } from "../../support/API_URL";
 import { STORE_GET, MODAL_PRODUCT, INSERT_PRODUCT, GET_PRODUCT } from "../../support/types";
 
+import { toast } from "react-toastify";
 import { MdAdd } from "react-icons/md";
 import { Input, Modal, ModalHeader, ModalBody, Label, Tooltip } from "reactstrap";
 import { FaRegImages, FaRegEdit, FaRegTrashAlt } from "react-icons/fa";
 
 export const Product = () => {
   /**
-   * ========================= REDUX REDUCER =========================
+   * ====================================================== REDUX REDUCER ====
    * Get the value from redux's reducer and desctructured it
    */
   const dispatch = useDispatch();
@@ -43,7 +45,7 @@ export const Product = () => {
   });
 
   /**
-   * ========================= USE STATE =========================
+   * =========================================================== USE STATE ====
    */
   const Path = "http://localhost:2400";
   const [productImage, setProductImage] = useState([]);
@@ -51,14 +53,16 @@ export const Product = () => {
   const toggleTooltip = (id, x) => setTooltipOpen({ ...tooltipOpen, id, x });
 
   /**
-   * ===================== GET ALL DATA PRODUCTS ===================
+   * =============================================== GET ALL DATA PRODUCTS ====
    * This useEffect trigger Axios to get all products from the same store
    * and set the result to dataProduct's state
    */
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const { data } = await Axios.get(`${API_URL}/product/get_products/${StoreId}`);
+        let options = { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } };
+        const { data } = await Axios.get(`${API_URL}/product/get_products/${StoreId}`, options);
+        console.log("data", data.result.length);
         dispatch({ type: GET_PRODUCT, payload: { dataProduct: data.result } });
       } catch (err) {
         console.log(err);
@@ -68,7 +72,7 @@ export const Product = () => {
   }, [StoreId, dispatch]);
 
   /**
-   * ================= GET SINGLE PRODUCT'S IMAGES ==================
+   * ========================================= GET SINGLE PRODUCT'S IMAGES ====
    * Function handleImage set productid sent from onClick to productid on redux's reducer
    *
    * Then, useEffect trigger Axios to get specific product based on productid
@@ -79,10 +83,17 @@ export const Product = () => {
     const fetchProduct = async () => {
       if (ProductId > 0) {
         try {
-          const { data } = await Axios.get(`${API_URL}/product/get_images/${ProductId}`);
+          let options = { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } };
+          const { data } = await Axios.get(`${API_URL}/product/get_images/${ProductId}`, options);
           setProductImage(data.result);
         } catch (err) {
-          console.log(err);
+          toast.error("User not authorized!", {
+            position: "bottom-left",
+            autoClose: 1000,
+            hideProgressBar: true,
+            closeButton: false
+          });
+          console.log(err.message);
         }
       }
     };
@@ -92,35 +103,32 @@ export const Product = () => {
   /**
    *
    *
-   * ========================== FUNCTIONS ==========================
+   * =========================================================== FUNCTIONS ====
    */
   const handleDeleteProduct = async productid => {
     try {
-      let { data } = await Axios.delete(`${API_URL}/product/delete/${StoreId}/${productid}`);
-      dispatch({ type: GET_PRODUCT, payload: data.result });
+      let options = { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } };
+      let { data } = await Axios.delete(`${API_URL}/product/delete/${StoreId}/${productid}`, options);
+      if (data.status !== "error") dispatch({ type: GET_PRODUCT, payload: { dataProduct: data.result } });
     } catch (err) {
-      console.log(err);
+      toast.error("User not authorized!", {
+        position: "bottom-left",
+        autoClose: 1000,
+        hideProgressBar: true,
+        closeButton: false
+      });
+      console.log(err.message);
     }
   };
 
-  // console.log(dataProduct);
-  console.log(StoreId);
-  return (
-    <>
-      {/**
-       * =========================== MODAL COMPONENTS ===========================
-       * well, this is for rendering product's image(s) through modal
-       */}
-      <Modal autoFocus={false} size={!productImage.length ? "sm" : "lg"} fade={false} centered isOpen={ModalImage}>
-        <ModalHeader
-          // toggle={() => dispatch({ type: MODAL_PRODUCT })}
-          close={
-            <button className="close" onClick={() => dispatch({ type: MODAL_PRODUCT })}>
-              &times;
-            </button>
-          }
-          //
-        >
+  /**
+   * ==================================================== MODAL COMPONENTS ====
+   * Bunch of components would be put on here
+   */
+  const ModalImages = () => {
+    return (
+      <Modal autoFocus={false} size={productImage.length < 3 ? "sm" : "lg"} fade={false} centered isOpen={ModalImage}>
+        <ModalHeader toggle={() => dispatch({ type: MODAL_PRODUCT })}>
           {productImage.length ? "Product Images" : null}
         </ModalHeader>
         <ModalBody className="d-flex">
@@ -175,9 +183,19 @@ export const Product = () => {
           )}
         </ModalBody>
       </Modal>
+    );
+  };
+
+  if (!StoreId) {
+    return <Spinner />;
+  }
+  return (
+    <>
+      {/* ============================ RENDER COMPONENTS ============================ */}
+      {ModalImages()}
 
       {/**
-       * ===================== === R = E = N = D = E = R === =====================
+       *  ======================== === R = E = N = D = E = R === ========================
        */}
       <div id="page-content-wrapper">
         <div className="d-flex">
@@ -279,55 +297,3 @@ export const Product = () => {
     </>
   );
 };
-
-// (
-//   <Fragment>
-//     <Input
-//       onChange={({ target }) => handleAddImage(Array.from(target.files))}
-//       id="product_image"
-//       className="add_product_input"
-//       multiple
-//       max={4}
-//       accept="image/png, image/jpeg"
-//       type="file"
-//     />
-
-//     {addImage.length
-//       ? addImage.map((image, id) =>
-//           id <= 3 ? (
-//             <Label
-//               key={"label" + id}
-//               className="image_product_preview"
-//               onMouseEnter={() => toggleTooltip(id, "")}
-//               onMouseLeave={() => toggleTooltip(-1, "")}
-//               id={"image-" + id}>
-//               <div className="image_thumbnail" key={"image-" + id}>
-//                 <img
-//                   key={"img" + id}
-//                   onClick={() => setImage({ type: "remove", value: id })}
-//                   src={URL.createObjectURL(image)}
-//                   alt=""
-//                 />
-//               </div>
-
-//               {addImage.length && id >= 0 ? (
-//                 <Fragment key={"tooltip" + id}>
-//                   <Tooltip placement="bottom" fade={false} isOpen={id === tooltipOpen.id} target={"image-" + id}>
-//                     <b>Click to remove!</b>
-//                   </Tooltip>
-//                 </Fragment>
-//               ) : null}
-//             </Label>
-//           ) : null
-//         )
-//       : null}
-
-//     {addImage.length < 4 && (
-//       <Label for="product_image">
-//         <div id="zsdad" className="add_product_icon">
-//           <MdAdd height="100%" className="plus_icon" />
-//         </div>
-//       </Label>
-//     )}
-//   </Fragment>
-// )

@@ -2,9 +2,11 @@
 import React, { Fragment, useState, useReducer, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Col, CustomInput, Form, FormFeedback, FormGroup, Label, Input, InputGroup, InputGroupAddon, Tooltip } from "reactstrap";
-import { MdAdd } from "react-icons/md";
 import { Redirect } from "react-router-dom";
 import Axios from "axios";
+
+import { toast } from "react-toastify";
+import { MdAdd } from "react-icons/md";
 import { API_URL } from "../../support/API_URL";
 import { STORE_GET, ADD_PRODUCT_SUCCESS, RESET_PRODUCT } from "../../support/types";
 
@@ -54,7 +56,9 @@ export function AddProduct() {
 
   const handleAddProduct = async () => {
     let formdata = new FormData();
-    let options = { headers: { "Content-Type": "multipart/form-data" } };
+    let options = {
+      headers: { "Content-Type": "multipart/form-data", Authorization: `Bearer ${localStorage.getItem("token")}` }
+    };
 
     let newProduct = {
       name: product.name,
@@ -71,6 +75,12 @@ export function AddProduct() {
       let { data } = await Axios.post(`${API_URL}/product/add/${StoreId}`, formdata, options);
       if (data.redirect) dispatch({ type: ADD_PRODUCT_SUCCESS });
     } catch (err) {
+      toast.error("User not authorized!", {
+        position: "bottom-left",
+        autoClose: 1000,
+        hideProgressBar: true,
+        closeButton: false
+      });
       console.log(err);
     }
   };
@@ -222,7 +232,7 @@ export function AddProduct() {
                     {addImage.length && id >= 0 ? (
                       <Tooltip
                         key={"tooltip" + id}
-                        placement="bottom"
+                        placement="top"
                         isOpen={id === tooltipOpen}
                         target={"image-" + id}
                         toggle={() => toggleTooltip(id)}>
