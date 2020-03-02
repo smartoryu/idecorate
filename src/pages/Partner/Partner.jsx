@@ -5,11 +5,12 @@ import Axios from "axios";
 
 import { Product } from "./_Product";
 import { AddProduct } from "./_ProductAdd";
-import { Profile } from "./_Profile";
+import { Store } from "./_Store";
 import { Review } from "./_Review";
 
+import { Spinner } from "../../components/Spinner";
 import { API_URL } from "../../support/API_URL";
-import { STORE_GET, RESET_PRODUCT } from "../../support/types";
+import { STORE_GET } from "../../support/types";
 
 function Partner({ match }) {
   const dispatch = useDispatch();
@@ -19,7 +20,6 @@ function Partner({ match }) {
     const fetchStore = async () => {
       try {
         let { data } = await Axios.get(`${API_URL}/partner?userid=${userId}`);
-        dispatch({ type: RESET_PRODUCT });
         dispatch({ type: STORE_GET, payload: data.result });
       } catch (err) {
         console.log(err);
@@ -28,6 +28,7 @@ function Partner({ match }) {
     fetchStore();
   }, [userId, dispatch]);
 
+  console.log(userId);
   const PartnerSideMenu = () => {
     return (
       <Fragment>
@@ -43,16 +44,23 @@ function Partner({ match }) {
           </ul>
         </div>
         <div className="card mt-3">
-          <div className="card-header">Store</div>
+          <div className="card-header">Profile</div>
           <ul className="list-group list-group-flush">
             <Link to={`${match.url}`} className="list-group-item list-group-item-action border-0">
-              Profile
+              User
+            </Link>
+            <Link to={`${match.url}`} className="list-group-item list-group-item-action border-0">
+              Store
             </Link>
           </ul>
         </div>
       </Fragment>
     );
   };
+
+  if (!userId) {
+    return <Spinner />;
+  }
 
   return (
     <div className="partner-wrapper container-fluid my-3">
@@ -63,7 +71,7 @@ function Partner({ match }) {
         {/* CONTENT */}
         <div className="col-md-10 partner-content">
           <div className="ml-0">
-            <Route path={`${match.url}/`} component={Profile} exact />
+            <Route path={`${match.url}/`} component={Store} exact />
             <Route path={`${match.url}/product`} component={Product} />
             <Route path={`${match.url}/add_product`} component={AddProduct} />
             <Route path={`${match.url}/review`} component={Review} />
