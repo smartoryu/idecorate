@@ -1,17 +1,7 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 // eslint-disable-next-line no-unused-vars
 import React, { useState /* useEffect */ } from "react";
-import {
-  Navbar,
-  Nav,
-  NavbarBrand,
-  NavItem,
-  NavLink,
-  Dropdown,
-  DropdownItem,
-  DropdownMenu,
-  DropdownToggle
-} from "reactstrap";
+import { Navbar, Nav, NavbarBrand, NavItem, NavLink, Dropdown, DropdownItem, DropdownMenu, DropdownToggle } from "reactstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 
@@ -72,7 +62,7 @@ const Menu = () => {
   };
 
   return (
-    <header>
+    <header className="header-menu ">
       {/* =========================== TOP NAVBAR =========================== */}
       <Navbar className="top-navbar" light expand="md">
         <div className="d-flex contact">
@@ -94,7 +84,15 @@ const Menu = () => {
             <NavLink href="https://github.com/smartoryu/idecorate">
               <span style={{ fontSize: 13 }}>
                 <FaGithub />
-                &nbsp;Github
+                &nbsp;Github UI
+              </span>
+            </NavLink>
+          </NavItem>
+          <NavItem>
+            <NavLink href="https://github.com/smartoryu/idecorate-api">
+              <span style={{ fontSize: 13 }}>
+                <FaGithub />
+                &nbsp;Github API
               </span>
             </NavLink>
           </NavItem>

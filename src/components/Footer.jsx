@@ -24,8 +24,8 @@ const Footer = () => {
           <div className="col-sm-3">
             <h4 className="title">GET IN TOUCH</h4>
             <p>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin suscipit, libero a molestie consectetur,
-              sapien elit lacinia mi.
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin suscipit, libero a molestie consectetur, sapien elit
+              lacinia mi.
             </p>
             <ul className="social-icon">
               <a href="#" className="social">

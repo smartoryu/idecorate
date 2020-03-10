@@ -1,55 +1,75 @@
-.top-navbar {
-  font-size: 0.8rem;
-  vertical-align: center;
+header {
+  height: 110px;
+  background-color: #fff;
+  -webkit-box-shadow: 0px 1px 5px 0px rgba(186, 186, 186, 0.5);
+  -moz-box-shadow: 0px 1px 5px 0px rgba(186, 186, 186, 0.5);
+  box-shadow: 0px 1px 5px 0px rgba(186, 186, 186, 0.5);
 
-  .navbar-text {
-    font-size: 0.7rem;
-    line-height: 15px;
-  }
-}
+  &.header-menu {
+    position: fixed;
+    top: 0;
+    // left: 0;
+    width: 100%;
+    z-index: 1000;
+    border-bottom: 1px solid rgb(219, 218, 218);
 
-.navbar {
-  &__container {
-    height: 10vh;
-  }
+    > .top-navbar {
+      font-size: 0.8rem;
+      vertical-align: center;
+      height: 40px;
+      border-bottom: 1px solid rgb(219, 218, 218);
 
-  button.btn.btn-secondary {
-    color: #575756;
-    background-color: transparent;
-    font-size: 1rem;
-    border: none;
-
-    &:focus,
-    &:hover,
-    &:active {
-      color: #575756;
-      background-color: transparent;
-      border-color: none;
-      box-shadow: none;
-    }
-  }
-
-  &__dropdown {
-    // underscore styling
-    &::before {
-      content: "";
-      position: absolute;
-      left: 50%;
-      bottom: 4px;
-      width: 80%;
-      height: 2px;
-      background-color: #575756;
-      transform-origin: center;
-      transform: translate(-50%, 0) scaleX(0);
-      transition: transform 0.15s ease-in-out;
+      .navbar-text {
+        font-size: 0.7rem;
+        line-height: 15px;
+      }
     }
 
-    &:hover::before {
-      transform: translate(-50%, 0) scaleX(1);
-    }
+    > .navbar {
+      &__container {
+        // border: 1px solid #f6fa2b;
+        height: 70px;
+      }
 
-    > span {
-      position: relative;
+      button.btn.btn-secondary {
+        color: #575756;
+        background-color: transparent;
+        font-size: 1rem;
+        border: none;
+
+        &:focus,
+        &:hover,
+        &:active {
+          color: #575756;
+          background-color: transparent;
+          border-color: none;
+          box-shadow: none;
+        }
+      }
+
+      &__dropdown {
+        // underscore styling
+        &::before {
+          content: "";
+          position: absolute;
+          left: 50%;
+          bottom: 4px;
+          width: 80%;
+          height: 2px;
+          background-color: #575756;
+          transform-origin: center;
+          transform: translate(-50%, 0) scaleX(0);
+          transition: transform 0.15s ease-in-out;
+        }
+
+        &:hover::before {
+          transform: translate(-50%, 0) scaleX(1);
+        }
+
+        > span {
+          position: relative;
+        }
+      }
     }
   }
 }

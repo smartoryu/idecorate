@@ -28,16 +28,18 @@ function App() {
   }, [dispatch]);
 
   return (
-    <div className="wrapper">
+    <>
       <Menu />
       <ModalAuth />
-      <Switch>
-        <Route exact path="/" component={Homepage} />
-        <Route path="/user" component={User} />
-        <Route path="/partner" component={Partner} />
-      </Switch>
+      <div className="wrapper">
+        <Switch>
+          <Route exact path="/" component={Homepage} />
+          <Route path="/user" component={User} />
+          <Route path="/partner" component={Partner} />
+        </Switch>
+      </div>
       <Footer />
-    </div>
+    </>
   );
 }
 
