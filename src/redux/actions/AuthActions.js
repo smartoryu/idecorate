@@ -50,10 +50,7 @@ export const ReLoginAction = token => {
   return async dispatch => {
     try {
       if (token) {
-        let options = {
-          headers: { Authorization: `Bearer ${token}` }
-        };
-
+        let options = { headers: { Authorization: `Bearer ${token}` } };
         const { data } = await Axios.get(`${API_URL}/auth/keeplogin`, options);
         dispatch({ type: LOGIN_SUCCESS, payload: data.result });
       }

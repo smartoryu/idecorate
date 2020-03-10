@@ -72,7 +72,7 @@ export function AddProduct() {
     formdata.append("data", JSON.stringify(newProduct));
 
     try {
-      let { data } = await Axios.post(`${API_URL}/product/add/${StoreId}`, formdata, options);
+      let { data } = await Axios.post(`${API_URL}/product/add`, formdata, options);
       if (data.redirect) dispatch({ type: ADD_PRODUCT_SUCCESS });
     } catch (err) {
       toast.error("User not authorized!", {

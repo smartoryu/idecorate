@@ -3,7 +3,8 @@ import {
   EMPTY_PRODUCT_NAME,
   EMPTY_PRODUCT_PRICE,
   RESET_PRODUCT,
-  MODAL_PRODUCT,
+  MODAL_IMAGES,
+  MODAL_EDIT,
   INSERT_PRODUCT,
   GET_PRODUCT
 } from "../../support/types";
@@ -21,7 +22,8 @@ const INITIAL_STATE = {
   imageid: 0,
   image: "",
 
-  modal: false,
+  modalImages: false,
+  // modalEdit: false,
   redirect: false,
 
   onEdit: false,
@@ -47,8 +49,10 @@ export default (state = INITIAL_STATE, action) => {
     case EMPTY_PRODUCT_PRICE:
       return { ...INITIAL_STATE, errorPrice: action.payload };
 
-    case MODAL_PRODUCT:
-      return { ...state, productid: action.payload, modal: !state.modal };
+    case MODAL_IMAGES:
+      return { ...state, productid: action.payload, modalImages: !state.modalImages };
+    case MODAL_EDIT:
+      return { ...state, productid: action.payload, onEdit: !state.onEdit };
     case RESET_PRODUCT:
       return INITIAL_STATE;
     default:
