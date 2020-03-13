@@ -1,8 +1,9 @@
 import React, { Fragment, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link, Route } from "react-router-dom";
+import { Link, Route, Redirect } from "react-router-dom";
 import Axios from "axios";
 
+import { Details } from "./_Details";
 import { Product } from "./_Product";
 import { AddProduct } from "./_ProductAdd";
 import { Store } from "./_Store";
@@ -10,25 +11,26 @@ import { Review } from "./_Review";
 
 import { Spinner } from "../../components/Spinner";
 import { API_URL } from "../../support/API_URL";
-import { STORE_GET } from "../../support/types";
+import { STORE_GET, LOGIN_FAILED } from "../../support/types";
 
 function Partner({ match }) {
   const dispatch = useDispatch();
-  const userId = useSelector(state => state.partner.id);
+  const Loading = useSelector(({ Auth }) => Auth.loading);
+  const Role = useSelector(({ User }) => User.role);
 
   useEffect(() => {
     const fetchStore = async () => {
       try {
-        let { data } = await Axios.get(`${API_URL}/partner?userid=${userId}`);
+        let options = { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } };
+        let { data } = await Axios.get(`${API_URL}/partner`, options);
         dispatch({ type: STORE_GET, payload: data.result });
       } catch (err) {
-        console.log(err);
+        dispatch({ type: LOGIN_FAILED });
       }
     };
     fetchStore();
-  }, [userId, dispatch]);
+  }, [dispatch]);
 
-  console.log(userId);
   const PartnerSideMenu = () => {
     return (
       <Fragment>
@@ -46,10 +48,10 @@ function Partner({ match }) {
         <div className="card mt-3">
           <div className="card-header">Profile</div>
           <ul className="list-group list-group-flush">
-            <Link to={`${match.url}`} className="list-group-item list-group-item-action border-0">
+            <Link to={`${match.url}/profile`} className="list-group-item list-group-item-action border-0">
               User
             </Link>
-            <Link to={`${match.url}`} className="list-group-item list-group-item-action border-0">
+            <Link to={`${match.url}/store`} className="list-group-item list-group-item-action border-0">
               Store
             </Link>
           </ul>
@@ -58,8 +60,10 @@ function Partner({ match }) {
     );
   };
 
-  if (!userId) {
+  if (Loading) {
     return <Spinner />;
+  } else if (Role !== "partner") {
+    return <Redirect to="/" />;
   }
 
   return (
@@ -71,9 +75,10 @@ function Partner({ match }) {
         {/* CONTENT */}
         <div className="col-md-10 partner-content">
           <div className="ml-0">
-            <Route path={`${match.url}/`} component={Store} exact />
-            <Route path={`${match.url}/product`} component={Product} />
-            <Route path={`${match.url}/add_product`} component={AddProduct} />
+            <Route path={`${match.url}/profile`} component={Details} />
+            <Route path={`${match.url}/store`} component={Store} />
+            <Route path={`${match.url}/product`} exact component={Product} />
+            <Route path={`${match.url}/product/add_product`} component={AddProduct} />
             <Route path={`${match.url}/review`} component={Review} />
           </div>
         </div>

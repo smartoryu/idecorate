@@ -1,6 +1,7 @@
 //
 // ============================== PARTNER
 export const LOGIN_SUCCESS = "LOGIN_SUCCESS";
+export const LOGIN_FAILED = "LOGIN_FAILED";
 export const STORE_GET = "STORE_GET";
 export const EDIT_STORE_VALUE = "EDIT_STORE_VALUE";
 export const RESET_STORE_VALUE = "RESET_STORE_VALUE";
@@ -21,6 +22,7 @@ export const WRONG_SECRET = "WRONG_SECRET";
 export const WRONG_USER = "WRONG_USER";
 export const WRONG_PASS = "WRONG_PASS";
 export const WRONG_FORM = "WRONG_FORM";
+export const UNVERIFIED = "UNVERIFIED";
 
 //
 // ============================== PRODUCT
@@ -32,3 +34,4 @@ export const EMPTY_PRODUCT_PRICE = "EMPTY_PRODUCT_PRICE";
 export const RESET_PRODUCT = "RESET_PRODUCT";
 export const MODAL_IMAGES = "MODAL_IMAGES";
 export const MODAL_EDIT = "MODAL_EDIT";
+export const EDIT_SUCCESS = "EDIT_SUCCESS";

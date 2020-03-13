@@ -6,14 +6,15 @@ import {
   MODAL_IMAGES,
   MODAL_EDIT,
   INSERT_PRODUCT,
-  GET_PRODUCT
+  GET_PRODUCT,
+  EDIT_SUCCESS
 } from "../../support/types";
 
 const INITIAL_STATE = {
   dataProduct: [],
 
   productid: 0,
-  name: "",
+  productname: "",
   price: 0,
   stock: 0,
   type: "",
@@ -23,7 +24,6 @@ const INITIAL_STATE = {
   image: "",
 
   modalImages: false,
-  // modalEdit: false,
   redirect: false,
 
   onEdit: false,
@@ -36,7 +36,7 @@ const INITIAL_STATE = {
 export default (state = INITIAL_STATE, action) => {
   switch (action.type) {
     case GET_PRODUCT:
-      return { ...INITIAL_STATE, ...action.payload };
+      return { ...INITIAL_STATE, dataProduct: action.payload };
 
     case ADD_PRODUCT_SUCCESS:
       return { ...INITIAL_STATE, ...action.payload, redirect: true };
@@ -50,9 +50,11 @@ export default (state = INITIAL_STATE, action) => {
       return { ...INITIAL_STATE, errorPrice: action.payload };
 
     case MODAL_IMAGES:
-      return { ...state, productid: action.payload, modalImages: !state.modalImages };
+      return { ...state, ...action.payload, modalImages: !state.modalImages };
     case MODAL_EDIT:
-      return { ...state, productid: action.payload, onEdit: !state.onEdit };
+      return { ...state, ...action.payload, onEdit: !state.onEdit };
+    case EDIT_SUCCESS:
+      return { ...INITIAL_STATE, onEdit: false };
     case RESET_PRODUCT:
       return INITIAL_STATE;
     default:

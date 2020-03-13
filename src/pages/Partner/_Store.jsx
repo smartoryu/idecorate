@@ -62,20 +62,20 @@ export const Store = () => {
    * desctructuring from State (redux's reducer)
    */
   const dispatch = useDispatch();
-  const State = useSelector(({ partner }) => {
+  const State = useSelector(({ User, Store }) => {
     return {
-      onEdit: partner.onEdit,
-      userId: partner.id,
+      onEdit: User.onEdit,
+      userId: User.id,
 
-      storeid: partner.storeid,
-      storename: partner.storename,
-      storelink: partner.storelink,
-      phone: partner.phone,
-      email: partner.email,
-      photo: partner.photo,
-      address: partner.address,
-      city: partner.city,
-      province: partner.province
+      storeid: Store.storeid,
+      storename: Store.storename,
+      storelink: Store.storelink,
+      phone: Store.phone,
+      email: Store.email,
+      photo: Store.photo,
+      address: Store.address,
+      city: Store.city,
+      province: Store.province
     };
   });
   const { userId, storeid, storename, storelink, phone, email, photo, address, city, province, onEdit } = State;

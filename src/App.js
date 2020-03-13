@@ -34,8 +34,8 @@ function App() {
       <div className="wrapper">
         <Switch>
           <Route exact path="/" component={Homepage} />
-          <Route path="/user" component={User} />
-          <Route path="/partner" component={Partner} />
+          <Route path="/m/:userid/:username" component={User} />
+          <Route path="/p/:userid/:username" component={Partner} />
         </Switch>
       </div>
       <Footer />

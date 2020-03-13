@@ -1,11 +1,22 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React from "react";
+import { useSelector } from "react-redux";
+import { Redirect } from "react-router-dom";
 
+// import { Spinner } from "../../components/Spinner";
 import { Slideshow } from "./_Slideshow";
 import { HomeSlider } from "./_HomeSlider";
 import { ProductTab } from "./_ProductTab";
 
 const Homepage = () => {
+  const Role = useSelector(({ User }) => User.role);
+  const userId = useSelector(({ User }) => User.id);
+  const Username = useSelector(({ User }) => User.username);
+
+  if (Role === "partner") {
+    return <Redirect to={`/p/${userId}/${Username}/store`} />;
+  }
+
   return (
     <div className="homepage">
       <div className="row no-gutters main-content">

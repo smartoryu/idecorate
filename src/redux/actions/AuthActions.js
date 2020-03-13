@@ -12,15 +12,19 @@ import {
   GOOD_USER,
   MODAL_AUTH,
   SERVER_ERROR,
-  REG_SUCCESS
+  REG_SUCCESS,
+  UNVERIFIED
 } from "../../support/types";
 
 export const LoginAction = (username, password) => {
   return async dispatch => {
     try {
       let user = await Axios.get(`${API_URL}/auth/login`, { params: { username, password } });
+      // console.log(user.data);
 
       switch (user.data.status) {
+        case UNVERIFIED:
+          return dispatch({ type: UNVERIFIED });
         case SUSPENDED:
           return dispatch({ type: SUSPENDED, payload: user.data.message });
         case WRONG_FORM:
@@ -32,7 +36,6 @@ export const LoginAction = (username, password) => {
         case LOGOUT_SUCCESS:
           return dispatch({ type: LOGOUT_SUCCESS });
         case LOGIN_SUCCESS:
-          // localStorage.setItem("userID", user.data.result.id);
           localStorage.setItem("token", user.data.token);
           dispatch({ type: MODAL_AUTH, payload: false });
           return dispatch({ type: LOGIN_SUCCESS, payload: user.data.result });

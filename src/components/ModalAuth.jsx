@@ -27,6 +27,7 @@ import {
 import classnames from "classnames";
 import { FaAt, FaEye, FaEyeSlash, FaRegEnvelope, FaTimes, FaKey, FaUserAlt } from "react-icons/fa";
 import { CheckUsername, LoginAction, RegisterAction } from "../redux/actions";
+import { LOGOUT } from "../support/types";
 
 const ModalAuth = props => {
   /**
@@ -34,20 +35,15 @@ const ModalAuth = props => {
    *
    * =================================================== REDUCER ON REDUX ==
    */
-  const GoodUser = useSelector(state => state.auth.goodUser);
+  const GoodUser = useSelector(({ Auth }) => Auth.goodUser);
+  const ErrorUserLog = useSelector(({ Auth }) => Auth.errorUserLog);
+  const ErrorPassLog = useSelector(({ Auth }) => Auth.errorPassLog);
+  const Verified = useSelector(({ User }) => User.verified);
 
-  const ErrorUserLog = useSelector(state => state.auth.errorUserLog);
-  const ErrorPassLog = useSelector(state => state.auth.errorPassLog);
-  const TextUserLog = useSelector(state => state.auth.textUserLog);
-  const TextPassLog = useSelector(state => state.auth.textPassLog);
-
-  const ErrorName = useSelector(state => state.auth.errorName);
-  const ErrorUser = useSelector(state => state.auth.errorUser);
-  const ErrorPass = useSelector(state => state.auth.errorPass);
-  const ErrorEmail = useSelector(state => state.auth.errorEmail);
-
-  const TextUser = useSelector(state => state.auth.textUser);
-  const TextPass = useSelector(state => state.auth.textPass);
+  const ErrorName = useSelector(({ Auth }) => Auth.errorName);
+  const ErrorUser = useSelector(({ Auth }) => Auth.errorUser);
+  const ErrorPass = useSelector(({ Auth }) => Auth.errorPass);
+  const ErrorEmail = useSelector(({ Auth }) => Auth.errorEmail);
 
   const dispatch = useDispatch();
 
@@ -71,7 +67,8 @@ const ModalAuth = props => {
    *   1. Through button register onClick triggering dispatch(RegisterAction)
    *   2. With pressing "Enter" keyboard triggering dispatch(RegisterAction)
    */
-  const [register, setRegister] = useState({ name: "", username: "", email: "", password: "", password2: "" });
+  const [register, setRegister] = useState("");
+  // const [register, setRegister] = useState({ name: "", username: "", email: "", password: "", password2: "" });
   const handleRegisterValues = ({ target }) => setRegister({ ...register, [target.name]: target.value });
   const registerKeyPress = ({ key }) => key === "Enter" && dispatch(RegisterAction(register));
 
@@ -108,8 +105,8 @@ const ModalAuth = props => {
    *   because the Login-Register component wrapped in <Modal> component
    * - The <Modal> isOpen property is watching a boolean in redux's reducer
    */
-  const ModalAuth = useSelector(state => state.auth.modalAuth);
-  const closeLogin = () => dispatch({ type: "MODAL_AUTH", payload: false });
+  const ModalAuth = useSelector(({ Auth }) => Auth.modalAuth);
+  const closeLogin = () => dispatch({ type: LOGOUT });
 
   /**
    * =============================================== CONTROL STATE OF TABS ====
@@ -122,10 +119,16 @@ const ModalAuth = props => {
   /**
    * ====================================================== RENDER SECTION ====
    */
-  console.log(login);
   return (
     <Modal autoFocus={false} fade={false} style={{ width: "300px" }} centered isOpen={ModalAuth} toggle={closeLogin}>
-      <ModalHeader className="ml-auto border-0" toggle={closeLogin} />
+      <ModalHeader className="border-0" toggle={closeLogin}>
+        {Verified !== "true" && (
+          <span style={{ fontSize: "14px" }}>
+            Check your email.
+            <br /> Verify your account first!
+          </span>
+        )}
+      </ModalHeader>
       <Card className="w-100 mx-auto">
         <CardHeader className="text-center">
           <Nav tabs className="card-header-tabs" style={{ cursor: "pointer" }}>
@@ -185,7 +188,7 @@ const ModalAuth = props => {
                       </InputGroupAddon>
                       <Input
                         style={{ zIndex: "10" }}
-                        invalid={ErrorPassLog}
+                        invalid={Boolean(ErrorPassLog)}
                         onChange={handleLoginValues}
                         onKeyPress={loginKeyPress}
                         type={typePassLog}
@@ -203,7 +206,7 @@ const ModalAuth = props => {
                           </Button>
                         )}
                       </InputGroupAddon>
-                      {ErrorPassLog ? <FormFeedback className="ml-5 float-left">{TextPassLog}</FormFeedback> : null}
+                      {Boolean(ErrorPassLog) ? <FormFeedback className="ml-5 float-right">{ErrorPassLog}</FormFeedback> : null}
                     </InputGroup>
                   </FormGroup>
 
@@ -246,7 +249,7 @@ const ModalAuth = props => {
                       </InputGroupAddon>
                       <Input
                         style={{ zIndex: "10" }}
-                        valid={ErrorName}
+                        invalid={Boolean(ErrorName)}
                         onChange={handleRegisterValues}
                         onKeyPress={registerKeyPress}
                         type="text"
@@ -267,7 +270,7 @@ const ModalAuth = props => {
                       <Input
                         style={{ zIndex: "10" }}
                         valid={GoodUser}
-                        invalid={ErrorUser}
+                        invalid={Boolean(ErrorUser)}
                         onChange={handleRegisterValues}
                         onKeyPress={registerKeyPress}
                         type="text"
@@ -275,7 +278,7 @@ const ModalAuth = props => {
                         id="register-username"
                         placeholder="Username"
                       />
-                      {ErrorUser ? <FormFeedback className="form-error-message">{TextUser}</FormFeedback> : null}
+                      {!GoodUser ? <FormFeedback className="form-error-message">{ErrorUser}</FormFeedback> : null}
                     </InputGroup>
                   </FormGroup>
 
@@ -288,7 +291,7 @@ const ModalAuth = props => {
                       </InputGroupAddon>
                       <Input
                         style={{ zIndex: "10" }}
-                        valid={ErrorEmail}
+                        invalid={Boolean(ErrorEmail)}
                         onChange={handleRegisterValues}
                         onKeyPress={registerKeyPress}
                         type="email"
@@ -308,7 +311,7 @@ const ModalAuth = props => {
                       </InputGroupAddon>
                       <Input
                         style={{ zIndex: "10" }}
-                        invalid={ErrorPass}
+                        invalid={Boolean(ErrorPass)}
                         onChange={handleRegisterValues}
                         onKeyPress={registerKeyPress}
                         type={typePass}
@@ -339,7 +342,7 @@ const ModalAuth = props => {
                       </InputGroupAddon>
                       <Input
                         style={{ zIndex: "10" }}
-                        invalid={ErrorPass}
+                        invalid={Boolean(ErrorPass)}
                         onChange={handleRegisterValues}
                         onKeyPress={registerKeyPress}
                         type={typePass2}
@@ -358,13 +361,13 @@ const ModalAuth = props => {
                           </Button>
                         )}
                       </InputGroupAddon>
-                      {ErrorPass ? <FormFeedback className="form-error-message">{TextPass}</FormFeedback> : null}
+                      {Boolean(ErrorPass) ? <FormFeedback className="form-error-message">{ErrorPass}</FormFeedback> : null}
                     </InputGroup>
                   </FormGroup>
 
-                  {register ? (
+                  {register.username && register.password && register.password2 ? (
                     <Fragment>
-                      <FormGroup check className="mb-3" style={{ fontSize: "0.75rem" }}>
+                      {/* <FormGroup check className="mb-3" style={{ fontSize: "0.75rem" }}>
                         <Label check>
                           <Input type="checkbox" /> By clicking Submit, you agree to our <br />
                           <a tabIndex="-1" href="#">
@@ -373,8 +376,11 @@ const ModalAuth = props => {
                           , Visitor Agreement <br />
                           and Privacy Policy.
                         </Label>
-                      </FormGroup>
+                      </FormGroup> */}
 
+                      {Boolean(ErrorName) || Boolean(ErrorEmail) ? (
+                        <span className="form-error-message text-danger ">{ErrorName}</span>
+                      ) : null}
                       <FormGroup id="form-button">
                         <Button onClick={() => dispatch(RegisterAction(register))} color="secondary" size="md" block>
                           Submit

@@ -10,17 +10,17 @@ import { MdAdd } from "react-icons/md";
 import { API_URL } from "../../support/API_URL";
 import { STORE_GET, ADD_PRODUCT_SUCCESS, RESET_PRODUCT } from "../../support/types";
 
-export function AddProduct() {
+export function AddProduct({ match, history }) {
   /**
    * ============================================= REDUX REDUCER =====
    */
   const dispatch = useDispatch();
-  const State = useSelector(({ partner, product }) => {
+  const State = useSelector(({ Store, Product }) => {
     return {
-      StoreId: partner.storeid,
+      StoreId: Store.storeid,
 
-      isRedirect: product.redirect,
-      errorName: product.errorName
+      isRedirect: Product.redirect,
+      errorName: Product.errorName
     };
   });
   const { StoreId, isRedirect, errorName } = State;
@@ -30,6 +30,7 @@ export function AddProduct() {
     dispatch({ type: STORE_GET, payload: { storeid: StoreId } });
   }, [StoreId, dispatch]);
 
+  console.log("redirect", isRedirect);
   /**
    * ===================================================== STATE =====
    */
@@ -37,12 +38,12 @@ export function AddProduct() {
   const [tooltipOpen, setTooltipOpen] = useState("");
   const toggleTooltip = id => setTooltipOpen(id);
 
-  const [addImage, setImage] = useReducer((addImage, { type, value }) => {
+  const [addImage, setImage] = useReducer((addImage, { type, payload }) => {
     switch (type) {
       case "add":
-        return addImage.length < 4 ? [...addImage, value] : addImage;
+        return addImage.length < 4 ? [...addImage, payload] : addImage;
       case "remove":
-        return addImage.filter((_, index) => index !== value);
+        return addImage.filter((_, index) => index !== payload);
       default:
         return addImage.filter(val => val);
     }
@@ -50,14 +51,34 @@ export function AddProduct() {
 
   const handleAddImage = images => {
     images.forEach(File => {
-      setImage({ type: "add", value: File });
+      setImage({ type: "add", payload: File });
     });
   };
 
-  const handleAddProduct = async () => {
-    let formdata = new FormData();
+  async function handleAddProduct() {
+    let formData = new FormData();
     let options = {
       headers: { "Content-Type": "multipart/form-data", Authorization: `Bearer ${localStorage.getItem("token")}` }
+    };
+
+    let toasty = (msg, time = 5000, x = "error") => {
+      if (x === "error") {
+        toast.error(msg, {
+          position: "bottom-right",
+          autoClose: time,
+          hideProgressBar: true,
+          closeButton: false,
+          pauseOnHover: true
+        });
+      } else {
+        toast.success(msg, {
+          position: "bottom-right",
+          autoClose: time,
+          hideProgressBar: true,
+          closeButton: false,
+          pauseOnHover: true
+        });
+      }
     };
 
     let newProduct = {
@@ -68,28 +89,28 @@ export function AddProduct() {
       about: product.about
     };
 
-    addImage.forEach(image => formdata.append("image", image));
-    formdata.append("data", JSON.stringify(newProduct));
+    addImage.forEach(image => formData.append("image", image));
+    formData.append("data", JSON.stringify(newProduct));
 
-    try {
-      let { data } = await Axios.post(`${API_URL}/product/add`, formdata, options);
-      if (data.redirect) dispatch({ type: ADD_PRODUCT_SUCCESS });
-    } catch (err) {
-      toast.error("User not authorized!", {
-        position: "bottom-left",
-        autoClose: 1000,
-        hideProgressBar: true,
-        closeButton: false
-      });
-      console.log(err);
-    }
-  };
-
-  // console.log(isRedirect);
-  // console.log(StoreId);
+    if (!product.name) toasty("Insert product name!");
+    else if (!product.price) toasty("Insert product price!");
+    else if (!product.stock) toasty("Insert product stock!");
+    else if (!product.type) toasty("Insert product type!");
+    else if (!product.about) toasty("Insert product about!");
+    else if (!addImage[0]) toasty("Insert product picture!");
+    else
+      try {
+        let { data } = await Axios.post(`${API_URL}/product/add/${StoreId}`, formData, options);
+        if (data.redirect) dispatch({ type: ADD_PRODUCT_SUCCESS });
+        toasty("Add new product success!", 2000, "");
+      } catch (err) {
+        toasty("Add new product failed!", 2000);
+        console.log(err);
+      }
+  }
 
   if (isRedirect) {
-    return <Redirect to="/partner/product" />;
+    return <Redirect to={() => history.goBack()} />;
   }
   return (
     <Fragment>
@@ -222,7 +243,7 @@ export function AddProduct() {
                         key={"img" + id}
                         onMouseEnter={() => toggleTooltip(id)}
                         onMouseLeave={() => toggleTooltip(-1)}
-                        onClick={() => setImage({ type: "remove", value: id })}
+                        onClick={() => setImage({ type: "remove", payload: id })}
                         src={URL.createObjectURL(image)}
                         className="plus_icon overflow-hidden"
                         alt=""
@@ -257,9 +278,9 @@ export function AddProduct() {
 
       <div className="form-group d-flex">
         <div className="mx-auto">
-          <a href="/partner/product" className="btn btn-outline-dark px-3 mr-3 ">
+          <button onClick={() => history.goBack()} className="btn btn-outline-dark px-3 mr-3 ">
             Cancel
-          </a>
+          </button>
           <button onClick={handleAddProduct} className="btn btn-secondary px-4">
             Save
           </button>
