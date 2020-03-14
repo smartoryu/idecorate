@@ -1,4 +1,4 @@
-import { LOGIN_SUCCESS, LOGOUT, LOGOUT_SUCCESS, UNVERIFIED } from "../../support/types";
+import { LOGIN_SUCCESS, LOGOUT, UNVERIFIED } from "../../support/types";
 
 const INITIAL_STATE = {
   id: 0,
@@ -23,8 +23,6 @@ export default (state = INITIAL_STATE, { type, payload }) => {
     // ======================================== LOGOUT
     case LOGOUT:
       return { ...INITIAL_STATE, logout: true };
-    case LOGOUT_SUCCESS:
-      return INITIAL_STATE;
 
     default:
       return state;

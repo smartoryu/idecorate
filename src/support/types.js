@@ -28,10 +28,12 @@ export const UNVERIFIED = "UNVERIFIED";
 // ============================== PRODUCT
 export const GET_PRODUCT = "GET_PRODUCT";
 export const ADD_PRODUCT_SUCCESS = "ADD_PRODUCT_SUCCESS";
+export const EDIT_PRODUCT_SUCCESS = "EDIT_PRODUCT_SUCCESS";
 export const INSERT_PRODUCT = "INSERT_PRODUCT";
 export const EMPTY_PRODUCT_NAME = "EMPTY_PRODUCT_NAME";
 export const EMPTY_PRODUCT_PRICE = "EMPTY_PRODUCT_PRICE";
 export const RESET_PRODUCT = "RESET_PRODUCT";
 export const MODAL_IMAGES = "MODAL_IMAGES";
 export const MODAL_EDIT = "MODAL_EDIT";
-export const EDIT_SUCCESS = "EDIT_SUCCESS";
+export const GET_TYPES = "GET_TYPES";
+export const GET_IMAGES = "GET_IMAGES";

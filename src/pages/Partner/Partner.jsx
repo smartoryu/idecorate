@@ -17,8 +17,10 @@ function Partner({ match }) {
   const dispatch = useDispatch();
   const Loading = useSelector(({ Auth }) => Auth.loading);
   const Role = useSelector(({ User }) => User.role);
+  const Logout = useSelector(({ User }) => User.logout);
 
   useEffect(() => {
+    // this could be on actionRedux
     const fetchStore = async () => {
       try {
         let options = { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } };
@@ -61,11 +63,15 @@ function Partner({ match }) {
   };
 
   if (Loading) {
-    return <Spinner />;
-  } else if (Role !== "partner") {
+    if (Logout) {
+      return <Redirect to="/" />;
+    } else {
+      return <Spinner />;
+    }
+  }
+  if (Role !== "partner") {
     return <Redirect to="/" />;
   }
-
   return (
     <div className="partner-wrapper container-fluid my-3">
       <div className="row ml-5 mr-0 mb-5">

@@ -64,11 +64,11 @@ const Menu = () => {
           position: "top-end",
           timer: 1000,
           icon: "success",
+          showConfirmButton: false,
           onAfterClose: () => {
             localStorage.removeItem("token");
             dispatch({ type: "LOGOUT" });
-          },
-          showConfirmButton: false
+          }
         });
       }
     });

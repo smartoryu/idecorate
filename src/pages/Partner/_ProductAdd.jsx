@@ -2,15 +2,16 @@
 import React, { Fragment, useState, useReducer, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Col, CustomInput, Form, FormFeedback, FormGroup, Label, Input, InputGroup, InputGroupAddon, Tooltip } from "reactstrap";
-import { Redirect } from "react-router-dom";
+import { Link } from "react-router-dom";
 import Axios from "axios";
 
 import { toast } from "react-toastify";
 import { MdAdd } from "react-icons/md";
 import { API_URL } from "../../support/API_URL";
-import { STORE_GET, ADD_PRODUCT_SUCCESS, RESET_PRODUCT } from "../../support/types";
+import { STORE_GET, ADD_PRODUCT_SUCCESS, GET_TYPES } from "../../support/types";
+import { FetchTypes } from "../../redux/actions";
 
-export function AddProduct({ match, history }) {
+export function AddProduct({ history }) {
   /**
    * ============================================= REDUX REDUCER =====
    */
@@ -19,18 +20,17 @@ export function AddProduct({ match, history }) {
     return {
       StoreId: Store.storeid,
 
+      Types: Product.productTypes,
       isRedirect: Product.redirect,
       errorName: Product.errorName
     };
   });
-  const { StoreId, isRedirect, errorName } = State;
+  const { StoreId, Types, isRedirect, errorName } = State;
 
   useEffect(() => {
-    dispatch({ type: RESET_PRODUCT });
-    dispatch({ type: STORE_GET, payload: { storeid: StoreId } });
-  }, [StoreId, dispatch]);
+    dispatch(FetchTypes());
+  }, [dispatch]);
 
-  console.log("redirect", isRedirect);
   /**
    * ===================================================== STATE =====
    */
@@ -110,7 +110,7 @@ export function AddProduct({ match, history }) {
   }
 
   if (isRedirect) {
-    return <Redirect to={() => history.goBack()} />;
+    return <Link to={() => history.goBack()} />;
   }
   return (
     <Fragment>
@@ -182,19 +182,15 @@ export function AddProduct({ match, history }) {
               type="select"
               name="product_type"
               id="product_type">
-              <option hidden>Select product type</option>
-              <option>Chair</option>
-              <option>Sofa</option>
-              <option>Table</option>
-              <option>Cabinet</option>
-              <option>Bed</option>
-              <option>Pillow</option>
-              <option>Accesories</option>
+              <option>=== Select product type ===</option>
+              {Types.map(({ id, type }) => (
+                <option key={id}>{type}</option>
+              ))}
             </Input>
           </Col>
         </FormGroup>
 
-        <FormGroup id="form-category" row>
+        {/* <FormGroup id="form-category" row>
           <Label for="product_category" sm={2}>
             Product Category
           </Label>
@@ -204,7 +200,7 @@ export function AddProduct({ match, history }) {
             <CustomInput type="checkbox" id="product_category3" label="Dining Room" />
             <CustomInput type="checkbox" id="product_category4" label="Living Room" />
           </Col>
-        </FormGroup>
+        </FormGroup> */}
 
         <FormGroup id="form-about" row>
           <Label for="product_about" sm={2}>
