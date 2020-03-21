@@ -19,6 +19,8 @@ export default (state = INITIAL_STATE, { type, payload, modal }) => {
       return { ...INITIAL_STATE, ...payload, login: true };
     case UNVERIFIED:
       return { ...INITIAL_STATE, verified: "false" };
+    case "LOGIN_PARTNER":
+      return { ...INITIAL_STATE, ...payload.user, login: true };
 
     // ======================================== LOGIN SUCCESS
     case MODAL_AUTH:

@@ -27,7 +27,10 @@ function App() {
   toast.configure();
 
   useEffect(() => {
-    dispatch(ReLoginAction(localStorage.getItem("token")));
+    let token = localStorage.getItem("token");
+    if (token) {
+      dispatch(ReLoginAction(token));
+    }
   }, [dispatch]);
 
   return (

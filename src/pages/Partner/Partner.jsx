@@ -1,8 +1,7 @@
 /* eslint-disable no-unused-vars */
-import React, { Fragment, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import React, { Fragment } from "react";
+import { useSelector } from "react-redux";
 import { Link, Route, Redirect } from "react-router-dom";
-import Axios from "axios";
 import { Modal, ModalBody, ModalFooter, Button, Badge } from "reactstrap";
 
 import { Details } from "./_Details";
@@ -12,29 +11,18 @@ import { Store } from "./_Store";
 import { Review } from "./_Review";
 
 import { Spinner } from "../../components/Spinner";
-import { API_URL } from "../../support/API_URL";
-import { FetchProduct, FetchTypes } from "../../redux/actions/ProductActions";
-import { STORE_GET, GET_PRODUCT } from "../../support/types";
 
 function Partner({ match }) {
-  const dispatch = useDispatch();
-  const { Loading, DataProduct, Role, Logout, ModalStore, StoreId } = useSelector(({ Auth, User, Product, Store }) => {
+  const { Loading, DataProduct, Role, Logout, ModalStore } = useSelector(({ Auth, User, Product, Store }) => {
     return {
       Loading: Auth.loading,
 
       DataProduct: Product.dataProduct,
       ModalStore: Store.modalStore,
-      StoreId: Store.storeid,
       Role: User.role,
       Logout: User.logout
     };
   });
-
-  useEffect(() => {
-    // this could be on actionRedux
-    // dispatch(FetchProduct());
-    // dispatch(FetchTypes());
-  }, [StoreId, dispatch]);
 
   if (Loading) {
     return <Spinner />;
@@ -75,15 +63,15 @@ const PartnerSideMenu = ({ match, DataProduct }) => {
       <div className="card">
         <div className="card-header">Product</div>
         <ul className="list-group list-group-flush">
-          <a href={`${match.url}/product`} className="list-group-item list-group-item-action border-0">
+          {/* <a href={`${match.url}/product`} className="list-group-item list-group-item-action border-0">
             <div>
               Product List <Badge color="primary">{DataProduct.length}</Badge>
             </div>
-          </a>
+          </a> */}
           {/* THIS ON US THE SOURCE OF BUG, well as far as I know */}
-          {/* <Link to={`${match.url}/product`} className="list-group-item list-group-item-action border-0">
+          <Link to={`${match.url}/product`} className="list-group-item list-group-item-action border-0">
             Product List <Badge color="primary">{DataProduct.length}</Badge>
-          </Link> */}
+          </Link>
           <Link to={`${match.url}/review`} className="list-group-item list-group-item-action border-0">
             Review
           </Link>

@@ -1,24 +1,7 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { useEffect, useState, useRef } from "react";
-import {
-  Card,
-  CardBody,
-  CardImg,
-  CardTitle,
-  CardSubtitle,
-  CardText,
-  Button,
-  Table,
-  CardFooter,
-  Col,
-  FormGroup,
-  Form,
-  Label,
-  Input,
-  InputGroup,
-  InputGroupAddon
-} from "reactstrap";
+import React, { useState } from "react";
+import { Card, CardBody, CardImg, Col, FormGroup, Label, Input, InputGroup, InputGroupAddon } from "reactstrap";
 import { FaCamera } from "react-icons/fa";
 import { toast } from "react-toastify";
 import { useSelector, useDispatch } from "react-redux";
@@ -33,7 +16,7 @@ export const Store = () => {
    * desctructuring from State (redux's reducer)
    */
   const dispatch = useDispatch();
-  const { userId, storeid, storename, storelink, phone, email, photo, address, city, province, onEdit } = useSelector(
+  const { storeid, storename, storelink, phone, email, photo, address, city, province, onEdit } = useSelector(
     ({ User, Store }) => {
       return {
         userId: User.id,
@@ -130,7 +113,6 @@ export const Store = () => {
   if (!storename) {
     return null;
   }
-  const host = "http://localhost:2400/s/";
   return (
     <div id="page-content-wrapper">
       <div className="container-fluid">
@@ -267,55 +249,8 @@ export const Store = () => {
               </CardBody> */}
             </Col>
           </FormGroup>
-          {/* <CardFooter className="d-flex">
-            {onEdit ? (
-              <>
-                <button onClick={onSaveClick} className="btn btn-sm btn-outline-primary ml-auto">
-                  Save
-                </button>
-                <button onClick={onCancelClick} className="btn btn-sm btn-outline-danger ml-3">
-                  Cancel
-                </button>
-              </>
-            ) : (
-              <button onClick={onEditClick} className="btn btn-sm btn-outline-dark ml-auto" style={{ width: "100px" }}>
-                Edit
-              </button>
-            )}
-          </CardFooter> */}
         </Card>
       </div>
     </div>
-  );
-};
-
-/**
- * ========================= RENDER PROFILE =========================
- */
-const RowData = ({ edit, name, content, func, title }) => {
-  const host = "http://localhost:2400/s/";
-  return (
-    <tr key={title}>
-      <th style={{ minWidth: "5%", padding: "15px 0" }} scope="row">
-        {title}
-      </th>
-      <td style={{ width: "5%", padding: "15px 0" }}>:</td>
-      {edit ? (
-        name === "storelink" ? (
-          <td style={{ width: "80%", textAlign: "left", padding: "12px 0" }}>
-            {host}&nbsp;
-            <input type="text" name={name} onChange={func} defaultValue={content} />
-          </td>
-        ) : (
-          <td style={{ width: "80%", textAlign: "left", padding: "12px 0" }}>
-            <input type="text" name={name} onChange={func} defaultValue={content} />
-          </td>
-        )
-      ) : name === "storelink" ? (
-        <td style={{ width: "80%", textAlign: "left", padding: "15px 0" }}>{host + content}</td>
-      ) : (
-        <td style={{ width: "80%", textAlign: "left", padding: "15px 0" }}>{content}</td>
-      )}
-    </tr>
   );
 };

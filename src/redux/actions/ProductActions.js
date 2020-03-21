@@ -12,19 +12,20 @@ import {
   GET_PRODUCT,
   EDIT_SUCCESS,
   GET_TYPES,
-  GET_IMAGES
+  GET_IMAGES,
+  STORE_GET
 } from "../../support/types";
 import { toast } from "react-toastify";
 
-const token = { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } };
+const options = { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } };
 
-export const FetchProduct = () => {
+export const FetchStore = StoreId => {
   return async dispatch => {
     try {
-      const { data } = await Axios.get(`${API_URL}/product/get_products`, token);
-      dispatch({ type: GET_PRODUCT, payload: data.result });
+      const { data } = await Axios.get(`${API_URL}/partner/${StoreId}`, options);
+      dispatch({ type: STORE_GET, payload: data.result });
     } catch (err) {
-      toast.error("User not authorized!", {
+      toast.error("User not authorized to get store!", {
         position: "bottom-left",
         autoClose: 1000,
         hideProgressBar: true,
@@ -34,18 +35,41 @@ export const FetchProduct = () => {
   };
 };
 
+export const FetchProduct = () => {
+  return async dispatch => {
+    let token = localStorage.getItem("token");
+    console.log("token", token);
+    if (token) {
+      try {
+        const { data } = await Axios.get(`${API_URL}/product/get_products`, options);
+        dispatch({ type: GET_PRODUCT, payload: data.result });
+      } catch (err) {
+        toast.error("User not authorized to get products!", {
+          position: "bottom-left",
+          autoClose: 1000,
+          hideProgressBar: true,
+          closeButton: false
+        });
+      }
+    }
+  };
+};
+
 export const FetchTypes = () => {
   return async dispatch => {
-    try {
-      const { data } = await Axios.get(`${API_URL}/product/get_types`, token);
-      dispatch({ type: GET_TYPES, payload: data.result });
-    } catch (err) {
-      toast.error("User not authorized!", {
-        position: "bottom-left",
-        autoClose: 1000,
-        hideProgressBar: true,
-        closeButton: false
-      });
+    let token = localStorage.getItem("token");
+    if (token) {
+      try {
+        const { data } = await Axios.get(`${API_URL}/product/get_types`, options);
+        dispatch({ type: GET_TYPES, payload: data.result });
+      } catch (err) {
+        toast.error("User not authorized to get type!", {
+          position: "bottom-left",
+          autoClose: 1000,
+          hideProgressBar: true,
+          closeButton: false
+        });
+      }
     }
   };
 };
@@ -54,7 +78,7 @@ export const FetchImages = productid => {
   return async dispatch => {
     if (productid > 0) {
       try {
-        const { data } = await Axios.get(`${API_URL}/product/get_images/${productid}`, token);
+        const { data } = await Axios.get(`${API_URL}/product/get_images/${productid}`, options);
         dispatch({ type: GET_IMAGES, payload: data.result });
       } catch (err) {
         toast.error("User not authorized!", {

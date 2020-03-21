@@ -49,6 +49,8 @@ export default (state = INITIAL_STATE, action) => {
       return { ...INITIAL_STATE, modalAuth: true, activeTab: "1" };
     case LOGIN_FAILED:
       return { ...INITIAL_STATE, loading: false };
+    case "LOGIN_PARTNER":
+      return { ...INITIAL_STATE, loading: false };
 
     // ======================================== MODAL AUTH
     case MODAL_AUTH:

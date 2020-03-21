@@ -14,9 +14,7 @@ import {
   MODAL_AUTH,
   SERVER_ERROR,
   REG_SUCCESS,
-  UNVERIFIED,
-  STORE_GET,
-  GET_PRODUCT
+  UNVERIFIED
 } from "../../support/types";
 import Swal from "sweetalert2";
 
@@ -38,20 +36,24 @@ export const LoginAction = (username, password) => {
           return dispatch({ type: WRONG_PASSLOG, payload: data.message });
         case LOGOUT_SUCCESS:
           return dispatch({ type: LOGOUT_SUCCESS });
-        case CREATE_NEW_STORE:
+        case "LOGIN_NEW_PARTNER":
           dispatch({ type: LOGIN_SUCCESS });
           localStorage.setItem("token", data.token);
           return dispatch({ type: CREATE_NEW_STORE, modal: true, payload: data.result });
         case LOGIN_SUCCESS:
           localStorage.setItem("token", data.token);
           dispatch({ type: MODAL_AUTH, payload: false });
-          //
-          let options = { headers: { Authorization: `Bearer ${data.token}` } };
-          let product = await Axios.get(`${API_URL}/product/get_products`, options);
-          dispatch({ type: GET_PRODUCT, payload: product.data.result });
-          //
-          dispatch({ type: STORE_GET, payload: data.store });
           return dispatch({ type: LOGIN_SUCCESS, payload: data.result });
+        case "LOGIN_PARTNER":
+          console.log("login token", data.token);
+          localStorage.setItem("token", data.token);
+          dispatch({ type: MODAL_AUTH, payload: false });
+
+          let options = { headers: { Authorization: `Bearer ${data.token}` } };
+          const prod = await Axios.get(`${API_URL}/product/get_products`, options);
+          dispatch({ type: "GET_PRODUCT", payload: prod.data.result });
+
+          return dispatch({ type: "LOGIN_PARTNER", payload: { user: data.result, store: data.store } });
         default:
           break;
       }
@@ -64,16 +66,31 @@ export const LoginAction = (username, password) => {
 
 export const ReLoginAction = token => {
   return async dispatch => {
-    console.log("relog");
     let options = { headers: { Authorization: `Bearer ${token}` } };
     try {
       const { data } = await Axios.get(`${API_URL}/auth/keeplogin`, options);
-      if (data.status === CREATE_NEW_STORE) {
-        dispatch({ type: LOGIN_SUCCESS });
-        return dispatch({ type: CREATE_NEW_STORE, modal: true, payload: data.result });
+      switch (data.status) {
+        case CREATE_NEW_STORE:
+          localStorage.setItem("token", data.token);
+          dispatch({ type: LOGIN_SUCCESS });
+          return dispatch({ type: CREATE_NEW_STORE, modal: true, payload: data.result });
+        case LOGIN_SUCCESS:
+          localStorage.setItem("token", data.token);
+          return dispatch({ type: LOGIN_SUCCESS, payload: data.result });
+        case "LOGIN_PARTNER":
+          localStorage.setItem("token", data.token);
+
+          let options = { headers: { Authorization: `Bearer ${data.token}` } };
+          const products = await Axios.get(`${API_URL}/product/get_products`, options);
+          const types = await Axios.get(`${API_URL}/product/get_types`, options);
+          dispatch({ type: "GET_TYPES", payload: types.data.result });
+          dispatch({ type: "GET_PRODUCT", payload: products.data.result });
+
+          return dispatch({ type: "LOGIN_PARTNER", payload: { user: data.result, store: data.store } });
+
+        default:
+          break;
       }
-      dispatch({ type: STORE_GET, payload: data.store });
-      dispatch({ type: LOGIN_SUCCESS, payload: data.result });
     } catch (err) {
       console.log(err);
       dispatch({ type: SERVER_ERROR, payload: "Server error!" });
