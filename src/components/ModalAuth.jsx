@@ -27,7 +27,7 @@ import {
 import classnames from "classnames";
 import { FaAt, FaEye, FaEyeSlash, FaRegEnvelope, FaTimes, FaKey, FaUserAlt } from "react-icons/fa";
 import { CheckUsername, LoginAction, RegisterAction } from "../redux/actions";
-import { LOGOUT } from "../support/types";
+import { LOGOUT, CHANGE_MODAL_ACTIVE_TAB } from "../support/types";
 
 const ModalAuth = props => {
   /**
@@ -106,6 +106,7 @@ const ModalAuth = props => {
    * - The <Modal> isOpen property is watching a boolean in redux's reducer
    */
   const ModalAuth = useSelector(({ Auth }) => Auth.modalAuth);
+  const ActiveTab = useSelector(({ Auth }) => Auth.activeTab);
   const closeLogin = () => dispatch({ type: LOGOUT });
 
   /**
@@ -113,8 +114,8 @@ const ModalAuth = props => {
    * - This section is controlling the component
    *   which component is rendered, Login or Register
    */
-  const [activeTab, setActiveTab] = useState("1");
-  const toggleTab = tab => (activeTab !== tab ? setActiveTab(tab) : null);
+  // const [activeTab, setActiveTab] = useState(ActiveTab);
+  const toggleTab = tab => (ActiveTab !== tab ? dispatch({ type: CHANGE_MODAL_ACTIVE_TAB, payload: tab }) : null);
 
   /**
    * ====================================================== RENDER SECTION ====
@@ -133,19 +134,19 @@ const ModalAuth = props => {
         <CardHeader className="text-center">
           <Nav tabs className="card-header-tabs" style={{ cursor: "pointer" }}>
             <NavItem className="w-50">
-              <NavLink className={classnames({ active: activeTab === "1" })} onClick={() => toggleTab("1")}>
+              <NavLink className={classnames({ active: ActiveTab === "1" })} onClick={() => toggleTab("1")}>
                 Login
               </NavLink>
             </NavItem>
             <NavItem className="w-50">
-              <NavLink className={classnames({ active: activeTab === "2" })} onClick={() => toggleTab("2")}>
+              <NavLink className={classnames({ active: ActiveTab === "2" })} onClick={() => toggleTab("2")}>
                 Register
               </NavLink>
             </NavItem>
           </Nav>
         </CardHeader>
         <CardBody>
-          <TabContent activeTab={activeTab}>
+          <TabContent activeTab={ActiveTab}>
             {/**
              * ============================================================================== TAB CONTENT ===
              */}

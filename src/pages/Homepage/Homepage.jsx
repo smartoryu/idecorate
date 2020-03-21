@@ -16,7 +16,6 @@ const Homepage = () => {
   if (Role === "partner") {
     return <Redirect to={`/p/${userId}/${Username}/store`} />;
   }
-
   return (
     <div className="homepage">
       <div className="row no-gutters main-content">

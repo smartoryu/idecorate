@@ -3,10 +3,12 @@ import AuthReducer from "./AuthReducer";
 import ProductReducer from "./ProductReducer";
 import UserReducer from "./UserReducer";
 import StoreReducer from "./StoreReducer";
+import AccountVerificationReducer from "./AccountVerificationReducer";
 
 export default combineReducers({
   Auth: AuthReducer,
   Product: ProductReducer,
   User: UserReducer,
-  Store: StoreReducer
+  Store: StoreReducer,
+  AccountVerification: AccountVerificationReducer
 });

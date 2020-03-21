@@ -6,7 +6,6 @@
 // Set your brand colors
 
 // Import
-// @import "./login";
 @import "./menu";
 @import "./user";
 @import "./footer";
@@ -18,41 +17,42 @@ div {
 
 div.wrapper {
   // border: 1px solid #f6fa2b;
-  height: 100%;
+  display: block;
+  min-height: 100%;
+  padding-top: 110px;
   width: 100%;
   flex: 1 1 auto;
   margin: 0 auto;
   padding-top: 120px;
 
-  > div.homepage {
-    // border: 1px solid #f6fa2b;
-    max-width: 90vw;
-    margin: 1em auto;
-    // margin-top: 100px;
-    // display: flex;
-    align-items: center;
-    vertical-align: middle;
-  }
+  > div.content {
+    padding: 20px;
+    padding-bottom: 320px;
 
-  > section.partner-wrapper {
-    // min-height: calc(100vh - 110.891px);
-    min-height: 100vh;
-    width: 100%;
-    margin: 5em 5em;
-    display: block;
-    align-items: baseline;
-  }
+    > div.homepage {
+      // border: 1px solid #f6fa2b;
+      max-width: 90vw;
+      margin: 1em auto;
+      align-items: center;
+      vertical-align: middle;
+    }
 
-  .slideshow__container {
-    display: block;
-    // height: 300px;
-    // width: 500px;
-  }
+    > section.partner-wrapper {
+      width: 100%;
+      margin: 5em 5em;
+      display: block;
+      align-items: baseline;
+    }
 
-  .home-slider {
-    .card {
-      border: none;
-      padding: 0 5px;
+    .slideshow__container {
+      display: block;
+    }
+
+    .home-slider {
+      .card {
+        border: none;
+        padding: 0 5px;
+      }
     }
   }
 }
@@ -69,13 +69,11 @@ div.wrapper {
   background-color: transparent;
   color: grey;
 
-  > .plus_icon {
+  > img.plus_icon {
+    max-width: 100%;
+    height: auto;
     margin: auto;
     line-height: 0;
-  }
-
-  > img {
-    height: 100%;
   }
 
   &:hover {
@@ -103,6 +101,8 @@ div.wrapper {
   color: grey;
 
   > .plus_icon {
+    max-width: 100%;
+    height: auto;
     margin: auto;
     line-height: 0;
   }
@@ -133,7 +133,9 @@ div.wrapper {
   background-color: transparent;
   color: grey;
 
-  > .plus_icon {
+  > img.plus_icon {
+    max-width: 100%;
+    height: auto;
     margin: auto;
     line-height: 0;
   }
@@ -167,7 +169,9 @@ div.wrapper {
     color: grey;
 
     img {
-      width: 100%;
+      max-width: 100%;
+      height: auto;
+      margin: auto;
     }
   }
 
@@ -201,7 +205,9 @@ div.wrapper {
     background-color: transparent;
     color: grey;
 
-    > .plus_icon {
+    > img.plus_icon {
+      max-width: 100%;
+      height: auto;
       margin: auto;
       line-height: 0;
     }
@@ -331,6 +337,125 @@ div.wrapper {
           font-size: 1.5rem;
         }
       }
+    }
+  }
+}
+
+#new-s-photo {
+  #new-s-photo-input {
+    display: none;
+  }
+
+  div.add-photo-input {
+    display: flex;
+    height: 120px;
+    width: 120px;
+    padding: 0;
+    margin: 0;
+    justify-items: center;
+    border: dashed 1px grey;
+    border-radius: 5px;
+    background-color: transparent;
+    color: grey;
+
+    > .plus_icon {
+      margin: auto;
+      line-height: 0;
+    }
+
+    &:hover {
+      color: #313131 !important;
+      border: dashed 1px #414141;
+      box-shadow: 0.5px 0.5px 3px #919090;
+      cursor: pointer;
+    }
+  }
+}
+
+#new-s-photo {
+  #new-s-photo-input {
+    display: none;
+  }
+
+  div.add-photo-preview {
+    display: flex;
+    height: 120px;
+    width: 120px;
+    padding: 0;
+    margin: 0;
+    justify-items: center;
+    border-radius: 5px;
+    background-color: transparent;
+    color: grey;
+
+    > img {
+      margin: auto;
+      width: 100%;
+    }
+
+    &:hover {
+      color: #313131 !important;
+      border: solid 1px grey;
+      box-shadow: 0.5px 0.5px 3px #919090;
+      cursor: pointer;
+
+      > img {
+        padding: 1px;
+        // width: 80%;
+      }
+    }
+  }
+}
+
+.table-product {
+  // border: solid 1px grey;
+  box-shadow: 0.5px 0.5px 3px #919090;
+
+  tr {
+    width: 100%;
+    display: inline-table;
+    table-layout: fixed;
+  }
+
+  table {
+    padding-top: 5px;
+    height: 355px;
+
+    thead {
+      th {
+        &:first-child {
+          width: 8%;
+        }
+        &:nth-child(3) {
+          width: 20%;
+        }
+        &:nth-child(4) {
+          width: 10%;
+        }
+      }
+      display: inline-table;
+      height: 50px;
+      width: 98.5%;
+    }
+
+    tbody {
+      td {
+        &:first-child {
+          width: 8%;
+        }
+        &:nth-child(3) {
+          width: 20%;
+        }
+        &:nth-child(4) {
+          width: 10%;
+        }
+      }
+
+      overflow-y: scroll;
+      overflow-x: unset;
+      height: 300px;
+      width: 95%;
+      position: absolute;
     }
   }
 }

@@ -8,7 +8,14 @@ import Axios from "axios";
 
 import { Spinner } from "../../components/Spinner";
 import { API_URL } from "../../support/API_URL";
-import { MODAL_IMAGES, MODAL_EDIT, GET_PRODUCT, GET_IMAGES, EDIT_PRODUCT_SUCCESS } from "../../support/types";
+import {
+  MODAL_IMAGES,
+  MODAL_EDIT,
+  GET_PRODUCT,
+  GET_IMAGES,
+  EDIT_PRODUCT_SUCCESS,
+  DELETE_PRODUCT_SUCCESS
+} from "../../support/types";
 
 import { toast } from "react-toastify";
 import Swal from "sweetalert2";
@@ -25,10 +32,11 @@ import {
   Label,
   UncontrolledTooltip,
   Tooltip,
-  ModalFooter
+  ModalFooter,
+  Badge
 } from "reactstrap";
 import { MdAdd, MdFileUpload } from "react-icons/md";
-import { FaRegImages, FaRegEdit, FaRegTrashAlt } from "react-icons/fa";
+import { FaRegImages, FaRegEdit, FaRegTrashAlt, FaArrowDown } from "react-icons/fa";
 import { FetchProduct, FetchTypes, FetchImages } from "../../redux/actions";
 
 export const Product = ({ match }) => {
@@ -37,7 +45,20 @@ export const Product = ({ match }) => {
    * Get the value from redux's reducer and desctructured it
    */
   const dispatch = useDispatch();
-  const State = useSelector(({ User, Store, Product }) => {
+  const {
+    UserId,
+    Role,
+    Username,
+    Logout,
+    StoreId,
+    dataProduct,
+    Types,
+    ProductImages,
+    ProductId,
+    ProductName,
+    openModalImage,
+    onEdit
+  } = useSelector(({ User, Store, Product }) => {
     return {
       UserId: User.id,
       Role: User.role,
@@ -56,20 +77,6 @@ export const Product = ({ match }) => {
       onEdit: Product.onEdit
     };
   });
-  const {
-    UserId,
-    Role,
-    Username,
-    Logout,
-    StoreId,
-    dataProduct,
-    Types,
-    ProductImages,
-    ProductId,
-    ProductName,
-    openModalImage,
-    onEdit
-  } = State;
 
   /**
    * =========================================================== USE STATE ====
@@ -146,29 +153,10 @@ export const Product = ({ match }) => {
           let { data } = await Axios.delete(`${API_URL}/product/delete/i/${imageid}`, options);
           dispatch({ type: GET_IMAGES, payload: data.result });
           setAddImage({ type: "reset" });
+          console.log("deleted");
         } catch (err) {
           Swal.showValidationMessage(`Request failed: ${err}`);
         }
-      }
-    }).then(result => {
-      if (result.value) {
-        Swal.fire({
-          toast: true,
-          title: "Deleted!",
-          position: "center",
-          timer: 1000,
-          icon: "success",
-          showConfirmButton: false
-        });
-      } else {
-        Swal.fire({
-          toast: true,
-          title: "Canceled!",
-          position: "center",
-          timer: 1000,
-          icon: "error",
-          showConfirmButton: false
-        });
       }
     });
   }
@@ -180,7 +168,6 @@ export const Product = ({ match }) => {
 
     Swal.fire({
       toast: true,
-      // title: <span style={{ color: "tomato" }}>Delete product?</span>,
       title: "Delete product?",
       icon: "warning",
       position: "top-end",
@@ -193,7 +180,8 @@ export const Product = ({ match }) => {
       preConfirm: async () => {
         try {
           let { data } = await Axios.delete(`${API_URL}/product/delete/p/${productid}`, options);
-          if (data.status !== "error") dispatch({ type: GET_PRODUCT, payload: { dataProduct: data.result } });
+          dispatch({ type: DELETE_PRODUCT_SUCCESS, payload: data.result });
+          console.log("datadel", data.result);
         } catch (err) {
           Swal.showValidationMessage(`Request failed: ${err}`);
         }
@@ -205,8 +193,8 @@ export const Product = ({ match }) => {
           title: "Deleted!",
           position: "top-end",
           timer: 1000,
-          icon: "success",
-          showConfirmButton: false
+          showConfirmButton: false,
+          icon: "success"
         });
       } else {
         Swal.fire({
@@ -214,8 +202,8 @@ export const Product = ({ match }) => {
           title: "Canceled!",
           position: "top-end",
           timer: 1000,
-          icon: "error",
-          showConfirmButton: false
+          showConfirmButton: false,
+          icon: "error"
         });
       }
     });
@@ -230,6 +218,7 @@ export const Product = ({ match }) => {
     setAddImage({ type: "reset" });
     dispatch({ type: MODAL_EDIT, payload: [] });
   };
+
   const errToast = (msg, time = 5000, x = "error") => {
     if (x === "error") {
       toast.error(msg, {
@@ -254,6 +243,7 @@ export const Product = ({ match }) => {
     setEditProduct(dataProduct[id]);
     dispatch({ type: MODAL_EDIT, payload: { productid, productname } });
   };
+
   function handleSaveEdit() {
     let formData = new FormData();
     let options = { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } };
@@ -280,7 +270,7 @@ export const Product = ({ match }) => {
       showLoaderOnConfirm: true,
       preConfirm: async () => {
         try {
-          let { data } = await Axios.post(`${API_URL}/product/add-image/${ProductId}`, formData, options);
+          let { data } = await Axios.post(`${API_URL}/product/edit/${ProductId}`, formData, options);
           data.products && dispatch({ type: EDIT_PRODUCT_SUCCESS, payload: data.products });
           data.images && dispatch({ type: GET_IMAGES, payload: data.images });
           setAddImage({ type: "reset" });
@@ -297,7 +287,7 @@ export const Product = ({ match }) => {
           timer: 1000,
           icon: "success",
           showConfirmButton: false,
-          onClose: dispatch({ type: MODAL_EDIT })
+          onAfterClose: dispatch({ type: MODAL_EDIT })
         });
       } else {
         Swal.fire({
@@ -318,10 +308,8 @@ export const Product = ({ match }) => {
    */
   const ModalImages = () => {
     return (
-      <Modal autoFocus={false} size="lg" fade={false} centered isOpen={openModalImage}>
-        <ModalHeader toggle={toggleModalImage}>
-          {ProductImages.length ? `${ProductName}'s Images` : `No Product Images for ${ProductName}`}
-        </ModalHeader>
+      <Modal toggle={toggleModalImage} autoFocus={false} size="lg" fade={false} centered isOpen={openModalImage}>
+        <ModalHeader>{ProductImages.length ? `${ProductName}'s Images` : `No Product Images for ${ProductName}`}</ModalHeader>
         <ModalBody className="d-flex">
           <div className="mx-auto align-content-center">
             {ProductImages.length
@@ -352,85 +340,8 @@ export const Product = ({ match }) => {
                   );
                 })
               : null}
-            {/* 
-            {ProductImages.length < 4 && addImage.length > 0
-              ? addImage.map((val, id) => {
-                  return (
-                    <>
-                      <Label className="image_product_preview">
-                        <div style={{ border: "1px solid green" }} className="image_thumbnail" key={"divAddImg" + id}>
-                          <img id={"srcAddImg-" + id} src={URL.createObjectURL(val)} alt="img" />
-                        </div>
-                        <div className="image-button">
-                          <span onClick={() => setAddImage({ type: "remove", payload: id })} id={"delAddImg-" + id}>
-                            <FaRegTrashAlt />
-                          </span>
-                        </div>
-                      </Label>
-
-                      {addImage.length > 0 && id >= 0 && (
-                        <Fragment key={`tooltip-addImg${id}`}>
-                          <UncontrolledTooltip
-                            key={"toolSrcAddImg-" + id}
-                            placement="bottom"
-                            fade={false}
-                            target={"srcAddImg-" + id}>
-                            Not yet uploaded!
-                          </UncontrolledTooltip>
-                          <UncontrolledTooltip
-                            key={"toolDelAddImg-" + id}
-                            placement="bottom"
-                            fade={false}
-                            target={"delAddImg-" + id}>
-                            click to remove!
-                          </UncontrolledTooltip>
-                        </Fragment>
-                      )}
-                    </>
-                  );
-                })
-              : null}
-
-            {ProductImages.length >= 0 && ProductImages.length < 4 && addImage.length < 4 - ProductImages.length ? (
-              <>
-                <Input
-                  onChange={({ target }) => setAddImage({ type: "add", payload: target.files[0] })}
-                  id="add_product_image"
-                  className="add_product_input"
-                  tabIndex="-1"
-                  accept="image/png, image/jpeg, image/webp"
-                  type="file"
-                />
-
-                <Label for="add_product_image" className="image_product_preview">
-                  <div className="add_product_icon">
-                    <MdAdd height="100%" className="plus_icon" />
-                  </div>
-                  <div className="image-button-add">
-                    <span id="image-button-add-icon">
-                      <MdFileUpload />
-                    </span>
-                  </div>
-                </Label>
-
-                <UncontrolledTooltip placement="bottom" fade={false} target={"image-button-add-icon"}>
-                  click to add!
-                </UncontrolledTooltip>
-              </>
-            ) : null} */}
           </div>
         </ModalBody>
-        {/* <ModalFooter style={{ height: "fit-content" }}>
-          {addImage.length ? (
-            <button onClick={handleAddImage} className="btn btn-sm btn-success mr-3">
-              Save
-            </button>
-          ) : (
-            <button onClick={toggleModalImage} className="btn btn-sm btn-warning mr-3">
-              Close
-            </button>
-          )}
-        </ModalFooter> */}
       </Modal>
     );
   };
@@ -447,7 +358,8 @@ export const Product = ({ match }) => {
                   onClick={() => handleImage({ productid: product.productid, productname: product.name })}
                   className="btn btn-sm btn-secondary"
                   id={`imgprod-${id}`}>
-                  <FaRegImages />
+                  <img src={`${Path + product.cover_image}`} style={{ width: "75px" }} alt="" />
+                  {/* <FaRegImages /> */}
                 </button>
               </td>
 
@@ -455,7 +367,7 @@ export const Product = ({ match }) => {
               <td>{product.stock}</td>
               <td>{product.type}</td>
               <td>Rp {numeral(product.price).format("0,0.00")}</td>
-              <td style={{ maxWidth: "200px" }}>{product.about}</td>
+              {/* <td style={{ maxWidth: "200px" }}>{product.about}</td> */}
               <td>
                 <button
                   onClick={() => handleModalEdit(id, product.productid, product.name)}
@@ -658,11 +570,11 @@ export const Product = ({ match }) => {
         <ModalFooter>
           <div className="form-group d-flex">
             <div className="mx-auto">
-              <button onClick={toggleModalEdit} className="btn btn-outline-dark px-3 mr-3 ">
-                Cancel
-              </button>
-              <button onClick={handleSaveEdit} className="btn btn-secondary px-4">
+              <button onClick={handleSaveEdit} className="btn btn-outline-primary px-3 mr-3">
                 Save
+              </button>
+              <button onClick={toggleModalEdit} className="btn btn-danger px-3">
+                Cancel
               </button>
             </div>
           </div>
@@ -674,7 +586,6 @@ export const Product = ({ match }) => {
   /**
    *  ======================== === R = E = N = D = E = R === ==================
    */
-  console.log("img", addImage);
   if (!StoreId) {
     return <Spinner />;
   }
@@ -688,13 +599,8 @@ export const Product = ({ match }) => {
       {ModalEdit()}
 
       <div id="page-content-wrapper">
-        <div className="d-flex">
-          <Link to={`${match.url}/add_product`} className="btn btn-outline-secondary btn-sm mx-auto mb-3">
-            Add Product
-          </Link>
-        </div>
-        <div className="container-fluid w-100 pr-0">
-          <table className="table table-hover">
+        <div className="container-fluid w-100 table-product">
+          <table className="table table-hover border-0">
             <thead>
               <tr className="text-center">
                 <th scope="col">#</th>
@@ -703,12 +609,17 @@ export const Product = ({ match }) => {
                 <th scope="col">Stock</th>
                 <th scope="col">Type</th>
                 <th scope="col">Price</th>
-                <th scope="col">About</th>
+                {/* <th scope="col">About</th> */}
                 <th scope="col">Action</th>
               </tr>
             </thead>
             <tbody>{RenderContentTable()}</tbody>
           </table>
+        </div>
+        <div className="d-flex">
+          <Link to={`${match.url}/add_product`} className="btn btn-outline-secondary btn-sm mx-auto mb-3">
+            Add Product
+          </Link>
         </div>
       </div>
     </>

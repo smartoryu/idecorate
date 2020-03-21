@@ -9,6 +9,18 @@ export const ON_EDIT_STORE = "ON_EDIT_STORE";
 export const SUSPENDED = "SUSPENDED";
 export const LOGOUT = "LOGOUT";
 export const LOGOUT_SUCCESS = "LOGOUT_SUCCESS";
+export const CREATE_NEW_STORE = "CREATE_NEW_STORE";
+export const MODAL_CREATE_STORE = "MODAL_CREATE_STORE";
+
+//
+// ============================== VERIFY
+export const VERIFY_START = "VERIFY_START";
+export const VERIFY_SUCCESS = "VERIFY_SUCCESS";
+export const VERIFY_FAILED = "VERIFY_FAILED";
+export const VERIFY_WRONG = "VERIFY_WRONG";
+export const CHANGE_USER_VERIFY = "CHANGE_USER_VERIFY";
+export const CHANGE_PASS_VERIFY = "CHANGE_PASS_VERIFY";
+export const CHANGE_TYPE_VERIFY = "CHANGE_TYPE_VERIFY";
 
 //
 // ============================== AUTH
@@ -23,12 +35,14 @@ export const WRONG_USER = "WRONG_USER";
 export const WRONG_PASS = "WRONG_PASS";
 export const WRONG_FORM = "WRONG_FORM";
 export const UNVERIFIED = "UNVERIFIED";
+export const CHANGE_MODAL_ACTIVE_TAB = "CHANGE_MODAL_ACTIVE_TAB";
 
 //
 // ============================== PRODUCT
 export const GET_PRODUCT = "GET_PRODUCT";
 export const ADD_PRODUCT_SUCCESS = "ADD_PRODUCT_SUCCESS";
 export const EDIT_PRODUCT_SUCCESS = "EDIT_PRODUCT_SUCCESS";
+export const DELETE_PRODUCT_SUCCESS = "DELETE_PRODUCT_SUCCESS";
 export const INSERT_PRODUCT = "INSERT_PRODUCT";
 export const EMPTY_PRODUCT_NAME = "EMPTY_PRODUCT_NAME";
 export const EMPTY_PRODUCT_PRICE = "EMPTY_PRODUCT_PRICE";

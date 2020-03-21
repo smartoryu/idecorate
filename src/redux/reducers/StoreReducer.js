@@ -1,4 +1,4 @@
-import { STORE_GET, ON_EDIT_STORE, EDIT_STORE_VALUE, RESET_STORE_VALUE } from "../../support/types";
+import { STORE_GET, ON_EDIT_STORE, EDIT_STORE_VALUE, RESET_STORE_VALUE, CREATE_NEW_STORE, LOGOUT } from "../../support/types";
 
 const INITIAL_STATE = {
   storeid: 0,
@@ -10,6 +10,11 @@ const INITIAL_STATE = {
   address: "",
   city: "",
   province: "",
+
+  loading: false,
+  create: false,
+
+  modalStore: false,
 
   onEdit: false
 };
@@ -25,6 +30,18 @@ export default (state = INITIAL_STATE, { type, payload }) => {
       return { ...state, ...payload };
     case RESET_STORE_VALUE:
       return { ...state, onEdit: !state.onEdit };
+
+    case CREATE_NEW_STORE:
+      return { ...INITIAL_STATE, modalStore: true };
+    case "CREATE_STORE_START":
+      return { ...state, loading: true };
+    case "CREATE_STORE_FAILED":
+      return { ...state, loading: false };
+    case "CREATE_STORE_SUCCESS":
+      return { ...INITIAL_STATE, ...payload, loading: false, create: true };
+
+    case LOGOUT:
+      return INITIAL_STATE;
 
     default:
       return state;

@@ -1,6 +1,7 @@
 import {
   ADD_PRODUCT_SUCCESS,
   EDIT_PRODUCT_SUCCESS,
+  DELETE_PRODUCT_SUCCESS,
   EMPTY_PRODUCT_NAME,
   EMPTY_PRODUCT_PRICE,
   RESET_PRODUCT,
@@ -9,7 +10,8 @@ import {
   INSERT_PRODUCT,
   GET_PRODUCT,
   GET_TYPES,
-  GET_IMAGES
+  GET_IMAGES,
+  LOGOUT
 } from "../../support/types";
 
 const INITIAL_STATE = {
@@ -47,6 +49,8 @@ export default (state = INITIAL_STATE, { type, payload }) => {
       return { ...INITIAL_STATE, ...payload, redirect: true };
     case EDIT_PRODUCT_SUCCESS:
       return { ...INITIAL_STATE, dataProduct: payload, onEdit: true };
+    case DELETE_PRODUCT_SUCCESS:
+      return { ...INITIAL_STATE, dataProduct: payload };
 
     case INSERT_PRODUCT:
       return { ...state, ...payload };
@@ -62,6 +66,10 @@ export default (state = INITIAL_STATE, { type, payload }) => {
       return { ...state, ...payload, onEdit: !state.onEdit };
     case RESET_PRODUCT:
       return INITIAL_STATE;
+
+    case LOGOUT:
+      return state;
+
     default:
       return state;
   }

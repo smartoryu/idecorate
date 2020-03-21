@@ -1,7 +1,9 @@
+/* eslint-disable no-unused-vars */
 import React, { Fragment, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, Route, Redirect } from "react-router-dom";
 import Axios from "axios";
+import { Modal, ModalBody, ModalFooter, Button, Badge } from "reactstrap";
 
 import { Details } from "./_Details";
 import { Product } from "./_Product";
@@ -11,85 +13,108 @@ import { Review } from "./_Review";
 
 import { Spinner } from "../../components/Spinner";
 import { API_URL } from "../../support/API_URL";
-import { STORE_GET, LOGIN_FAILED } from "../../support/types";
+import { FetchProduct, FetchTypes } from "../../redux/actions/ProductActions";
+import { STORE_GET, GET_PRODUCT } from "../../support/types";
 
 function Partner({ match }) {
   const dispatch = useDispatch();
-  const Loading = useSelector(({ Auth }) => Auth.loading);
-  const Role = useSelector(({ User }) => User.role);
-  const Logout = useSelector(({ User }) => User.logout);
+  const { Loading, DataProduct, Role, Logout, ModalStore, StoreId } = useSelector(({ Auth, User, Product, Store }) => {
+    return {
+      Loading: Auth.loading,
+
+      DataProduct: Product.dataProduct,
+      ModalStore: Store.modalStore,
+      StoreId: Store.storeid,
+      Role: User.role,
+      Logout: User.logout
+    };
+  });
 
   useEffect(() => {
     // this could be on actionRedux
-    const fetchStore = async () => {
-      try {
-        let options = { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } };
-        let { data } = await Axios.get(`${API_URL}/partner`, options);
-        dispatch({ type: STORE_GET, payload: data.result });
-      } catch (err) {
-        dispatch({ type: LOGIN_FAILED });
-      }
-    };
-    fetchStore();
-  }, [dispatch]);
-
-  const PartnerSideMenu = () => {
-    return (
-      <Fragment>
-        <div className="card">
-          <div className="card-header">Product</div>
-          <ul className="list-group list-group-flush">
-            <Link to={`${match.url}/product`} className="list-group-item list-group-item-action border-0">
-              Product List
-            </Link>
-            <Link to={`${match.url}/review`} className="list-group-item list-group-item-action border-0">
-              Review
-            </Link>
-          </ul>
-        </div>
-        <div className="card mt-3">
-          <div className="card-header">Profile</div>
-          <ul className="list-group list-group-flush">
-            <Link to={`${match.url}/profile`} className="list-group-item list-group-item-action border-0">
-              User
-            </Link>
-            <Link to={`${match.url}/store`} className="list-group-item list-group-item-action border-0">
-              Store
-            </Link>
-          </ul>
-        </div>
-      </Fragment>
-    );
-  };
+    // dispatch(FetchProduct());
+    // dispatch(FetchTypes());
+  }, [StoreId, dispatch]);
 
   if (Loading) {
-    if (Logout) {
+    return <Spinner />;
+  } else {
+    if (Role !== "partner" || Logout) {
       return <Redirect to="/" />;
     } else {
-      return <Spinner />;
+      return (
+        <Fragment>
+          {ModalCreateStore({ ModalStore, match })}
+
+          <div className="partner-wrapper container-fluid my-3">
+            <div className="row ml-5 mr-0 mb-5">
+              {/* SIDE MENU */}
+              <section className="col-md-2 partner-sidemenu">{PartnerSideMenu({ match, DataProduct })}</section>
+
+              {/* CONTENT */}
+              <div className="col-md-10 partner-content">
+                <div className="ml-0">
+                  <Route path={`${match.url}/profile`} component={Details} />
+                  <Route path={`${match.url}/store`} component={Store} />
+                  <Route path={`${match.url}/product`} exact component={Product} />
+                  <Route path={`${match.url}/product/add_product`} component={AddProduct} />
+                  <Route path={`${match.url}/review`} component={Review} />
+                </div>
+              </div>
+            </div>
+          </div>
+        </Fragment>
+      );
     }
   }
-  if (Role !== "partner") {
-    return <Redirect to="/" />;
-  }
-  return (
-    <div className="partner-wrapper container-fluid my-3">
-      <div className="row ml-5 mr-0 mb-5">
-        {/* SIDE MENU */}
-        <section className="col-md-2 partner-sidemenu">{PartnerSideMenu()}</section>
-
-        {/* CONTENT */}
-        <div className="col-md-10 partner-content">
-          <div className="ml-0">
-            <Route path={`${match.url}/profile`} component={Details} />
-            <Route path={`${match.url}/store`} component={Store} />
-            <Route path={`${match.url}/product`} exact component={Product} />
-            <Route path={`${match.url}/product/add_product`} component={AddProduct} />
-            <Route path={`${match.url}/review`} component={Review} />
-          </div>
-        </div>
-      </div>
-    </div>
-  );
 }
+
+const PartnerSideMenu = ({ match, DataProduct }) => {
+  return (
+    <Fragment>
+      <div className="card">
+        <div className="card-header">Product</div>
+        <ul className="list-group list-group-flush">
+          <a href={`${match.url}/product`} className="list-group-item list-group-item-action border-0">
+            <div>
+              Product List <Badge color="primary">{DataProduct.length}</Badge>
+            </div>
+          </a>
+          {/* THIS ON US THE SOURCE OF BUG, well as far as I know */}
+          {/* <Link to={`${match.url}/product`} className="list-group-item list-group-item-action border-0">
+            Product List <Badge color="primary">{DataProduct.length}</Badge>
+          </Link> */}
+          <Link to={`${match.url}/review`} className="list-group-item list-group-item-action border-0">
+            Review
+          </Link>
+        </ul>
+      </div>
+      <div className="card mt-3">
+        <div className="card-header">Profile</div>
+        <ul className="list-group list-group-flush">
+          <Link to={`${match.url}/profile`} className="list-group-item list-group-item-action border-0">
+            User
+          </Link>
+          <Link to={`${match.url}/store`} className="list-group-item list-group-item-action border-0">
+            Store
+          </Link>
+        </ul>
+      </div>
+    </Fragment>
+  );
+};
+
+const ModalCreateStore = ({ ModalStore }) => {
+  return (
+    <Modal centered size="sm" isOpen={ModalStore}>
+      <ModalBody>Complete your store data first!</ModalBody>
+      <ModalFooter>
+        <Link to="/new_store">
+          <Button className="btn btn-secondary">Ok</Button>
+        </Link>
+      </ModalFooter>
+    </Modal>
+  );
+};
+
 export default Partner;
