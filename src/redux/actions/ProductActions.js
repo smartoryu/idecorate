@@ -17,10 +17,9 @@ import {
 } from "../../support/types";
 import { toast } from "react-toastify";
 
-const options = { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } };
-
 export const FetchStore = StoreId => {
   return async dispatch => {
+    let options = { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } };
     try {
       const { data } = await Axios.get(`${API_URL}/partner/${StoreId}`, options);
       dispatch({ type: STORE_GET, payload: data.result });
@@ -37,45 +36,42 @@ export const FetchStore = StoreId => {
 
 export const FetchProduct = () => {
   return async dispatch => {
-    let token = localStorage.getItem("token");
-    console.log("token", token);
-    if (token) {
-      try {
-        const { data } = await Axios.get(`${API_URL}/product/get_products`, options);
-        dispatch({ type: GET_PRODUCT, payload: data.result });
-      } catch (err) {
-        toast.error("User not authorized to get products!", {
-          position: "bottom-left",
-          autoClose: 1000,
-          hideProgressBar: true,
-          closeButton: false
-        });
-      }
+    let options = { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } };
+
+    try {
+      const { data } = await Axios.get(`${API_URL}/product/get_products`, options);
+      dispatch({ type: GET_PRODUCT, payload: data.result });
+    } catch (err) {
+      toast.error("User not authorized to get products!", {
+        position: "bottom-left",
+        autoClose: 1000,
+        hideProgressBar: true,
+        closeButton: false
+      });
     }
   };
 };
 
 export const FetchTypes = () => {
   return async dispatch => {
-    let token = localStorage.getItem("token");
-    if (token) {
-      try {
-        const { data } = await Axios.get(`${API_URL}/product/get_types`, options);
-        dispatch({ type: GET_TYPES, payload: data.result });
-      } catch (err) {
-        toast.error("User not authorized to get type!", {
-          position: "bottom-left",
-          autoClose: 1000,
-          hideProgressBar: true,
-          closeButton: false
-        });
-      }
+    let options = { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } };
+    try {
+      const { data } = await Axios.get(`${API_URL}/product/get_types`, options);
+      dispatch({ type: GET_TYPES, payload: data.result });
+    } catch (err) {
+      toast.error("User not authorized to get type!", {
+        position: "bottom-left",
+        autoClose: 1000,
+        hideProgressBar: true,
+        closeButton: false
+      });
     }
   };
 };
 
 export const FetchImages = productid => {
   return async dispatch => {
+    let options = { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } };
     if (productid > 0) {
       try {
         const { data } = await Axios.get(`${API_URL}/product/get_images/${productid}`, options);
