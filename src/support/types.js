@@ -1,4 +1,9 @@
 //
+// ============================== HOMEPAGE
+export const GET_IMAGE_SLIDESHOW = "GET_IMAGE_SLIDESHOW";
+export const GET_IMAGE_SLIDER = "GET_IMAGE_SLIDER";
+
+//
 // ============================== PARTNER
 export const LOGIN_SUCCESS = "LOGIN_SUCCESS";
 export const LOGIN_FAILED = "LOGIN_FAILED";

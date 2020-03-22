@@ -17,7 +17,10 @@ export const User = ({ match }) => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(ReLoginAction(localStorage.getItem("token")));
+    let token = localStorage.getItem("token");
+    if (token) {
+      dispatch(ReLoginAction(token));
+    }
   }, [dispatch]);
 
   const { Loading, Role, Logout } = useSelector(({ Auth, User, Store }) => {

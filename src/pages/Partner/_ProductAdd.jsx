@@ -30,7 +30,10 @@ export function AddProduct({ history }) {
   });
 
   useEffect(() => {
-    dispatch(FetchTypes());
+    let token = localStorage.getItem("token");
+    if (token) {
+      dispatch(FetchTypes(token));
+    }
   }, [dispatch]);
 
   /**

@@ -17,27 +17,28 @@ import {
 } from "../../support/types";
 import { toast } from "react-toastify";
 
-export const FetchStore = StoreId => {
+export const FetchStore = token => {
   return async dispatch => {
-    let options = { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } };
-    try {
-      const { data } = await Axios.get(`${API_URL}/partner/${StoreId}`, options);
-      dispatch({ type: STORE_GET, payload: data.result });
-    } catch (err) {
-      toast.error("User not authorized to get store!", {
-        position: "bottom-left",
-        autoClose: 1000,
-        hideProgressBar: true,
-        closeButton: false
-      });
+    let options = { headers: { Authorization: `Bearer ${token}` } };
+    if (token) {
+      try {
+        const { data } = await Axios.get(`${API_URL}/partner`, options);
+        dispatch({ type: STORE_GET, payload: data.result });
+      } catch (err) {
+        toast.error("User not authorized to get store!", {
+          position: "bottom-left",
+          autoClose: 1000,
+          hideProgressBar: true,
+          closeButton: false
+        });
+      }
     }
   };
 };
 
-export const FetchProduct = () => {
+export const FetchProduct = token => {
   return async dispatch => {
-    let options = { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } };
-
+    let options = { headers: { Authorization: `Bearer ${token}` } };
     try {
       const { data } = await Axios.get(`${API_URL}/product/get_products`, options);
       dispatch({ type: GET_PRODUCT, payload: data.result });
@@ -52,9 +53,9 @@ export const FetchProduct = () => {
   };
 };
 
-export const FetchTypes = () => {
+export const FetchTypes = token => {
   return async dispatch => {
-    let options = { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } };
+    let options = { headers: { Authorization: `Bearer ${token}` } };
     try {
       const { data } = await Axios.get(`${API_URL}/product/get_types`, options);
       dispatch({ type: GET_TYPES, payload: data.result });

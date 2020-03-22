@@ -31,11 +31,13 @@ import {
   ModalBody,
   Label,
   UncontrolledTooltip,
-  ModalFooter
+  Tooltip,
+  ModalFooter,
+  Badge
 } from "reactstrap";
 import { MdAdd, MdFileUpload } from "react-icons/md";
-import { FaRegEdit, FaRegTrashAlt } from "react-icons/fa";
-import { FetchImages } from "../../redux/actions";
+import { FaRegImages, FaRegEdit, FaRegTrashAlt, FaArrowDown } from "react-icons/fa";
+import { FetchProduct, FetchTypes, FetchImages } from "../../redux/actions";
 
 export const Product = ({ match }) => {
   /**
@@ -43,32 +45,56 @@ export const Product = ({ match }) => {
    * Get the value from redux's reducer and desctructured it
    */
   const dispatch = useDispatch();
-  const { dataProduct, Types, ProductImages, ProductId, ProductName, openModalImage, onEdit } = useSelector(
-    ({ User, Store, Product }) => {
-      return {
-        UserId: User.id,
-        Role: User.role,
-        Username: User.username,
-        Logout: User.logout,
+  const {
+    UserId,
+    Role,
+    Username,
+    Logout,
+    StoreId,
+    dataProduct,
+    Types,
+    ProductImages,
+    ProductId,
+    ProductName,
+    openModalImage,
+    onEdit
+  } = useSelector(({ User, Store, Product }) => {
+    return {
+      UserId: User.id,
+      Role: User.role,
+      Username: User.username,
+      Logout: User.logout,
 
-        StoreId: Store.storeid,
+      StoreId: Store.storeid,
 
-        dataProduct: Product.dataProduct,
-        Types: Product.productTypes,
-        ProductImages: Product.productImages,
+      dataProduct: Product.dataProduct,
+      Types: Product.productTypes,
+      ProductImages: Product.productImages,
 
-        ProductId: Product.productid,
-        ProductName: Product.productname,
-        openModalImage: Product.modalImages,
-        onEdit: Product.onEdit
-      };
-    }
-  );
+      ProductId: Product.productid,
+      ProductName: Product.productname,
+      openModalImage: Product.modalImages,
+      onEdit: Product.onEdit
+    };
+  });
 
   /**
    * =========================================================== USE STATE ====
    */
   const Path = "http://localhost:2400";
+
+  /**
+   * =============================================== GET ALL DATA PRODUCTS ====
+   * This useEffect trigger action to get all products from the same storeid
+   * and set the result to dataProduct's state
+   */
+  useEffect(() => {
+    let token = localStorage.getItem("token");
+    if (token) {
+      dispatch(FetchProduct(token));
+      dispatch(FetchTypes(token));
+    }
+  }, [dispatch]);
 
   /**
    * ====================================== MANAGE SINGLE PRODUCT'S IMAGES ====

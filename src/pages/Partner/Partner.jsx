@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
-import React, { Fragment } from "react";
-import { useSelector } from "react-redux";
+import React, { Fragment, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { Link, Route, Redirect } from "react-router-dom";
 import { Modal, ModalBody, ModalFooter, Button, Badge } from "reactstrap";
 
@@ -11,18 +11,29 @@ import { Store } from "./_Store";
 import { Review } from "./_Review";
 
 import { Spinner } from "../../components/Spinner";
+import { FetchProduct, FetchTypes } from "../../redux/actions/ProductActions";
 
 function Partner({ match }) {
-  const { Loading, DataProduct, Role, Logout, ModalStore } = useSelector(({ Auth, User, Product, Store }) => {
+  const dispatch = useDispatch();
+  const { Loading, DataProduct, Role, Logout, ModalStore, StoreId } = useSelector(({ Auth, User, Product, Store }) => {
     return {
-      Loading: Auth.loading,
+      Loading: Store.loading,
 
       DataProduct: Product.dataProduct,
       ModalStore: Store.modalStore,
+      StoreId: Store.storeid,
       Role: User.role,
       Logout: User.logout
     };
   });
+
+  useEffect(() => {
+    let token = localStorage.getItem("token");
+    if (token) {
+      dispatch(FetchProduct(token));
+      dispatch(FetchTypes(token));
+    }
+  }, [StoreId, dispatch]);
 
   if (Loading) {
     return <Spinner />;
