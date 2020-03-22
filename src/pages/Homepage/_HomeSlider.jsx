@@ -6,7 +6,7 @@ import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 import { useSelector } from "react-redux";
 import { API_URL } from "../../support/API_URL";
 import { Card, CardImg, CardBody, CardTitle, CardSubtitle, CardText, Button, Input } from "reactstrap";
-import numeral from "numeral";
+import Numeral from "numeral";
 
 export const HomeSlider = () => {
   const ImagesSlider = useSelector(({ Homepage }) => Homepage.imagesSlider);
@@ -84,12 +84,14 @@ export const HomeSlider = () => {
               <CardImg top width="100%" src={`${API_URL + image.src}`} alt={image.name} />
               <CardBody>
                 <CardTitle>
-                  <h5>{image.name}</h5>
+                  <a href={`d/${image.productid}/${image.name.replace(/ /gi, "-").toLowerCase()}`}>
+                    <h5>{image.name}</h5>
+                  </a>
                 </CardTitle>
                 <CardSubtitle>
-                  <strike>Rp {numeral(image.price).format("0,0.00")}</strike>
+                  <strike>Rp {Numeral(image.price).format("0,0.00")}</strike>
                 </CardSubtitle>
-                <CardSubtitle>Rp {numeral(image.price - image.price * 0.3).format("0,0.00")}</CardSubtitle>
+                <CardSubtitle>Rp {Numeral(image.price - image.price * 0.3).format("0,0.00")}</CardSubtitle>
                 <Input
                   onChange={({ target }) => setQuantity(target.value)}
                   bsSize="sm"

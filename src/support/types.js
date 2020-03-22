@@ -2,6 +2,10 @@
 // ============================== HOMEPAGE
 export const GET_IMAGE_SLIDESHOW = "GET_IMAGE_SLIDESHOW";
 export const GET_IMAGE_SLIDER = "GET_IMAGE_SLIDER";
+export const GET_P_START = "GET_P_START";
+export const GET_P_TYPE = "GET_P_TYPE";
+export const GET_P_DETAILS = "GET_P_DETAILS";
+export const GET_P_IMAGES = "GET_P_IMAGES";
 
 //
 // ============================== PARTNER

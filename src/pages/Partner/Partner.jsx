@@ -74,12 +74,6 @@ const PartnerSideMenu = ({ match, DataProduct }) => {
       <div className="card">
         <div className="card-header">Product</div>
         <ul className="list-group list-group-flush">
-          {/* <a href={`${match.url}/product`} className="list-group-item list-group-item-action border-0">
-            <div>
-              Product List <Badge color="primary">{DataProduct.length}</Badge>
-            </div>
-          </a> */}
-          {/* THIS ON US THE SOURCE OF BUG, well as far as I know */}
           <Link to={`${match.url}/product`} className="list-group-item list-group-item-action border-0">
             Product List <Badge color="primary">{DataProduct.length}</Badge>
           </Link>

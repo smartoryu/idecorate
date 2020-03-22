@@ -809,4 +809,71 @@ div.wrapper > div.content .home-slider .card {
 .table-product table tbody td:nth-child(4) {
   width: 10%;
 }
+
+div.p-breadcrumb {
+  display: block;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+  padding: 0 1rem;
+  margin-top: -0.35rem;
+  margin-bottom: 1rem;
+  list-style: none;
+  border-radius: 0.25rem;
+}
+
+div.p-breadcrumb > a {
+  text-decoration: none;
+  color: #afaeae;
+  font-size: 0.8rem;
+}
+
+div.p-breadcrumb > a:hover {
+  text-decoration: underline;
+  color: black;
+}
+
+div.p-breadcrumb > a:last-child {
+  color: black;
+  cursor: default;
+}
+
+div.p-breadcrumb > a:last-child:hover {
+  text-decoration: none;
+}
+
+div.p-breadcrumb > span {
+  font-size: 0.75rem;
+  margin-bottom: 5px;
+  margin: 0 5px;
+}
+
+ul.slick-dots.slick-thumb {
+  position: absolute;
+  bottom: -75px;
+}
+
+ul.slick-dots.slick-thumb > li {
+  margin: 0 50px;
+}
+
+ul.slick-dots.slick-thumb > li > img {
+  width: 100px;
+}
+
+div.image-galery-details.row > div.thumb-details {
+  padding: 0;
+}
+
+div.image-galery-details.row > div.thumb-details a {
+  padding: 5px;
+}
+
+div.image-galery-details.row > div.image-details {
+  padding: 0;
+  padding-left: 10px;
+}
+
+div.image-galery-details.row > div.image-details .tab-content > .tab-pane.active > img:hover {
+  cursor: default;
+}
 /*# sourceMappingURL=App.css.map */
