@@ -1,4 +1,9 @@
 //
+// ============================== CART
+export const POST_TO_CART = "POST_TO_CART";
+export const POST_TO_CART_START = "POST_TO_CART_START";
+
+//
 // ============================== HOMEPAGE
 export const GET_IMAGE_SLIDESHOW = "GET_IMAGE_SLIDESHOW";
 export const GET_IMAGE_SLIDER = "GET_IMAGE_SLIDER";

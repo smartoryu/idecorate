@@ -876,4 +876,9 @@ div.image-galery-details.row > div.image-details {
 div.image-galery-details.row > div.image-details .tab-content > .tab-pane.active > img:hover {
   cursor: default;
 }
+
+.dropdown-menu-cart {
+  height: 100px;
+  overflow-y: auto;
+}
 /*# sourceMappingURL=App.css.map */

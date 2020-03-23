@@ -14,7 +14,8 @@ import {
   MODAL_AUTH,
   SERVER_ERROR,
   REG_SUCCESS,
-  UNVERIFIED
+  UNVERIFIED,
+  POST_TO_CART
 } from "../../support/types";
 import Swal from "sweetalert2";
 
@@ -36,24 +37,32 @@ export const LoginAction = (username, password) => {
           return dispatch({ type: WRONG_PASSLOG, payload: data.message });
         case LOGOUT_SUCCESS:
           return dispatch({ type: LOGOUT_SUCCESS });
+
+        case LOGIN_SUCCESS:
+          localStorage.setItem("token", data.token);
+          dispatch({ type: MODAL_AUTH, payload: false });
+
+          // GET CART
+          dispatch({ type: POST_TO_CART, payload: data.cart });
+          return dispatch({ type: LOGIN_SUCCESS, payload: data.result });
+
         case "LOGIN_NEW_PARTNER":
           dispatch({ type: LOGIN_SUCCESS });
           localStorage.setItem("token", data.token);
           return dispatch({ type: CREATE_NEW_STORE, modal: true, payload: data.result });
-        case LOGIN_SUCCESS:
-          localStorage.setItem("token", data.token);
-          dispatch({ type: MODAL_AUTH, payload: false });
-          return dispatch({ type: LOGIN_SUCCESS, payload: data.result });
-        case "LOGIN_PARTNER":
-          console.log("login token", data.token);
-          localStorage.setItem("token", data.token);
-          dispatch({ type: MODAL_AUTH, payload: false });
 
+        case "LOGIN_PARTNER":
+          localStorage.setItem("token", data.token);
+          dispatch({ type: MODAL_AUTH, payload: false });
+          // GET PRODUCT
           let options = { headers: { Authorization: `Bearer ${data.token}` } };
           const prod = await Axios.get(`${API_URL}/product/get_products`, options);
           dispatch({ type: "GET_PRODUCT", payload: prod.data.result });
+          return dispatch({
+            type: "LOGIN_PARTNER",
+            payload: { user: data.result, store: data.store }
+          });
 
-          return dispatch({ type: "LOGIN_PARTNER", payload: { user: data.result, store: data.store } });
         default:
           break;
       }
@@ -70,13 +79,18 @@ export const ReLoginAction = token => {
     try {
       const { data } = await Axios.get(`${API_URL}/auth/keeplogin`, options);
       switch (data.status) {
+        case LOGIN_SUCCESS:
+          localStorage.setItem("token", data.token);
+
+          // GET CART
+          dispatch({ type: POST_TO_CART, payload: data.cart });
+          return dispatch({ type: LOGIN_SUCCESS, payload: data.result });
+
         case CREATE_NEW_STORE:
           localStorage.setItem("token", data.token);
           dispatch({ type: LOGIN_SUCCESS });
           return dispatch({ type: CREATE_NEW_STORE, modal: true, payload: data.result });
-        case LOGIN_SUCCESS:
-          localStorage.setItem("token", data.token);
-          return dispatch({ type: LOGIN_SUCCESS, payload: data.result });
+
         case "LOGIN_PARTNER":
           localStorage.setItem("token", data.token);
 
@@ -86,7 +100,10 @@ export const ReLoginAction = token => {
           dispatch({ type: "GET_TYPES", payload: types.data.result });
           dispatch({ type: "GET_PRODUCT", payload: products.data.result });
 
-          return dispatch({ type: "LOGIN_PARTNER", payload: { user: data.result, store: data.store } });
+          return dispatch({
+            type: "LOGIN_PARTNER",
+            payload: { user: data.result, store: data.store }
+          });
 
         default:
           break;

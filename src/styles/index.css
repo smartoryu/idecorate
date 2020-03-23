@@ -457,7 +457,7 @@ div.wrapper > div.content .home-slider .card {
   color: grey;
 }
 
-.add_product_icon > img.plus_icon {
+.add_product_icon > .plus_icon {
   max-width: 100%;
   height: auto;
   margin: auto;
@@ -781,6 +781,132 @@ div.wrapper > div.content .home-slider .card {
 
 #new-s-photo div.add-photo-preview:hover > img {
   padding: 1px;
+}
+
+.table-product {
+  -webkit-box-shadow: 0.5px 0.5px 3px #919090;
+          box-shadow: 0.5px 0.5px 3px #919090;
+}
+
+.table-product tr {
+  width: 100%;
+  display: inline-table;
+  table-layout: fixed;
+}
+
+.table-product table {
+  padding-top: 5px;
+  height: 355px;
+}
+
+.table-product table thead {
+  display: inline-table;
+  height: 50px;
+  width: 98.5%;
+}
+
+.table-product table thead th:first-child {
+  width: 8%;
+}
+
+.table-product table thead th:nth-child(3) {
+  width: 20%;
+}
+
+.table-product table thead th:nth-child(4) {
+  width: 10%;
+}
+
+.table-product table tbody {
+  overflow-y: scroll;
+  overflow-x: unset;
+  height: 300px;
+  width: 95%;
+  position: absolute;
+}
+
+.table-product table tbody td:first-child {
+  width: 8%;
+}
+
+.table-product table tbody td:nth-child(3) {
+  width: 20%;
+}
+
+.table-product table tbody td:nth-child(4) {
+  width: 10%;
+}
+
+div.p-breadcrumb {
+  display: block;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+  padding: 0 1rem;
+  margin-top: -0.35rem;
+  margin-bottom: 1rem;
+  list-style: none;
+  border-radius: 0.25rem;
+}
+
+div.p-breadcrumb > a {
+  text-decoration: none;
+  color: #afaeae;
+  font-size: 0.8rem;
+}
+
+div.p-breadcrumb > a:hover {
+  text-decoration: underline;
+  color: black;
+}
+
+div.p-breadcrumb > a:last-child {
+  color: black;
+  cursor: default;
+}
+
+div.p-breadcrumb > a:last-child:hover {
+  text-decoration: none;
+}
+
+div.p-breadcrumb > span {
+  font-size: 0.75rem;
+  margin-bottom: 5px;
+  margin: 0 5px;
+}
+
+ul.slick-dots.slick-thumb {
+  position: absolute;
+  bottom: -75px;
+}
+
+ul.slick-dots.slick-thumb > li {
+  margin: 0 50px;
+}
+
+ul.slick-dots.slick-thumb > li > img {
+  width: 100px;
+}
+
+div.image-galery-details.row > div.thumb-details {
+  padding: 0;
+}
+
+div.image-galery-details.row > div.thumb-details a {
+  padding: 5px;
+}
+
+div.image-galery-details.row > div.image-details {
+  padding: 0;
+  padding-left: 10px;
+}
+
+div.image-galery-details.row > div.image-details .tab-content > .tab-pane.active > img:hover {
+  cursor: default;
+}
+
+.dropdown-menu-cart {
+  height: 100px;
+  overflow-y: auto;
 }
 
 .react-tabs {

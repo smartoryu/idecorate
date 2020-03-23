@@ -3,10 +3,6 @@
 import React, { Fragment, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { GetProductDetails } from "../redux/actions";
-import ReactStars from "react-stars";
-import Numeral from "numeral";
-
 import {
   Breadcrumb,
   Row,
@@ -27,19 +23,25 @@ import {
   FormGroup,
   Badge
 } from "reactstrap";
-import { Spinner } from "../components/Spinner";
-import { IoIosArrowForward, IoIosArrowBack } from "react-icons/io";
 import { API_URL } from "../support/API_URL";
+import { IoIosArrowForward } from "react-icons/io";
+import ReactStars from "react-stars";
+import Numeral from "numeral";
+import { GetProductDetails, AddToCart } from "../redux/actions";
+
+import { Spinner } from "../components/Spinner";
 
 export const ProductDetails = () => {
   const params = useParams();
   const dispatch = useDispatch();
 
-  const { Product, Images, Loading } = useSelector(({ MainNavbar }) => {
+  const { Product, Images, Loading, LoadingCart } = useSelector(({ MainNavbar, Cart }) => {
     return {
       Product: MainNavbar.productDetails,
       Images: MainNavbar.productImages,
-      Loading: MainNavbar.loading
+      Loading: MainNavbar.loading,
+
+      LoadingCart: Cart.loading
     };
   });
   const parseLink = Product.type && Product.type.toLowerCase();
@@ -52,8 +54,16 @@ export const ProductDetails = () => {
   const toggleTab = tab => activeTab !== tab && setActiveTab(tab);
 
   const [countBuy, setCountBuy] = useState(1);
-  const addCount = () => countBuy > 0 && setCountBuy(countBuy + 1);
+  const addCount = () => countBuy < Product.stock && setCountBuy(countBuy + 1);
   const minCount = () => countBuy > 1 && setCountBuy(countBuy - 1);
+
+  const BuyProduct = () => {
+    let postProduct = {
+      productid: Product.productid,
+      qty: countBuy
+    };
+    dispatch(AddToCart({ postProduct }));
+  };
 
   if (Loading) {
     return <Spinner />;
@@ -102,6 +112,7 @@ export const ProductDetails = () => {
                         </TabPane>
                       );
                     })}
+                    <small className="text-muted ml-1">all product photos belongs to Fabelio.com</small>
                   </TabContent>
                 </Card>
               </Col>
@@ -130,6 +141,9 @@ export const ProductDetails = () => {
                   <strike className="ml-2 text-muted">Rp {Numeral(Product.price).format("0,0")}</strike>
                   <Badge className="ml-2">30% OFF</Badge>
                 </CardSubtitle>
+                <CardSubtitle>
+                  <small className="text-muted">{`Ready ${Product.stock} ${Product.stock > 1 ? "items" : "item"}`}</small>
+                </CardSubtitle>
 
                 <FormGroup row className="mt-3">
                   <Col sm={4} className="pr-0">
@@ -142,7 +156,7 @@ export const ProductDetails = () => {
                       <Input
                         style={{ textAlign: "center" }}
                         maxLength={2}
-                        defaultValue={1}
+                        onChange={({ target }) => setCountBuy(target.value)}
                         value={countBuy}
                         min={1}
                         max={Product.stock}
@@ -155,7 +169,9 @@ export const ProductDetails = () => {
                     </InputGroup>
                   </Col>
                   <Col sm={8}>
-                    <Button className="w-100">Buy now!</Button>
+                    <Button disabled={LoadingCart} onClick={BuyProduct} className="w-100">
+                      {LoadingCart ? `Adding to cart...` : `Buy now!`}
+                    </Button>
                   </Col>
                 </FormGroup>
                 <div className="dropdown-divider my-4" />
