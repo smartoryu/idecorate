@@ -534,3 +534,13 @@ div.image-galery-details.row {
   height: 100px;
   overflow-y: auto;
 }
+
+.list-group-item:active {
+  background-color: #dbdbdb;
+}
+
+.list-group-item.list-group-item-action.active {
+  color: #212121;
+  border: 1px solid #dbdbdb;
+  background-color: #e7e7e7;
+}

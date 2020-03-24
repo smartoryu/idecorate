@@ -43,20 +43,20 @@ const Logo =
 
 export const MainNavbarMenu = () => {
   const dispatch = useDispatch();
-  const { UserId, Username, Name, Role, DataCart, Types, Loading } = useSelector(
-    ({ User, MainNavbar, Cart }) => {
-      return {
-        UserId: User.id,
-        Username: User.username,
-        Name: User.name,
-        Role: User.role,
-        DataCart: Cart.dataCart,
+  const { UserId, Username, Name, Role, DataCart, DeleteCart, Types, Loading } = useSelector(({ User, MainNavbar, Cart }) => {
+    return {
+      UserId: User.id,
+      Username: User.username,
+      Name: User.name,
+      Role: User.role,
 
-        Types: MainNavbar.types,
-        Loading: MainNavbar.loading
-      };
-    }
-  );
+      DataCart: Cart.dataCart,
+      DeleteCart: Cart.deleteItem,
+
+      Types: MainNavbar.types,
+      Loading: MainNavbar.loading
+    };
+  });
 
   useEffect(() => {
     dispatch(GetProductTypes());
@@ -143,10 +143,7 @@ export const MainNavbarMenu = () => {
                 {Types.map((type, idx) => {
                   return (
                     <NavItem key={type.id}>
-                      <NavLink
-                        className="mx-1"
-                        active={activeTab === `${type.id}`}
-                        onMouseEnter={() => toggleTab(`${type.id}`)}>
+                      <NavLink className="mx-1" active={activeTab === `${type.id}`} onMouseEnter={() => toggleTab(`${type.id}`)}>
                         {type.name}
                       </NavLink>
                     </NavItem>
@@ -205,11 +202,7 @@ export const MainNavbarMenu = () => {
           }}>
           <FormGroup className=" mx-1 mt-4 mb-3 row align-items-center">
             <Col sm={4} className="w-100">
-              <img
-                style={{ borderRadius: "5px", height: "50px" }}
-                src={`${API_URL + cart.image}`}
-                alt="..."
-              />
+              <img style={{ borderRadius: "5px", height: "50px" }} src={`${API_URL + cart.image}`} alt="..." />
             </Col>
             {isDeleteCart === cart.transdetailsid ? (
               <Col sm={8} className="w-100 d-flex ml-auto">
@@ -233,9 +226,7 @@ export const MainNavbarMenu = () => {
                     <small>{cart.name}</small>
                   </CardText>
                   <CardText>
-                    <small className="text-muted">{`${cart.qty} x Rp ${Numeral(cart.price).format(
-                      "0,0"
-                    )}`}</small>
+                    <small className="text-muted">{`${cart.qty} x Rp ${Numeral(cart.price).format("0,0")}`}</small>
                   </CardText>
                 </Col>
                 <Col sm={2} className="w-100">
@@ -275,9 +266,9 @@ export const MainNavbarMenu = () => {
           <Dropdown
             onMouseEnter={() => toggleCart(true)}
             onMouseLeave={() => toggleCart(false)}
-            toggle={() => setDropdownCart(true)}
-            isOpen={dropdownCart || isDeleteCart}>
-            {/* isOpen={true}> */}
+            isOpen={dropdownCart || DeleteCart}
+            // isOpen={true}
+            toggle={() => setDropdownCart(true)}>
             <DropdownToggle className="px-0 pr-2">
               <span style={{ fontSize: "20px" }}>
                 <FaShoppingCart />
@@ -285,17 +276,28 @@ export const MainNavbarMenu = () => {
               &nbsp;
               <Badge color="primary">{DataCart.length}</Badge>
             </DropdownToggle>
-            <DropdownMenu className="py-0 m-0">
+            <DropdownMenu right={!DataCart.length} className="py-0 m-0">
               {DataCart.length ? (
-                <Card>
-                  <CardBody className="p-0 dropdown-menu-cart">
-                    {DataCart.map(cart => {
-                      return cartComponent(cart);
-                    })}
-                  </CardBody>
-                </Card>
+                <>
+                  <div className="p-2" style={{ padding: ".25rem 1.5rem" }}>
+                    <CardBody className="p-0 dropdown-menu-cart">
+                      {DataCart.map(cart => {
+                        return cartComponent(cart);
+                      })}
+                    </CardBody>
+                  </div>
+                  <DropdownItem className="p-1">
+                    <NavLink className="p-1 text-center" href={`/m/${UserId}/${Username}/cart`}>
+                      Go to Cart
+                    </NavLink>
+                  </DropdownItem>
+                </>
               ) : (
-                <DropdownItem>Empty Cart</DropdownItem>
+                <DropdownItem className="p-1">
+                  <NavLink className="p-1 text-center" href="#">
+                    Cart Empty
+                  </NavLink>
+                </DropdownItem>
               )}
             </DropdownMenu>
           </Dropdown>
@@ -321,9 +323,7 @@ export const MainNavbarMenu = () => {
               </>
             ) : Role === "partner" ? (
               <>
-                <DropdownItem href={`/p/${UserId}/${Username}/profile`}>
-                  Account Profile
-                </DropdownItem>
+                <DropdownItem href={`/p/${UserId}/${Username}/profile`}>Account Profile</DropdownItem>
                 <DropdownItem href={`/p/${UserId}/${Username}/store`}>Store Profile</DropdownItem>
                 <DropdownItem onClick={handleLogout}>Sign Out</DropdownItem>
               </>

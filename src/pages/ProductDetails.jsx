@@ -30,17 +30,18 @@ import Numeral from "numeral";
 import { GetProductDetails, AddToCart } from "../redux/actions";
 
 import { Spinner } from "../components/Spinner";
+import { MODAL_AUTH, CHANGE_MODAL_ACTIVE_TAB } from "../support/types";
 
 export const ProductDetails = () => {
   const params = useParams();
   const dispatch = useDispatch();
 
-  const { Product, Images, Loading, LoadingCart } = useSelector(({ MainNavbar, Cart }) => {
+  const { Product, Images, Loading, Role, LoadingCart } = useSelector(({ MainNavbar, User, Cart }) => {
     return {
       Product: MainNavbar.productDetails,
       Images: MainNavbar.productImages,
       Loading: MainNavbar.loading,
-
+      Role: User.role,
       LoadingCart: Cart.loading
     };
   });
@@ -49,6 +50,11 @@ export const ProductDetails = () => {
   useEffect(() => {
     dispatch(GetProductDetails(params.productid));
   }, [dispatch, params.productid]);
+
+  const openLogin = () => {
+    dispatch({ type: CHANGE_MODAL_ACTIVE_TAB, payload: "1" });
+    dispatch({ type: MODAL_AUTH, payload: true });
+  };
 
   const [activeTab, setActiveTab] = useState("1");
   const toggleTab = tab => activeTab !== tab && setActiveTab(tab);
@@ -169,9 +175,15 @@ export const ProductDetails = () => {
                     </InputGroup>
                   </Col>
                   <Col sm={8}>
-                    <Button disabled={LoadingCart} onClick={BuyProduct} className="w-100">
-                      {LoadingCart ? `Adding to cart...` : `Buy now!`}
-                    </Button>
+                    {Role === "member" ? (
+                      <Button disabled={LoadingCart} onClick={BuyProduct} className="w-100">
+                        {LoadingCart ? `Adding to cart...` : `Buy now!`}
+                      </Button>
+                    ) : (
+                      <Button onClick={openLogin} className="w-100">
+                        Login first
+                      </Button>
+                    )}
                   </Col>
                 </FormGroup>
                 <div className="dropdown-divider my-4" />

@@ -18,7 +18,10 @@ import {
   POST_TO_CART_START,
   GET_P_START,
   GET_P_DETAILS,
-  GET_P_IMAGES
+  GET_P_IMAGES,
+  UPDATE_QTY_SUCCESS,
+  UPDATE_QTY_START,
+  DELETE_CART_START
 } from "../../support/types";
 import { toast } from "react-toastify";
 
@@ -116,6 +119,37 @@ export const AddToCart = ({ postProduct }) => {
       setTimeout(() => {
         dispatch({ type: GET_P_DETAILS, payload: data.details });
         dispatch({ type: POST_TO_CART, payload: data.result });
+      }, 1500);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+};
+
+export const DeleteFromCart = transdetailsid => {
+  return async dispatch => {
+    dispatch({ type: POST_TO_CART_START });
+    dispatch({ type: DELETE_CART_START });
+    let options = { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } };
+    try {
+      let { data } = await Axios.delete(`${API_URL}/t/delete/${transdetailsid}`, options);
+      setTimeout(() => {
+        dispatch({ type: POST_TO_CART, payload: data.result });
+      }, 1500);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+};
+
+export const UpdateCartItem = ({ transdetailsid, putData }) => {
+  return async dispatch => {
+    dispatch({ type: POST_TO_CART_START });
+    let options = { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } };
+    try {
+      let { data } = await Axios.put(`${API_URL}/t/update/${transdetailsid}`, putData, options);
+      setTimeout(() => {
+        dispatch({ type: UPDATE_QTY_SUCCESS, payload: data.result });
       }, 1500);
     } catch (err) {
       console.log(err);

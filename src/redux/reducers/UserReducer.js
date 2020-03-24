@@ -5,6 +5,12 @@ const INITIAL_STATE = {
   name: "Decorator",
   username: "",
   role: "",
+  label: "",
+  receiver: "",
+  phone: "",
+  city: "",
+  zip_code: "",
+  address: "",
   suspend: "",
   verified: "",
 

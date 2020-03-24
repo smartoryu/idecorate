@@ -6,7 +6,8 @@ import StoreReducer from "./StoreReducer";
 import AccountVerificationReducer from "./AccountVerificationReducer";
 import HomepageReducer from "./HomepageReducer";
 import _MainNavbarReducer from "./_MainNavbarReducer";
-import CartReducers from "./CartReducers";
+import CartReducer from "./CartReducer";
+import OrderReducer from "./OrderReducer";
 
 export default combineReducers({
   Auth: AuthReducer,
@@ -16,5 +17,6 @@ export default combineReducers({
   AccountVerification: AccountVerificationReducer,
   Homepage: HomepageReducer,
   MainNavbar: _MainNavbarReducer,
-  Cart: CartReducers
+  Cart: CartReducer,
+  Order: OrderReducer
 });
