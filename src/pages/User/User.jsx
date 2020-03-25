@@ -12,23 +12,26 @@ import { Review } from "./_Review";
 import { Details } from "./_Details";
 import { Settings } from "./_Settings";
 import { Wishlist } from "./_Wishlist";
+import { GetOrderList } from "../../redux/actions";
+import { Badge } from "reactstrap";
 
 export const User = ({ match }) => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    let token = localStorage.getItem("token");
-    if (token) {
-      dispatch(ReLoginAction(token));
-    }
+    dispatch(ReLoginAction());
+    dispatch(GetOrderList());
   }, [dispatch]);
 
-  const { Loading, Role, Logout } = useSelector(({ Auth, User, Store }) => {
+  const { Loading, Role, Logout, DataCart, DataOrders } = useSelector(({ Auth, User, Cart, Order }) => {
     return {
       Loading: Auth.loading,
 
       Role: User.role,
-      Logout: User.logout
+      Logout: User.logout,
+
+      DataCart: Cart.dataCart,
+      DataOrders: Order.dataOrders
     };
   });
 
@@ -39,14 +42,14 @@ export const User = ({ match }) => {
       return <Redirect to="/" />;
     } else {
       return (
-        <section style={{ minHeight: "500px" }} className="d-flex">
+        <section style={{ minHeight: "500px" }} className="d-flex mb-5">
           <div className="container-fluid mx no-guters user-wrapper">
             <div className="mt-4 d-block">
               <div className="user-content">
                 <div className="row no-gutters">
                   {/* SIDE MENU */}
                   <div className="col-md-2">
-                    <div style={{ maxWidth: "100%", height: "100%" }}>{UserSideMenu(match)}</div>
+                    <div style={{ maxWidth: "100%", height: "100%" }}>{UserSideMenu({ match, DataCart, DataOrders })}</div>
                   </div>
 
                   {/* CONTENT */}
@@ -70,7 +73,7 @@ export const User = ({ match }) => {
   }
 };
 
-const UserSideMenu = match => {
+const UserSideMenu = ({ match, DataCart, DataOrders }) => {
   return (
     <Fragment>
       <div className="card">
@@ -92,7 +95,10 @@ const UserSideMenu = match => {
                 ? "list-group-item list-group-item-action active"
                 : "list-group-item list-group-item-action"
             }>
-            My Cart
+            My Cart{" "}
+            <Badge pill color="danger">
+              {DataCart.length}
+            </Badge>
           </Link>
           <Link
             to={`${match.url}/order`}
@@ -101,7 +107,10 @@ const UserSideMenu = match => {
                 ? "list-group-item list-group-item-action active"
                 : "list-group-item list-group-item-action"
             }>
-            Order
+            Order{" "}
+            <Badge pill color="primary">
+              {DataOrders.length}
+            </Badge>
           </Link>
           <Link
             to={`${match.url}/review`}

@@ -33,7 +33,7 @@ import { Redirect } from "react-router-dom";
 import { API_URL } from "../../support/API_URL";
 import { useDispatch, useSelector } from "react-redux";
 import { GetProductTypes } from "../../redux/actions";
-import { CHANGE_MODAL_ACTIVE_TAB, MODAL_AUTH, LOGOUT, POST_TO_CART } from "../../support/types";
+import { CHANGE_MODAL_ACTIVE_TAB, MODAL_AUTH, LOGOUT, POST_TO_CART, DELETE_CARTMENU_START } from "../../support/types";
 import { FaRegUser, FaShoppingCart, FaTimes, FaCheck } from "react-icons/fa";
 import { Spinner } from "../Spinner";
 import Axios from "axios";
@@ -51,7 +51,7 @@ export const MainNavbarMenu = () => {
       Role: User.role,
 
       DataCart: Cart.dataCart,
-      DeleteCart: Cart.deleteItem,
+      DeleteCart: Cart.deleteItemMenu,
 
       Types: MainNavbar.types,
       Loading: MainNavbar.loading
@@ -181,12 +181,13 @@ export const MainNavbarMenu = () => {
   };
 
   const deleteCartItem = async transdetailsid => {
+    dispatch({ type: DELETE_CARTMENU_START });
     let options = { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } };
     try {
       let { data } = await Axios.delete(`${API_URL}/t/delete/${transdetailsid}`, options);
       dispatch({ type: POST_TO_CART, payload: data.result });
     } catch (err) {
-      Swal.showValidationMessage(`Request failed: ${err}`);
+      console.log(err);
     }
   };
 
@@ -270,9 +271,9 @@ export const MainNavbarMenu = () => {
             // isOpen={true}
             toggle={() => setDropdownCart(true)}>
             <DropdownToggle className="px-0 pr-2">
-              <span style={{ fontSize: "20px" }}>
+              <a style={{ fontSize: "20px", color: "inherit" }} href={`/m/${UserId}/${Username}/cart`}>
                 <FaShoppingCart />
-              </span>
+              </a>
               &nbsp;
               <Badge color="primary">{DataCart.length}</Badge>
             </DropdownToggle>
@@ -294,7 +295,7 @@ export const MainNavbarMenu = () => {
                 </>
               ) : (
                 <DropdownItem className="p-1">
-                  <NavLink className="p-1 text-center" href="#">
+                  <NavLink className="p-1 text-center" href={`/m/${UserId}/${Username}/cart`}>
                     Cart Empty
                   </NavLink>
                 </DropdownItem>

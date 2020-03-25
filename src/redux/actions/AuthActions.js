@@ -73,9 +73,9 @@ export const LoginAction = (username, password) => {
   };
 };
 
-export const ReLoginAction = token => {
+export const ReLoginAction = () => {
   return async dispatch => {
-    let options = { headers: { Authorization: `Bearer ${token}` } };
+    let options = { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } };
     try {
       const { data } = await Axios.get(`${API_URL}/auth/keeplogin`, options);
       switch (data.status) {

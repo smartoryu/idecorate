@@ -1,6 +1,8 @@
 //
-// ============================== CART
+// ============================== ORDER
+export const GET_ORDERS = "GET_ORDERS";
 export const POST_TO_ORDERS = "POST_TO_ORDERS";
+export const POST_TO_ORDER_ITEMS = "POST_TO_ORDER_ITEMS";
 export const POST_TO_ORDERS_START = "POST_TO_ORDERS_START";
 
 //
@@ -8,6 +10,7 @@ export const POST_TO_ORDERS_START = "POST_TO_ORDERS_START";
 export const POST_TO_CART = "POST_TO_CART";
 export const POST_TO_CART_START = "POST_TO_CART_START";
 export const DELETE_CART_START = "DELETE_CART_START";
+export const DELETE_CARTMENU_START = "DELETE_CARTMENU_START";
 export const UPDATE_QTY_START = "UPDATE_QTY_START";
 export const UPDATE_QTY_SUCCESS = "UPDATE_QTY_SUCCESS";
 export const GET_ADDRESS_CART = "GET_ADDRESS_CART";

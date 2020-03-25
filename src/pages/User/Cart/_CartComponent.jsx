@@ -4,7 +4,7 @@ import { Card, CardBody, CardText, Col, Button, Input, InputGroup, InputGroupAdd
 import { API_URL } from "../../../support/API_URL";
 import { useDispatch, useSelector } from "react-redux";
 import { DeleteFromCart, UpdateCartItem } from "../../../redux/actions";
-import { UPDATE_QTY_START } from "../../../support/types";
+import { UPDATE_QTY_START, DELETE_CART_START } from "../../../support/types";
 
 export const CartComponent = () => {
   return (
@@ -22,11 +22,12 @@ export const CartComponent = () => {
 
 const CartItem = () => {
   const dispatch = useDispatch();
-  const { DataCart, Loading, Editing } = useSelector(({ Cart }) => {
+  const { DataCart, Loading, Editing, Deleting } = useSelector(({ Cart }) => {
     return {
       DataCart: Cart.dataCart,
       Loading: Cart.loading,
-      Editing: Cart.editItem
+      Editing: Cart.editItem,
+      Deleting: Cart.deleteItem
     };
   });
 
@@ -39,6 +40,7 @@ const CartItem = () => {
   const [selectedCart, setSelectedCart] = useState(0);
 
   function toggleDeleteCart(id, status) {
+    dispatch({ type: DELETE_CART_START });
     setIsDeleteCart(status);
     setSelectedCart(id);
   }
@@ -94,7 +96,7 @@ const CartItem = () => {
                 <CardText>{`${cart.qty} x Rp ${Numeral(cart.price).format("0,0")}`}</CardText>
               )}
             </Col>
-            {Editing && isDeleteCart && selectedCart === cart.transdetailsid ? (
+            {(Deleting || Editing) && isDeleteCart && selectedCart === cart.transdetailsid ? (
               <Col sm={2} className="d-block">
                 <button
                   onClick={() => toggleDeleteCart(0, false)}
@@ -109,7 +111,7 @@ const CartItem = () => {
                   {Loading ? "deleting..." : "Yes"}
                 </button>
               </Col>
-            ) : Editing && isEditCart && selectedCart === cart.transdetailsid ? (
+            ) : (Deleting || Editing) && isEditCart && selectedCart === cart.transdetailsid ? (
               <Col sm={2} className="d-block">
                 <button
                   onClick={() => editCartItem(cart.transdetailsid)}

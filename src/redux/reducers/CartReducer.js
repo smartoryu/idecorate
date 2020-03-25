@@ -5,7 +5,8 @@ import {
   UPDATE_QTY_START,
   GET_ADDRESS_CART,
   SELECT_ADDRESS_CART,
-  DELETE_CART_START
+  DELETE_CART_START,
+  DELETE_CARTMENU_START
 } from "../../support/types";
 
 const INITIAL_STATE = {
@@ -13,6 +14,7 @@ const INITIAL_STATE = {
   loading: false,
   editItem: false,
   deleteItem: false,
+  deleteItemMenu: false,
 
   dataAddress: [],
   address: {}
@@ -32,6 +34,8 @@ export default (state = INITIAL_STATE, { type, payload }) => {
 
     case DELETE_CART_START:
       return { ...state, deleteItem: true };
+    case DELETE_CARTMENU_START:
+      return { ...state, deleteItemMenu: true };
 
     case GET_ADDRESS_CART:
       return { ...state, dataAddress: payload };
