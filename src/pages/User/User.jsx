@@ -43,7 +43,7 @@ export const User = ({ match }) => {
     } else {
       return (
         <section style={{ minHeight: "500px" }} className="d-flex mb-5">
-          <div className="container-fluid mx no-guters user-wrapper">
+          <div className="container-fluid no-guters user-wrapper">
             <div className="mt-4 d-block">
               <div className="user-content">
                 <div className="row no-gutters">

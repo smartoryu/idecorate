@@ -8,6 +8,7 @@ import HomepageReducer from "./HomepageReducer";
 import _MainNavbarReducer from "./_MainNavbarReducer";
 import CartReducer from "./CartReducer";
 import OrderReducer from "./OrderReducer";
+import ModOrderReducer from "./ModOrderReducer";
 
 export default combineReducers({
   Auth: AuthReducer,
@@ -18,5 +19,6 @@ export default combineReducers({
   Homepage: HomepageReducer,
   MainNavbar: _MainNavbarReducer,
   Cart: CartReducer,
-  Order: OrderReducer
+  Order: OrderReducer,
+  ModOrder: ModOrderReducer
 });

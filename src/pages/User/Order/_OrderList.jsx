@@ -75,9 +75,9 @@ const OrderItem = () => {
             </CardText>
             <CardText className="mb-0" tag="h6">
               <small>
-                <span className="mr-3">Status:</span>
+                <span className="mr-2">Status:</span>
               </small>
-              <Button style={{ width: "180px" }} size="sm" color={`${statusColor(order.order_status)}`}>
+              <Button style={{ width: "160px" }} size="sm" color={`${statusColor(order.order_status)}`}>
                 {order.order_status}
               </Button>
             </CardText>

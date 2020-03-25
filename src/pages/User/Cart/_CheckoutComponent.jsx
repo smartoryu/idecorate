@@ -31,7 +31,6 @@ export const CheckoutComponent = () => {
       title: "Sure to checkout?",
       icon: "question",
       position: "center-end",
-      backdrop: "#e8e8e8",
       showCancelButton: true,
       confirmButtonColor: "#3085d6",
       cancelButtonColor: "#d33",

@@ -1,4 +1,12 @@
 //
+// ============================== MOD ORDER
+export const POST_MOD_ORDERS_START = "POST_MOD_ORDERS_START";
+export const POST_MOD_ORDERS = "POST_MOD_ORDERS";
+export const POST_MOD_ORDER_ITEMS = "POST_MOD_ORDER_ITEMS";
+export const POST_MOD_CONFIRMED_ORDER = "POST_MOD_CONFIRMED_ORDER";
+export const PUT_PAYMENT_START = "PUT_PAYMENT_START";
+
+//
 // ============================== ORDER
 export const GET_ORDERS = "GET_ORDERS";
 export const POST_TO_ORDERS = "POST_TO_ORDERS";

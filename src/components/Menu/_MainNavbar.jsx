@@ -32,7 +32,7 @@ import Swal from "sweetalert2";
 import { Redirect } from "react-router-dom";
 import { API_URL } from "../../support/API_URL";
 import { useDispatch, useSelector } from "react-redux";
-import { GetProductTypes } from "../../redux/actions";
+import { GetProductTypes, DeleteFromCart } from "../../redux/actions";
 import { CHANGE_MODAL_ACTIVE_TAB, MODAL_AUTH, LOGOUT, POST_TO_CART, DELETE_CARTMENU_START } from "../../support/types";
 import { FaRegUser, FaShoppingCart, FaTimes, FaCheck } from "react-icons/fa";
 import { Spinner } from "../Spinner";
@@ -182,13 +182,7 @@ export const MainNavbarMenu = () => {
 
   const deleteCartItem = async transdetailsid => {
     dispatch({ type: DELETE_CARTMENU_START });
-    let options = { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } };
-    try {
-      let { data } = await Axios.delete(`${API_URL}/t/delete/${transdetailsid}`, options);
-      dispatch({ type: POST_TO_CART, payload: data.result });
-    } catch (err) {
-      console.log(err);
-    }
+    dispatch(DeleteFromCart(transdetailsid));
   };
 
   const cartComponent = cart => {
@@ -198,7 +192,7 @@ export const MainNavbarMenu = () => {
           className="p-0 align-content-center"
           style={{
             height: "98px",
-            width: "350px",
+            width: "400px",
             overflowX: "hidden"
           }}>
           <FormGroup className=" mx-1 mt-4 mb-3 row align-items-center">
@@ -209,9 +203,10 @@ export const MainNavbarMenu = () => {
               <Col sm={8} className="w-100 d-flex ml-auto">
                 <button
                   onClick={() => deleteCartItem(cart.transdetailsid)}
+                  disabled={DeleteCart}
                   style={{ fontSize: "10px" }}
                   className="btn btn-sm btn-outline-danger mx-2 align-items-center">
-                  Delete <FaCheck />
+                  {DeleteCart ? "deleting..." : "Delete"} <FaCheck />
                 </button>
                 <button
                   onClick={() => setIsDeleteCart(false)}
@@ -320,6 +315,11 @@ export const MainNavbarMenu = () => {
             {Role === "admin" ? (
               <>
                 <DropdownItem href="/admin">Dashboard</DropdownItem>
+                <DropdownItem onClick={handleLogout}>Sign Out</DropdownItem>
+              </>
+            ) : Role === "moderator" ? (
+              <>
+                <DropdownItem href={`/mod/${UserId}/${Username}/order`}>Dashboard</DropdownItem>
                 <DropdownItem onClick={handleLogout}>Sign Out</DropdownItem>
               </>
             ) : Role === "partner" ? (

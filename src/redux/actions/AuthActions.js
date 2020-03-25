@@ -15,7 +15,10 @@ import {
   SERVER_ERROR,
   REG_SUCCESS,
   UNVERIFIED,
-  POST_TO_CART
+  POST_TO_CART,
+  POST_MOD_ORDERS,
+  POST_MOD_ORDER_ITEMS,
+  POST_MOD_CONFIRMED_ORDER
 } from "../../support/types";
 import Swal from "sweetalert2";
 
@@ -50,6 +53,15 @@ export const LoginAction = (username, password) => {
           dispatch({ type: LOGIN_SUCCESS });
           localStorage.setItem("token", data.token);
           return dispatch({ type: CREATE_NEW_STORE, modal: true, payload: data.result });
+
+        case "LOGIN_MODERATOR":
+          localStorage.setItem("token", data.token);
+
+          dispatch({ type: POST_MOD_ORDERS, payload: data.orders });
+          dispatch({ type: POST_MOD_ORDER_ITEMS, payload: data.orderItems });
+          dispatch({ type: POST_MOD_CONFIRMED_ORDER, payload: data.confirmedOrders });
+
+          return dispatch({ type: LOGIN_SUCCESS, modal: true, payload: data.result });
 
         case "LOGIN_PARTNER":
           localStorage.setItem("token", data.token);
@@ -104,6 +116,15 @@ export const ReLoginAction = () => {
             type: "LOGIN_PARTNER",
             payload: { user: data.result, store: data.store }
           });
+
+        case "LOGIN_MODERATOR":
+          localStorage.setItem("token", data.token);
+
+          dispatch({ type: POST_MOD_ORDERS, payload: data.orders });
+          dispatch({ type: POST_MOD_ORDER_ITEMS, payload: data.orderItems });
+          dispatch({ type: POST_MOD_CONFIRMED_ORDER, payload: data.confirmedOrders });
+
+          return dispatch({ type: LOGIN_SUCCESS, modal: true, payload: data.result });
 
         default:
           break;

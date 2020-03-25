@@ -31,6 +31,8 @@ const Homepage = () => {
   } else {
     if (Role === "partner") {
       return <Redirect to={`/p/${UserId}/${Username}/store`} />;
+    } else if (Role === "moderator") {
+      return <Redirect to={`/mod/${UserId}/${Username}/order`} />;
     } else {
       return (
         <div className="homepage">

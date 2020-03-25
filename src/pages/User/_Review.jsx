@@ -7,6 +7,7 @@ export const Review = () => {
     <div id="page-content-wrapper">
       <div className="container-fluid">
         <h5 className="mt-4">No Review</h5>
+        <p>coming soon</p>
       </div>
     </div>
   );
