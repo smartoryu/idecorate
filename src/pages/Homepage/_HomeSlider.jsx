@@ -7,6 +7,7 @@ import { useSelector } from "react-redux";
 import { API_URL } from "../../support/API_URL";
 import { Card, CardImg, CardBody, CardTitle, CardSubtitle, CardText, Button, Input } from "reactstrap";
 import Numeral from "numeral";
+import { Link } from "react-router-dom";
 
 export const HomeSlider = () => {
   const ImagesSlider = useSelector(({ Homepage }) => Homepage.imagesSlider);
@@ -62,17 +63,17 @@ export const HomeSlider = () => {
     prevArrow: <PrevArrow />
   };
 
-  const loopSelect = stock => {
-    let arr = [];
-    for (let i = 0; i < stock; i++) {
-      arr.push(
-        <option key={i} value={i + 1}>
-          {i + 1}
-        </option>
-      );
-    }
-    return arr;
-  };
+  // const loopSelect = stock => {
+  //   let arr = [];
+  //   for (let i = 0; i < stock; i++) {
+  //     arr.push(
+  //       <option key={i} value={i + 1}>
+  //         {i + 1}
+  //       </option>
+  //     );
+  //   }
+  //   return arr;
+  // };
 
   return (
     <div className="home-slider">
@@ -81,30 +82,24 @@ export const HomeSlider = () => {
         {ImagesSlider.map(image => {
           return (
             <Card key={image.productid}>
-              <CardImg top width="100%" src={`${API_URL + image.src}`} alt={image.name} />
+              <Link target="_blank" to={`d/${image.productid}/${image.name.replace(/ /gi, "-").toLowerCase()}`}>
+                <CardImg top width="100%" src={`${API_URL + image.src}`} alt={image.name} />
+              </Link>
               <CardBody>
                 <CardTitle>
-                  <a href={`d/${image.productid}/${image.name.replace(/ /gi, "-").toLowerCase()}`}>
-                    <h5>{image.name}</h5>
-                  </a>
+                  <h5>{image.name}</h5>
                 </CardTitle>
                 <CardSubtitle>
-                  <strike>Rp {Numeral(image.price).format("0,0.00")}</strike>
+                  {/* <strike>Rp {Numeral(image.price).format("0,0.00")}</strike> */}
+                  Rp {Numeral(image.price).format("0,0.00")}
                 </CardSubtitle>
-                <CardSubtitle>Rp {Numeral(image.price - image.price * 0.3).format("0,0.00")}</CardSubtitle>
-                <Input
-                  onChange={({ target }) => setQuantity(target.value)}
-                  bsSize="sm"
-                  className="mx-auto"
-                  style={{ width: 60 }}
-                  type="select"
-                  name="select">
-                  {loopSelect(image.stock)}
-                </Input>
+                {/* <CardSubtitle>Rp {Numeral(image.price - image.price * 0.3).format("0,0.00")}</CardSubtitle> */}
                 <CardText>
                   <small>{image.about}</small>
                 </CardText>
-                <Button>Buy!</Button>
+                <Link target="_blank" to={`d/${image.productid}/${image.name.replace(/ /gi, "-").toLowerCase()}`}>
+                  <Button size="sm">Buy!</Button>
+                </Link>
               </CardBody>
             </Card>
           );

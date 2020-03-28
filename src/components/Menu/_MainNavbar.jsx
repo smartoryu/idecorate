@@ -29,7 +29,7 @@ import {
 } from "reactstrap";
 import Numeral from "numeral";
 import Swal from "sweetalert2";
-import { Redirect } from "react-router-dom";
+import { Redirect, Link } from "react-router-dom";
 import { API_URL } from "../../support/API_URL";
 import { useDispatch, useSelector } from "react-redux";
 import { GetProductTypes, DeleteFromCart } from "../../redux/actions";
@@ -43,20 +43,26 @@ const Logo =
 
 export const MainNavbarMenu = () => {
   const dispatch = useDispatch();
-  const { UserId, Username, Name, Role, DataCart, DeleteCart, Types, Loading } = useSelector(({ User, MainNavbar, Cart }) => {
-    return {
-      UserId: User.id,
-      Username: User.username,
-      Name: User.name,
-      Role: User.role,
+  const { UserId, Username, Name, Role, DataCart, DeleteCart, DataTabMenu, LoadingImage, Types, Loading } = useSelector(
+    ({ User, MainNavbar, Cart, Homepage }) => {
+      return {
+        UserId: User.id,
+        Username: User.username,
+        Name: User.name,
+        Role: User.role,
 
-      DataCart: Cart.dataCart,
-      DeleteCart: Cart.deleteItemMenu,
+        DataCart: Cart.dataCart,
+        DeleteCart: Cart.deleteItemMenu,
 
-      Types: MainNavbar.types,
-      Loading: MainNavbar.loading
-    };
-  });
+        DataTabMenu: Homepage.imagesMenuTab,
+        LoadingImage: Homepage.loading,
+
+        Types: MainNavbar.types,
+        Loading: MainNavbar.loading
+      };
+    }
+  );
+  console.log(DataTabMenu);
 
   useEffect(() => {
     dispatch(GetProductTypes());
@@ -123,6 +129,38 @@ export const MainNavbarMenu = () => {
       setActiveTab("1");
     };
 
+    const TabContentProduct = (DataTabMenu, type) => {
+      return DataTabMenu.length
+        ? DataTabMenu.filter(image => image.type === type).map(product => {
+            return (
+              <Card key={product.id} style={{ width: "180px" }} className="mx-2">
+                <CardBody className="p-2">
+                  <img
+                    style={{ width: "160px", borderRadius: "3px", marginBottom: "3px" }}
+                    className="d-block mx-auto"
+                    src={`${API_URL + product.image}`}
+                    alt=""
+                  />
+                  <CardText className="text-center mb-0" style={{ lineHeight: "15px" }}>
+                    <small>
+                      <strong>{product.name}</strong>
+                    </small>
+                  </CardText>
+                </CardBody>
+                <CardText className="text-center mb-1">
+                  <small>Rp {Numeral(product.price).format("0,0.00")}</small>
+                </CardText>
+                <Link className="mx-2" target="_blank" to={`d/${product.id}/${product.name.replace(/ /gi, "-").toLowerCase()}`}>
+                  <Button block color="warning" className="mb-2">
+                    Buy now!
+                  </Button>
+                </Link>
+              </Card>
+            );
+          })
+        : null;
+    };
+
     return (
       <Dropdown
         className="position-static"
@@ -130,6 +168,7 @@ export const MainNavbarMenu = () => {
         onMouseLeave={toggleClose}
         toggle={() => setDropdownCategories(false)}
         isOpen={dropdownCategories}>
+        {/* isOpen={true}> */}
         <DropdownToggle className="px-0">
           <span>Products</span>
         </DropdownToggle>
@@ -137,41 +176,51 @@ export const MainNavbarMenu = () => {
           {Loading ? (
             <Spinner />
           ) : (
-            <Card className="w-100 py-2 px-0">
+            <Card className="w-100 pt-1 px-0">
               <Nav tabs>
                 <NavItem className="mr-4" />
                 {Types.map((type, idx) => {
                   return (
                     <NavItem key={type.id}>
-                      <NavLink className="mx-1" active={activeTab === `${type.id}`} onMouseEnter={() => toggleTab(`${type.id}`)}>
+                      <NavLink
+                        href={`product/${type.name.toLowerCase()}`}
+                        className="mx-1"
+                        active={activeTab === `${type.id}`}
+                        onMouseEnter={() => toggleTab(`${type.id}`)}>
                         {type.name}
                       </NavLink>
                     </NavItem>
                   );
                 })}
               </Nav>
-              <TabContent activeTab={activeTab} className="p-3">
-                <TabPane tabId="1">
-                  <h5>First Tab</h5>
-                </TabPane>
-                <TabPane tabId="2">
-                  <h5>Second Tab</h5>
-                </TabPane>
-                <TabPane tabId="3">
-                  <h5>Third Tab</h5>
-                </TabPane>
-                <TabPane tabId="4">
-                  <h5>Fourth Tab</h5>
-                </TabPane>
-                <TabPane tabId="5">
-                  <h5>Fifth Tab</h5>
-                </TabPane>
-                <TabPane tabId="6">
-                  <h5>Sixth Tab</h5>
-                </TabPane>
-                <TabPane tabId="7">
-                  <h5>Seventh Tab</h5>
-                </TabPane>
+              <TabContent activeTab={activeTab} className="py-2 d-block">
+                {LoadingImage ? (
+                  <Spinner />
+                ) : (
+                  <>
+                    <TabPane tabId="1">
+                      <div className="d-flex justify-content-between">{TabContentProduct(DataTabMenu, "Chair")}</div>
+                    </TabPane>
+                    <TabPane tabId="2">
+                      <div className="d-flex justify-content-between">{TabContentProduct(DataTabMenu, "Sofa")}</div>
+                    </TabPane>
+                    <TabPane tabId="3">
+                      <div className="d-flex justify-content-between">{TabContentProduct(DataTabMenu, "Table")}</div>
+                    </TabPane>
+                    <TabPane tabId="4">
+                      <div className="d-flex justify-content-between">{TabContentProduct(DataTabMenu, "Cabinet")}</div>
+                    </TabPane>
+                    <TabPane tabId="5">
+                      <div className="d-flex justify-content-between">{TabContentProduct(DataTabMenu, "Bed")}</div>
+                    </TabPane>
+                    <TabPane tabId="6">
+                      <div className="d-flex justify-content-between">{TabContentProduct(DataTabMenu, "Wardrobe")}</div>
+                    </TabPane>
+                    <TabPane tabId="7">
+                      <div className="d-flex justify-content-between">{TabContentProduct(DataTabMenu, "Decoration")}</div>
+                    </TabPane>
+                  </>
+                )}
               </TabContent>
             </Card>
           )}

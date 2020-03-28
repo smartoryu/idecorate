@@ -7,7 +7,7 @@ import { Spinner } from "../../components/Spinner";
 import { Slideshow } from "./_Slideshow";
 import { HomeSlider } from "./_HomeSlider";
 import { ProductTab } from "./_ProductTab";
-import { GetImageSlider, GetImageSlideshow } from "../../redux/actions";
+import { GetImageSlider, GetImageSlideshow, GetImageMenuTabContent } from "../../redux/actions";
 
 const Homepage = () => {
   const dispatch = useDispatch();
@@ -24,6 +24,7 @@ const Homepage = () => {
   useEffect(() => {
     dispatch(GetImageSlider());
     dispatch(GetImageSlideshow());
+    dispatch(GetImageMenuTabContent());
   }, [dispatch]);
 
   if (Loading) {
@@ -53,15 +54,13 @@ const Homepage = () => {
             </div>
           </div>
 
-          <div className="row no-gutters col-lg-10 mx-auto product-content">
-            {/* ANCHOR SIDE MENU - PRODUCT */}
+          {/* <div className="row no-gutters col-lg-10 mx-auto product-content">
             <div className="col-md-2">
               <p>
                 Lorem ipsum dolor sit amet consectetur adipisicing elit. Eius tempore illo vitae excepturi quo minus, pariatur
                 sint aut repellat nisi!
               </p>
             </div>
-            {/* ANCHOR CONTENT - PRODUCT */}
             <div className="col-md-10">
               <div className="ml-2" style={{ maxWidth: "100%", height: "100%" }}>
                 <div className="product-tab">
@@ -69,7 +68,7 @@ const Homepage = () => {
                 </div>
               </div>
             </div>
-          </div>
+          </div> */}
         </div>
       );
     }

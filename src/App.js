@@ -50,6 +50,7 @@ function App() {
             <Route path="/p/:userid/:username" component={Partner} />
             <Route path="/d/:productid/:productname" component={ProductDetails} />
             <Route path="/new_store" component={CreateStore} />
+            <Route path="/product/:type" component={CreateStore} />
           </Switch>
         </div>
       </div>
