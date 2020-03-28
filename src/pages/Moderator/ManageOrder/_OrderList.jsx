@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React from "react";
 import Numeral from "numeral";
 import Moment from "react-moment";
-import { Card, CardBody, CardText, CardTitle, Button, CardSubtitle } from "reactstrap";
+import { Card, CardBody, CardText, Button, CardSubtitle } from "reactstrap";
 import { useDispatch, useSelector } from "react-redux";
 import Swal from "sweetalert2";
 import { StatusColor } from "../../../support/StatusColor";
@@ -25,15 +25,13 @@ export const OrderList = () => {
 
 const AllOrderList = () => {
   const dispatch = useDispatch();
-  const { DataOrders, OrderItems, Loading, SelectedId } = useSelector(({ ModOrder }) => {
+  const { DataOrders, Loading, SelectedId } = useSelector(({ ModOrder }) => {
     return {
       DataOrders: ModOrder.dataOrders,
-      OrderItems: ModOrder.dataOrderItems,
       Loading: ModOrder.loading,
       SelectedId: ModOrder.selected
     };
   });
-  const [onCollapse, setOnCollapse] = useState(false);
 
   const handlePickOrder = id => {
     Swal.fire({
@@ -72,10 +70,9 @@ const AllOrderList = () => {
                 </Button>
               </CardText>
               <CardText className="mt-2 mb-0 mr-2" tag="h6">
-                mod {order.moderator}
-                {/* <small>
+                <small>
                   <Moment format="HH:mm:ss - ddd, DD/MM/YYYY" date={order.ordered_time} />
-                </small> */}
+                </small>
               </CardText>
             </CardSubtitle>
           </CardBody>

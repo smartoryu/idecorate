@@ -29,8 +29,10 @@ export const SELECT_ADDRESS_CART = "SELECT_ADDRESS_CART";
 
 //
 // ============================== HOMEPAGE
+export const GET_IMAGE_START = "GET_IMAGE_START";
 export const GET_IMAGE_SLIDESHOW = "GET_IMAGE_SLIDESHOW";
 export const GET_IMAGE_SLIDER = "GET_IMAGE_SLIDER";
+export const GET_IMAGE_MENUTAB = "GET_IMAGE_MENUTAB";
 export const GET_P_START = "GET_P_START";
 export const GET_P_TYPE = "GET_P_TYPE";
 export const GET_P_DETAILS = "GET_P_DETAILS";
