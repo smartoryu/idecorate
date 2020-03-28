@@ -5,6 +5,9 @@ export const POST_MOD_ORDERS = "POST_MOD_ORDERS";
 export const POST_MOD_ORDER_ITEMS = "POST_MOD_ORDER_ITEMS";
 export const POST_MOD_CONFIRMED_ORDER = "POST_MOD_CONFIRMED_ORDER";
 export const PUT_PAYMENT_START = "PUT_PAYMENT_START";
+export const PICK_ORDER_START = "PICK_ORDER_START";
+export const PICK_ORDER_SUCCESS = "PICK_ORDER_SUCCESS";
+export const PICK_ORDER_FAILED = "PICK_ORDER_FAILED";
 
 //
 // ============================== ORDER

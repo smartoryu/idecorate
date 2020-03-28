@@ -41,7 +41,7 @@ export const Moderator = ({ match }) => {
 
                   {/* CONTENT */}
                   <div className="col-md-10">
-                    <div className="ml-5" style={{ maxWidth: "100%", height: "100%" }}>
+                    <div className="ml-3" style={{ maxWidth: "100%", height: "100%" }}>
                       <Route path={`${match.url}/order`} component={ManageOrder} />
                       <Route path={`${match.url}/confirmed`} component={ConfirmedOrder} />
                       <Route path={`${match.url}/report`} component={Complaints} />
