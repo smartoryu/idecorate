@@ -5,9 +5,6 @@ export const POST_MOD_ORDERS = "POST_MOD_ORDERS";
 export const POST_MOD_ORDER_ITEMS = "POST_MOD_ORDER_ITEMS";
 export const POST_MOD_CONFIRMED_ORDER = "POST_MOD_CONFIRMED_ORDER";
 export const PUT_PAYMENT_START = "PUT_PAYMENT_START";
-export const PICK_ORDER_START = "PICK_ORDER_START";
-export const PICK_ORDER_SUCCESS = "PICK_ORDER_SUCCESS";
-export const PICK_ORDER_FAILED = "PICK_ORDER_FAILED";
 
 //
 // ============================== ORDER
@@ -29,10 +26,8 @@ export const SELECT_ADDRESS_CART = "SELECT_ADDRESS_CART";
 
 //
 // ============================== HOMEPAGE
-export const GET_IMAGE_START = "GET_IMAGE_START";
 export const GET_IMAGE_SLIDESHOW = "GET_IMAGE_SLIDESHOW";
 export const GET_IMAGE_SLIDER = "GET_IMAGE_SLIDER";
-export const GET_IMAGE_MENUTAB = "GET_IMAGE_MENUTAB";
 export const GET_P_START = "GET_P_START";
 export const GET_P_TYPE = "GET_P_TYPE";
 export const GET_P_DETAILS = "GET_P_DETAILS";
