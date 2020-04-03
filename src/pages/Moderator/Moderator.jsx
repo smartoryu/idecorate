@@ -11,10 +11,9 @@ import { Profile } from "./_Profile";
 import { ConfirmedOrder } from "./_ConfirmedOrder";
 
 export const Moderator = ({ match }) => {
-  const { Loading, UserId, Role, Logout, DataOrders, DataConfirmedOrders } = useSelector(({ Auth, User, ModOrder }) => {
+  const { Loading, Role, Logout, DataOrders, DataConfirmedOrders } = useSelector(({ Auth, User, ModOrder }) => {
     return {
       Loading: Auth.loading,
-      UserId: User.id,
       Role: User.role,
       Logout: User.logout,
 
@@ -37,14 +36,12 @@ export const Moderator = ({ match }) => {
                 <div className="row no-gutters">
                   {/* SIDE MENU */}
                   <div className="col-md-2">
-                    <div style={{ maxWidth: "100%", height: "100%" }}>
-                      {SideMenu({ match, DataOrders, DataConfirmedOrders, UserId })}
-                    </div>
+                    <div style={{ maxWidth: "100%", height: "100%" }}>{SideMenu({ match, DataOrders, DataConfirmedOrders })}</div>
                   </div>
 
                   {/* CONTENT */}
                   <div className="col-md-10">
-                    <div className="ml-3" style={{ maxWidth: "100%", height: "100%" }}>
+                    <div className="ml-5" style={{ maxWidth: "100%", height: "100%" }}>
                       <Route path={`${match.url}/order`} component={ManageOrder} />
                       <Route path={`${match.url}/confirmed`} component={ConfirmedOrder} />
                       <Route path={`${match.url}/report`} component={Complaints} />
@@ -63,7 +60,7 @@ export const Moderator = ({ match }) => {
   }
 };
 
-const SideMenu = ({ match, DataOrders, DataConfirmedOrders, UserId }) => {
+const SideMenu = ({ match, DataOrders, DataConfirmedOrders }) => {
   return (
     <Fragment>
       <div className="card">
@@ -78,7 +75,7 @@ const SideMenu = ({ match, DataOrders, DataConfirmedOrders, UserId }) => {
             }>
             Manage Order&nbsp;
             <Badge pill color="danger">
-              {DataOrders.filter(order => order.moderator === UserId).length}
+              {DataOrders.length}
             </Badge>
           </Link>
           <Link

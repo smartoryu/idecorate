@@ -1,6 +1,6 @@
 import Axios from "axios";
 import { API_URL } from "../../support/API_URL";
-import { GET_IMAGE_SLIDER, GET_IMAGE_SLIDESHOW, GET_IMAGE_MENUTAB } from "../../support/types";
+import { GET_IMAGE_SLIDER, GET_IMAGE_SLIDESHOW } from "../../support/types";
 
 export const GetImageSlider = () => {
   return async dispatch => {
@@ -20,17 +20,6 @@ export const GetImageSlideshow = () => {
       dispatch({ type: GET_IMAGE_SLIDESHOW, payload: data.result });
     } catch (error) {
       console.log(error);
-    }
-  };
-};
-
-export const GetImageMenuTabContent = () => {
-  return async dispatch => {
-    try {
-      const { data } = await Axios.get(`${API_URL}/homepage/p/get5Random`);
-      dispatch({ type: GET_IMAGE_MENUTAB, payload: data.result });
-    } catch (err) {
-      console.log(err);
     }
   };
 };

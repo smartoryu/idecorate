@@ -144,8 +144,8 @@ export const ProductDetails = () => {
                 <div className="dropdown-divider my-4" />
                 <CardSubtitle className="d-flex align-items-center">
                   <h3>Rp {Numeral(Product.price - Product.price * 0.3).format("0,0")}</h3>
-                  {/* <strike className="ml-2 text-muted">Rp {Numeral(Product.price).format("0,0")}</strike>
-                  <Badge className="ml-2">30% OFF</Badge> */}
+                  <strike className="ml-2 text-muted">Rp {Numeral(Product.price).format("0,0")}</strike>
+                  <Badge className="ml-2">30% OFF</Badge>
                 </CardSubtitle>
                 <CardSubtitle>
                   <small className="text-muted">{`Ready ${Product.stock} ${Product.stock > 1 ? "items" : "item"}`}</small>
