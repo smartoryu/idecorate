@@ -8,7 +8,7 @@ import { toast } from "react-toastify";
 import "./styles/App.css";
 import "react-toastify/dist/ReactToastify.css";
 
-import { ReLoginAction } from "./redux/actions";
+import { ReLoginAction, GetImageMenuTabContent } from "./redux/actions";
 
 import { Menu } from "./components/Menu/Menu";
 import Footer from "./components/Footer";
@@ -33,6 +33,7 @@ function App() {
     if (token) {
       dispatch(ReLoginAction(token));
     }
+    dispatch(GetImageMenuTabContent());
   }, [dispatch]);
 
   return (

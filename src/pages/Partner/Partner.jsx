@@ -9,6 +9,7 @@ import { Product } from "./_Product";
 import { AddProduct } from "./_ProductAdd";
 import { Store } from "./_Store";
 import { Review } from "./_Review";
+import { Transactions } from "./Transactions/Transactions";
 
 import { Spinner } from "../../components/Spinner";
 import { FetchProduct, FetchTypes } from "../../redux/actions/ProductActions";
@@ -23,7 +24,7 @@ function Partner({ match }) {
       ModalStore: Store.modalStore,
       StoreId: Store.storeid,
       Role: User.role,
-      Logout: User.logout
+      Logout: User.logout,
     };
   });
 
@@ -55,6 +56,7 @@ function Partner({ match }) {
                 <div className="ml-0">
                   <Route path={`${match.url}/profile`} component={Details} />
                   <Route path={`${match.url}/store`} component={Store} />
+                  <Route path={`${match.url}/transactions`} component={Transactions} />
                   <Route path={`${match.url}/product`} exact component={Product} />
                   <Route path={`${match.url}/product/add_product`} component={AddProduct} />
                   <Route path={`${match.url}/review`} component={Review} />
@@ -72,13 +74,24 @@ const PartnerSideMenu = ({ match, DataProduct }) => {
   return (
     <Fragment>
       <div className="card">
-        <div className="card-header">Product</div>
+        <div className="card-header">Product Catalog</div>
         <ul className="list-group list-group-flush">
           <Link to={`${match.url}/product`} className="list-group-item list-group-item-action border-0">
             Product List <Badge color="primary">{DataProduct.length}</Badge>
           </Link>
           <Link to={`${match.url}/review`} className="list-group-item list-group-item-action border-0">
             Review
+          </Link>
+        </ul>
+      </div>
+      <div className="card mt-3">
+        <div className="card-header">Transactions</div>
+        <ul className="list-group list-group-flush">
+          <Link to={`${match.url}/transactions`} className="list-group-item list-group-item-action border-0">
+            Product Ordered
+          </Link>
+          <Link to={`${match.url}/store`} className="list-group-item list-group-item-action border-0">
+            Report
           </Link>
         </ul>
       </div>

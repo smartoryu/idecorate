@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
@@ -7,7 +8,7 @@ import { Spinner } from "../../components/Spinner";
 import { Slideshow } from "./_Slideshow";
 import { HomeSlider } from "./_HomeSlider";
 import { ProductTab } from "./_ProductTab";
-import { GetImageSlider, GetImageSlideshow, GetImageMenuTabContent } from "../../redux/actions";
+import { GetImageSlider, GetImageSlideshow } from "../../redux/actions";
 
 const Homepage = () => {
   const dispatch = useDispatch();
@@ -17,14 +18,13 @@ const Homepage = () => {
       UserId: User.id,
       Username: User.username,
 
-      Loading: Homepage.loading
+      Loading: Homepage.loading,
     };
   });
 
   useEffect(() => {
     dispatch(GetImageSlider());
     dispatch(GetImageSlideshow());
-    dispatch(GetImageMenuTabContent());
   }, [dispatch]);
 
   if (Loading) {
